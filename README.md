@@ -1,22 +1,37 @@
 # Word Lights
 
-Phonics games for Reception and Year 1, following the green word / red word approach used in synthetic phonics.
+Phonics games for Reception and Year 1, following the green word / red word approach used in Read Write Inc. phonics.
 
 - **Green words** go: children sound them out and blend.
 - **Red words** stop: they can't be sounded out, children just have to know them.
 
-## Games
+Play it: https://patriciacscosta-hub.github.io/greenredwords/
 
-1. **Speedy Tap** – read a green word (with sound buttons: dots for single sounds, lines for special friends) and tap the matching picture before the timer runs out.
-2. **Red Word Match** – a red word appears; tap the same word from 3 (Reception) or 4 (Year 1) look-alike red words before the timer runs out.
+## How it works
 
-There is also a **Word lists** page for teachers showing every word used for each class.
+1. **Who's playing?** Each child picks an animal (a grown-up can type their name), then their class and term.
+2. **The map.** A winding path of 12 levels for that class and term. Finishing a level unlocks the next one. Each level earns 1–3 stars and can be replayed. Level 12 is the trophy level, with a treasure chest of 10 bonus coins.
+3. **Coins.** Every right answer earns a coin (2 for a speedy answer), each star earns a bonus coin, and Bubble Pop has gold coin bubbles to catch.
+4. **Leaderboard.** Ranks everyone who plays on that device by coins.
 
-Works with mouse, touch and keyboard. The games are silent: children read every word themselves.
+All progress is saved in the browser on that device. Nothing is sent anywhere.
+
+## Game types
+
+| Game | Green words | Red words |
+|---|---|---|
+| **Speedy Tap** | Read the word, tap its picture before the timer runs out | Tap the same red word among look-alikes |
+| **Bubble Pop** | Pop the bubbles with the word for the picture | Pop the bubbles with the red word |
+| **Drag & Match** | Drag each word onto its picture | Drag each red word onto its matching shape |
+| **Find the Pairs** | Flip cards to match word and picture | Flip cards to match two red words |
+
+Drag & Match also works by tapping a word and then tapping where it goes.
+
+## Sounds & Red Words
+
+A page for children and parents showing RWI Set 1, Set 2 and Set 3 sounds in teaching order, and the red words for each class and term. Sounds are marked the RWI way: a dot under a single sound, a dash under special friends, and an arc joining split sounds such as a-e.
 
 ## Class and term
-
-When the game starts, children choose their class (Reception or Year 1) and the term. The words follow the usual Read Write Inc. order, and about 6 in 10 words in each game come from that term's focus, with the rest as review:
 
 | | Green words (focus) | New red words |
 |---|---|---|
@@ -24,11 +39,13 @@ When the game starts, children choose their class (Reception or Year 1) and the 
 | Reception, Spring | Special friends: sh, th, ch, ng, nk, ck | of, he, she, we, me, be, you, said, your |
 | Reception, Summer | Blends (frog) and first Set 2 sounds | was, are, put, all, they, her, some, come |
 | Year 1, Autumn | Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy | said, was, what, want, any, many, there, where, who, why |
-| Year 1, Spring | Set 3 sounds: ea, oi, aw, ai, oa, ow, ire, ear | could, would, should, some, come, one, once, two, does, other, were |
+| Year 1, Spring | Set 3 sounds: ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear | could, would, should, some, come, one, once, two, does, other, were |
 | Year 1, Summer | All Set 2 and Set 3 sounds | water, call, talk, walk, small, tall, school, friend, watch |
 
-The choice is remembered on that device. Use **Change** on the home screen to switch.
+About 6 in 10 words in each game come from that term's focus, the rest are review.
 
 ## Run it
 
 Open `index.html` in a browser – no build step or server needed.
+
+Word Lights is an independent practice game and is not made by or affiliated with Read Write Inc. or Oxford University Press.

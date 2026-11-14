@@ -10,27 +10,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Andika:wght@400;700&family=Jost:wght@500;700&display=swap">
 <style>
-/* Layout: flat pastel colour blocks. Home = big title panel on the left, stacked full-bleed game bands on the right
-   (stacks on phones). Each game fills the screen with its band colour. Deliberately one light, pastel world. */
+/* Layout: flat pastel colour blocks. Start = "who's playing?", then a winding level map for the child's class + term.
+   Each level fills the screen with its colour (mint = green words, pink = red words, blue = mixed). One light pastel world. */
 :root{
   color-scheme:light;
   --ink:#26304D; --ink-soft:#56607C; --white:#FFFFFF;
-  --sky:#A9C0CE;          /* home title panel */
+  --sky:#A9C0CE;
   --mint:#BFE1C4;  --mint-deep:#8ED9A8;  --go:#279A5D;
   --pink:#F6D2DC;  --coral:#F0575C;      --coral-soft:#FF8A8A;
-  --blue:#C4E3F5;  --lilac:#B0B5DB;      --sun:#FFC83A;
+  --blue:#C4E3F5;  --lilac:#B0B5DB;      --sun:#FFC83A;   --sun-soft:#FFF1C7;
+  --peach:#FFDDC2; --lemon:#FFEEB0;
   --font-display:"Jost","Futura","Century Gothic","Trebuchet MS",system-ui,sans-serif;
   --font-read:"Andika","Comic Sans MS","Trebuchet MS",system-ui,sans-serif;
   --r:28px;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{background:var(--sky);color:var(--ink);font-family:var(--font-display);font-size:17px;line-height:1.45;
+body{--scene:var(--sky);background:var(--scene);color:var(--ink);font-family:var(--font-display);font-size:17px;line-height:1.45;
   -webkit-tap-highlight-color:transparent;overscroll-behavior:none}
-body[data-scene="speedy"],body[data-scene="speedy"] .play{background:var(--mint)}
-body[data-scene="match"],body[data-scene="match"] .play{background:var(--pink)}
-body[data-scene="done"],body[data-scene="done"] .play{background:var(--lilac)}
-body[data-scene="lists"],body[data-scene="lists"] .play{background:var(--lilac)}
+body[data-scene="green"]{--scene:var(--mint)}
+body[data-scene="red"]{--scene:var(--pink)}
+body[data-scene="mix"]{--scene:var(--blue)}
+body[data-scene="done"],body[data-scene="board"]{--scene:var(--lilac)}
+body[data-scene="sounds"]{--scene:var(--blue)}
+body[data-scene="map-autumn"]{--scene:var(--peach)}
+body[data-scene="map-spring"]{--scene:var(--mint)}
+body[data-scene="map-summer"]{--scene:var(--lemon)}
+.setup,.map,.play{background:var(--scene)}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
 :focus-visible{outline:4px solid var(--ink);outline-offset:3px}
 h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
@@ -49,97 +55,132 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 @keyframes hop{0%,100%{transform:translateY(0)}40%{transform:translateY(-22px) scaleY(1.05)}70%{transform:translateY(0) scaleY(.9)}}
 @keyframes wobble{20%{transform:rotate(-8deg)}40%{transform:rotate(7deg)}60%{transform:rotate(-5deg)}80%{transform:rotate(3deg)}}
 
-/* ---------- Home ---------- */
-.home{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);min-height:100%}
-.hero{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;text-align:center;
-  padding-block:80px 60px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:24px}
-.hero .duo{display:flex;align-items:flex-end;gap:6px}
-.hero .duo .critter{width:clamp(96px,14vw,150px);height:auto}
-.hero h1{color:var(--white);font-size:clamp(3rem,8.5vw,6rem);letter-spacing:.04em;text-transform:uppercase}
-.hero p{margin:0;max-width:34ch;font-size:1.1rem;font-weight:500;color:var(--ink)}
-.hero p b{font-weight:700}
-.hero p .g{color:var(--go)} .hero p .r{color:var(--coral)}
-.stagechip{background:var(--white);color:var(--ink);border-radius:999px;padding:7px 7px 7px 22px;display:inline-flex;align-items:center;gap:14px;
-  font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:1.05rem;min-height:54px;transition:transform .15s}
-.stagechip:hover{transform:translateY(-2px)}
-.stagechip .chg{background:var(--sky);color:var(--white);border-radius:999px;padding:7px 16px;font-size:.85rem}
-.hero p.focusline{font-size:.98rem;color:var(--ink);background:rgba(255,255,255,.45);border-radius:18px;padding:8px 16px;max-width:40ch}
+/* ---------- Coins + small pills ---------- */
+.coin{display:inline-block;width:1.15em;height:1.15em;border-radius:50%;flex:none;position:relative;vertical-align:-.2em;
+  background:radial-gradient(circle at 35% 32%,#FFF0A8 0 18%,#FFCF33 40%,#E9A70E 100%);box-shadow:inset 0 0 0 .1em #F7BE20}
+.coin::after{content:"";position:absolute;inset:26%;border-radius:50%;border:.08em solid rgba(150,95,0,.4)}
+.flycoin{position:fixed;width:30px;height:30px;z-index:95;pointer-events:none;transition:transform .75s cubic-bezier(.45,-0.35,.55,1),opacity .75s}
+.pill{background:var(--white);color:var(--ink);border-radius:999px;padding:10px 20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.95rem;min-height:48px;display:inline-flex;align-items:center;gap:8px}
+.pillstat{background:var(--white);border-radius:999px;padding:8px 16px;display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:1.2rem;min-height:48px;font-variant-numeric:tabular-nums}
+.pillstat .st{color:var(--sun);font-size:1.4rem;-webkit-text-stroke:.6px rgba(38,48,77,.2)}
+.bump{animation:bump .35s}
+@keyframes bump{50%{transform:scale(1.22)}}
 
-/* ---------- Setup (class + term) ---------- */
+/* ---------- Setup screens (players, avatar, class, term) ---------- */
 .setup{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:40px;
   padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
-.setup-in{display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center;max-width:920px;width:100%}
+.setup-in{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center;max-width:960px;width:100%}
 .setup .duo{display:flex;gap:6px;align-items:flex-end}
-.setup .duo .critter{width:clamp(80px,12vw,120px);height:auto}
+.setup .duo .critter{width:clamp(80px,12vw,116px);height:auto}
 .setup h1{color:var(--white);font-size:clamp(2rem,6vw,3.6rem);text-transform:uppercase;letter-spacing:.04em}
+.setup .brand{font-size:clamp(1rem,2.4vw,1.2rem);color:var(--white);letter-spacing:.14em;text-transform:uppercase;font-weight:700;opacity:.9}
 .choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;width:100%}
-.choice .critter{width:clamp(70px,10vw,96px);height:auto}
-.choice{border-radius:var(--r);padding:28px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:200px;position:relative;transition:transform .15s}
+.choices.small{grid-template-columns:repeat(auto-fill,minmax(110px,1fr))}
+.choice{border-radius:var(--r);padding:24px 16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:190px;position:relative;transition:transform .15s;background:var(--white)}
+.choices.small .choice{min-height:110px;padding:14px}
 .choice:hover{transform:translateY(-4px)}
 .choice:active{transform:scale(.97)}
 .choice .big{font-size:3.6rem;line-height:1}
-.choice b{font-size:clamp(1.4rem,3.5vw,1.9rem);letter-spacing:.06em;text-transform:uppercase}
-.choice small{font-weight:500;color:var(--ink-soft);font-size:1rem}
+.choices.small .choice .big{font-size:3.2rem}
+.choice .critter{width:clamp(70px,10vw,96px);height:auto}
+.choice b{font-size:clamp(1.3rem,3.2vw,1.8rem);letter-spacing:.06em;text-transform:uppercase}
+.choice small{font-weight:500;color:var(--ink-soft);font-size:1rem;display:inline-flex;align-items:center;gap:6px}
 .choice .now{position:absolute;top:12px;right:12px;background:var(--ink);color:var(--white);border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
-.c-mint{background:var(--mint)} .c-pink{background:var(--pink)} .c-peach{background:#FFD9BF} .c-sun{background:#FFEBA8} .c-blue{background:var(--blue)}
+.choice.add{background:rgba(255,255,255,.45);color:var(--white)}
+.choice.add .big{font-weight:700;font-family:var(--font-display)}
+.c-mint{background:var(--mint)} .c-pink{background:var(--pink)} .c-peach{background:var(--peach)} .c-sun{background:var(--lemon)} .c-blue{background:var(--blue)}
+.setup-actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .linkback{color:var(--white);font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;min-height:44px}
-.listbox h4{margin:14px 0 8px;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
-.listbox h4:first-of-type{margin-top:0}
+.namebox{display:flex;flex-direction:column;align-items:center;gap:12px;background:var(--white);border-radius:var(--r);padding:22px;width:min(460px,100%)}
+.namebox .big{font-size:4.5rem;line-height:1}
+.namebox label{font-weight:500;color:var(--ink-soft)}
+.namebox input{font:inherit;font-family:var(--font-read);font-weight:700;font-size:1.6rem;text-align:center;width:100%;border:3px solid var(--line,#D6DCE8);border-radius:18px;padding:10px 14px;color:var(--ink);background:var(--white)}
+.namebox input:focus{outline:none;border-color:var(--ink)}
+.btn{border-radius:999px;padding:14px 32px;font-weight:700;font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:var(--white);min-height:54px}
+.btn.alt{background:var(--white);color:var(--ink)}
+.btn.sun{background:var(--sun);color:var(--ink)}
 
-.bands{display:flex;flex-direction:column;border-left:14px solid rgba(38,48,77,.08)}
-.band{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:170px;
-  padding-block:20px;padding-left:20px;padding-right:max(20px,env(safe-area-inset-right,0px));text-align:center;transition:filter .2s}
-.band:hover{filter:brightness(1.03)}
-.band:hover .art{transform:translateY(-4px)}
-.band.b-mint{background:var(--mint)} .band.b-pink{background:var(--pink)} .band.b-blue{background:var(--blue)} .band.b-lilac{background:var(--lilac)}
-.band .art{display:flex;align-items:flex-end;justify-content:center;gap:12px;transition:transform .2s;min-height:84px}
-.band .art .critter{width:78px;height:auto}
-.band .label{font-weight:700;font-size:1.3rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
-.band .best{font-size:.92rem;font-weight:500;color:var(--ink-soft)}
-.band .best b{color:var(--ink)}
-.tile{background:var(--white);border-radius:20px;display:grid;place-items:center;font-size:2.3rem;width:66px;height:66px;line-height:1}
-.mini{font-family:var(--font-read);font-weight:700;font-size:1.7rem;padding:6px 16px 4px;border-radius:16px;line-height:1.1}
-.mini.red{background:var(--coral);color:var(--white)}
-.mini.green{background:var(--white);color:var(--go)}
-.plus{color:var(--white);font-size:3.4rem;font-weight:700;line-height:.8}
-@media (max-width:820px){
-  .home{grid-template-columns:1fr}
-  .bands{border-left:0;border-top:12px solid rgba(38,48,77,.08)}
-  .hero{padding-block:70px 40px}
-}
+/* ---------- Map ---------- */
+.map{min-height:100%;padding-bottom:40px}
+.mapbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--scene);display:flex;gap:10px;flex-wrap:wrap;align-items:center;
+  padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--scene)}
+.mapbar .grow{flex:1}
+.who{background:var(--white);border-radius:999px;padding:5px 18px 5px 5px;display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;min-height:50px;max-width:100%}
+.who .ava{width:40px;height:40px;border-radius:50%;background:var(--sun-soft);display:grid;place-items:center;font-size:1.6rem;flex:none}
+.who span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.maphead{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:10px 16px 0}
+.maphead h1{color:var(--white);font-size:clamp(2.2rem,7vw,3.6rem);letter-spacing:.04em;text-transform:uppercase;text-shadow:0 2px 0 rgba(38,48,77,.12)}
+.stagechip{background:var(--white);color:var(--ink);border-radius:999px;padding:7px 7px 7px 22px;display:inline-flex;align-items:center;gap:14px;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:1rem;min-height:52px}
+.stagechip .chg{background:var(--ink);color:var(--white);border-radius:999px;padding:7px 16px;font-size:.8rem}
+.focusline{margin:0;font-size:.98rem;font-weight:500;background:rgba(255,255,255,.55);border-radius:18px;padding:8px 16px;max-width:44ch}
+.mapbox{position:relative;width:calc(100% - 32px);max-width:460px;margin:18px auto 0}
+.mapbox svg.road{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.node{position:absolute;width:86px;height:86px;margin:-43px 0 0 -43px;border-radius:50%;background:var(--white);border:7px solid var(--go);
+  display:grid;place-items:center;font-weight:700;font-size:1.9rem;color:var(--ink);z-index:2;transition:transform .15s}
+.node:hover{transform:scale(1.06)}
+.node.k-r{border-color:var(--coral)}
+.node.k-mix{border-color:var(--sun);width:106px;height:106px;margin:-53px 0 0 -53px;font-size:2.6rem}
+.node.locked{background:rgba(255,255,255,.5);border-color:rgba(38,48,77,.1);color:rgba(38,48,77,.35)}
+.node.current{animation:pulse 1.6s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.95)}70%{box-shadow:0 0 0 20px rgba(255,255,255,0)}100%{box-shadow:0 0 0 0 rgba(255,255,255,0)}}
+.node .mech{position:absolute;top:-12px;right:-12px;width:36px;height:36px;border-radius:50%;background:var(--ink);color:var(--white);display:grid;place-items:center}
+.node.locked .mech{background:rgba(38,48,77,.3)}
+.mech svg{width:20px;height:20px;display:block}
+.node .lock svg{width:30px;height:30px;display:block}
+.node .nstars{position:absolute;top:100%;left:50%;transform:translateX(-50%);margin-top:5px;font-size:1.15rem;color:var(--sun);white-space:nowrap;letter-spacing:.02em;-webkit-text-stroke:.6px rgba(38,48,77,.25);line-height:1}
+.node .nstars .off{color:rgba(255,255,255,.85)}
+.me{position:absolute;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:var(--white);display:grid;place-items:center;font-size:2.3rem;z-index:3;
+  animation:bob2 1.4s ease-in-out infinite;box-shadow:0 5px 0 rgba(38,48,77,.12);pointer-events:none}
+@keyframes bob2{50%{transform:translateY(-7px)}}
+.deco{position:absolute;font-size:1.9rem;transform:translate(-50%,-50%);pointer-events:none;line-height:1}
+.maplabel{position:absolute;transform:translate(-50%,-50%);background:var(--ink);color:var(--white);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
 
-/* ---------- Sound buttons ---------- */
-.sw{display:inline-flex;gap:.06em;font-family:var(--font-read);font-weight:700;line-height:1}
+/* ---------- Sound buttons (dot = one sound, dash = special friends, arc = split sound) ---------- */
+.sw{display:inline-flex;gap:.06em;font-family:var(--font-read);font-weight:700;line-height:1;padding-bottom:.08em}
 .gph{display:inline-flex;flex-direction:column;align-items:center;gap:.13em;padding:0 .02em;transition:color .2s}
-.gph .mk{height:.15em;min-height:5px;border-radius:99px;background:currentColor;transition:transform .2s}
-.gph .mk.dot{width:.15em;min-width:5px}
+.gph .mk{height:.15em;min-height:4px;border-radius:99px;background:currentColor;transition:transform .2s}
+.gph .mk.dot{width:.15em;min-width:4px}
 .gph .mk.bar{width:86%}
+.gph .mk.none{visibility:hidden;width:.15em}
+.split{display:inline-flex;gap:.06em;position:relative;padding-bottom:.32em}
+.split::after{content:"";position:absolute;left:.12em;right:.12em;bottom:0;height:.34em;border:.1em solid currentColor;border-top:0;border-radius:0 0 .7em .7em}
 .gph.lit{color:var(--sun)} .gph.lit .mk{transform:scale(1.5)}
 
-/* ---------- Play ---------- */
-.play{min-height:100%;display:flex;flex-direction:column;padding-block:18px 32px;
-  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
-.bar{display:flex;align-items:center;gap:14px;flex-wrap:wrap;max-width:1040px;width:100%;margin:0 auto 14px}
-.pill{background:var(--white);color:var(--ink);border-radius:999px;padding:10px 20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.95rem;min-height:46px}
-.bar h2{flex:1 1 160px;min-width:0;color:var(--ink);font-size:clamp(1.3rem,3.4vw,1.9rem);letter-spacing:.06em;text-transform:uppercase}
+/* ---------- Play shell ---------- */
+.play{min-height:100%;display:flex;flex-direction:column;padding-block:14px 32px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;max-width:1040px;width:100%;margin:0 auto 12px}
+.bar h2{flex:1 1 160px;min-width:0;color:var(--ink);font-size:clamp(1.2rem,3.2vw,1.8rem);letter-spacing:.06em;text-transform:uppercase}
 @media (max-width:640px){ .bar .pips{order:5;flex:1 1 100%;justify-content:center} }
 .pips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
-.pips i{width:13px;height:13px;border-radius:50%;background:rgba(255,255,255,.6);display:block;flex:none}
+.pips i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.65);display:block;flex:none}
 .pips i.done{background:var(--sun)} .pips i.miss{background:rgba(38,48,77,.25)} .pips i.now{box-shadow:0 0 0 3px var(--ink)}
-.score{font-weight:700;font-size:1.4rem;display:flex;align-items:center;gap:6px;font-variant-numeric:tabular-nums}
-.score .st{color:var(--sun);font-size:1.7rem;-webkit-text-stroke:1px rgba(38,48,77,.15)}
 .stage{position:relative;max-width:1040px;width:100%;margin:0 auto;flex:1}
+.flash{position:absolute;left:50%;top:0;transform:translateX(-50%);font-weight:700;font-size:1.7rem;letter-spacing:.08em;text-transform:uppercase;
+  background:var(--sun);color:var(--ink);padding:4px 22px;border-radius:999px;pointer-events:none;z-index:40;animation:pop .95s ease forwards;white-space:nowrap}
+@keyframes pop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
+.shake{animation:shake .4s}
+@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
-/* Speedy tap */
-.prompt{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,3vw,26px);flex-wrap:wrap;margin-top:8px}
-.prompt .critter{width:clamp(92px,15vw,140px);height:auto}
-.wordcard{background:var(--white);border-radius:var(--r);padding:16px clamp(24px,5vw,48px) 20px;position:relative}
-.wordcard::before{content:"";position:absolute;left:-12px;bottom:34px;border:12px solid transparent;border-right-color:var(--white);border-left:0}
-.bigword{font-size:clamp(3.4rem,12vw,6.2rem);color:var(--go)}
-.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
-.tool{background:rgba(255,255,255,.55);color:var(--ink);border-radius:999px;padding:9px 20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.9rem;min-height:46px}
+/* Prompt (critter + speech bubble) */
+.prompt{display:flex;align-items:flex-end;justify-content:center;gap:clamp(10px,3vw,24px);flex-wrap:wrap;margin-top:6px}
+.prompt .critter{width:clamp(84px,14vw,130px);height:auto}
+.wordcard{background:var(--white);border-radius:var(--r);padding:14px clamp(22px,5vw,44px) 18px;position:relative;display:flex;align-items:center;gap:16px}
+.wordcard::before{content:"";position:absolute;left:-12px;bottom:30px;border:12px solid transparent;border-right-color:var(--white);border-left:0}
+.bigword{font-size:clamp(3.2rem,11vw,6rem);color:var(--go)}
+.bigword.red{color:var(--coral);font-family:var(--font-read);font-weight:700;line-height:1.1}
+.tpic{font-size:clamp(3.4rem,11vw,5.6rem);line-height:1}
+.need{display:flex;gap:6px}
+.need i{width:18px;height:18px;border-radius:50%;border:3px solid var(--ink);display:block;opacity:.35}
+.need i.got{background:var(--sun);opacity:1;border-color:var(--sun)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:14px}
+.tool{background:rgba(255,255,255,.6);color:var(--ink);border-radius:999px;padding:9px 20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.9rem;min-height:46px}
 .tool:hover{background:var(--white)}
-.timer{height:16px;border-radius:99px;background:rgba(255,255,255,.55);overflow:hidden;margin:20px auto;max-width:640px}
+
+/* Tap */
+.timer{height:16px;border-radius:99px;background:rgba(255,255,255,.55);overflow:hidden;margin:18px auto;max-width:640px}
 .timer i{display:block;height:100%;width:100%;background:var(--go);border-radius:99px;transform-origin:left}
 .timer.low i{background:var(--coral)}
 .pics{display:grid;gap:clamp(10px,2vw,18px);grid-template-columns:repeat(var(--n,3),minmax(0,1fr));max-width:760px;margin:0 auto}
@@ -151,42 +192,107 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 .pic.right{background:var(--mint-deep);transform:scale(1.04)}
 .pic.wrong{opacity:.35}
 .pic:disabled{cursor:default}
-.flash{position:absolute;left:50%;top:0;transform:translateX(-50%);font-weight:700;font-size:1.7rem;letter-spacing:.08em;text-transform:uppercase;
-  background:var(--sun);color:var(--ink);padding:4px 22px;border-radius:999px;pointer-events:none;z-index:40;animation:pop .95s ease forwards;white-space:nowrap}
-@keyframes pop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
-
-/* Red word tap */
-.bigword.red{color:var(--coral);font-family:var(--font-read);font-weight:700}
 .pic.word{aspect-ratio:auto;min-height:clamp(110px,22vw,170px);font-family:var(--font-read);font-weight:700;font-size:clamp(2.2rem,7vw,3.6rem);color:var(--coral)}
 .pic.word.right{background:var(--coral);color:var(--white)}
-.shake{animation:shake .4s}
-@keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
 
-/* Done */
-.endcard{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0}
+/* Bubble pop */
+.arena{position:relative;height:min(60vh,540px);min-height:330px;border-radius:var(--r);background:rgba(255,255,255,.3);overflow:hidden;margin-top:14px;touch-action:manipulation}
+.bubble{position:absolute;left:0;top:0;border-radius:50%;display:grid;place-items:center;font-family:var(--font-read);font-weight:700;line-height:1;padding:0;
+  background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.98) 0 11%,rgba(255,255,255,.7) 12% 52%,rgba(255,255,255,.38) 75%);
+  box-shadow:inset 0 0 0 3px rgba(255,255,255,.95),inset -8px -10px 16px rgba(120,170,220,.28);will-change:transform;touch-action:manipulation}
+.bubble.g{color:var(--go)} .bubble.r{color:var(--coral)}
+.bubble.coinb .coin{font-size:2.6em}
+.bubble.popping{transition:transform .22s ease-out,opacity .22s;opacity:0;pointer-events:none}
+.bubble.nope{animation:nope .45s}
+@keyframes nope{0%,100%{filter:none}40%{filter:grayscale(1) brightness(.85)}}
+
+/* Drag & match */
+.dprompt{display:flex;justify-content:center;margin-bottom:10px}
+.dprompt .critter{width:clamp(70px,11vw,100px);height:auto}
+.dtargets{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px;margin:0 auto 26px}
+.dtarget{background:var(--white);border-radius:var(--r);min-height:clamp(120px,24vw,180px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border:4px dashed rgba(38,48,77,.15);transition:transform .15s,border-color .15s,background .15s;padding:8px}
+.dtarget .dp{font-size:clamp(3rem,10vw,5rem);line-height:1}
+.dtarget .dl{font-family:var(--font-read);font-weight:700;font-size:clamp(1.3rem,4vw,1.9rem);color:var(--go);min-height:1.2em}
+.dtarget.word{font-family:var(--font-read);font-weight:700;font-size:clamp(1.8rem,6vw,2.8rem);color:rgba(38,48,77,.3);background:rgba(255,255,255,.55)}
+.dtarget.hover{border-color:var(--ink);transform:scale(1.04)}
+.dtarget.filled{border-style:solid;border-color:var(--go);background:var(--white)}
+.dtarget.word.filled{border-color:transparent;background:var(--coral);color:var(--white)}
+.dtray{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;min-height:86px}
+.dcard{touch-action:none;user-select:none;-webkit-user-select:none;background:var(--white);color:var(--go);font-family:var(--font-read);font-weight:700;
+  font-size:clamp(1.8rem,5.5vw,2.6rem);padding:8px 28px 6px;border-radius:22px;position:relative;z-index:1;min-height:68px;line-height:1.2;box-shadow:0 5px 0 rgba(38,48,77,.12)}
+.dcard.r{background:var(--coral);color:var(--white)}
+.dcard.dragging{z-index:50;box-shadow:0 16px 28px rgba(38,48,77,.25);cursor:grabbing}
+.dcard.return{transition:transform .25s ease}
+.dcard.selected{box-shadow:0 0 0 5px var(--white),0 0 0 9px var(--sun)}
+.dcard.hint{animation:hint 1.2s ease-in-out 2}
+@keyframes hint{50%{transform:translateY(-12px)}}
+
+/* Pairs */
+.pairs{display:grid;gap:clamp(8px,2vw,16px);grid-template-columns:repeat(var(--cols),minmax(0,1fr));max-width:720px;margin:10px auto 0}
+.pcard{aspect-ratio:3/4;padding:0;max-width:100%}
+.pin{position:relative;display:block;width:100%;height:100%}
+.pcard.open .pin,.pcard.matched .pin{animation:flip .32s ease}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(0)}100%{transform:scaleX(1)}}
+.pback,.pfront{position:absolute;inset:0;border-radius:22px;display:grid;place-items:center;transition:opacity 0s .16s}
+.pfront{opacity:0}
+.pcard.open .pfront,.pcard.matched .pfront{opacity:1}
+.pcard.open .pback,.pcard.matched .pback{opacity:0}
+.pback{background:var(--lilac);color:var(--white);font-weight:700;font-size:clamp(2.4rem,8vw,3.6rem);
+  background-image:radial-gradient(circle at 20% 20%,rgba(255,255,255,.25) 0 10%,transparent 11%),radial-gradient(circle at 80% 78%,rgba(255,255,255,.25) 0 12%,transparent 13%)}
+.pfront{background:var(--white);padding:6px}
+.pcard.matched .pfront{background:var(--sun-soft);box-shadow:inset 0 0 0 4px var(--sun)}
+.pw{font-family:var(--font-read);font-weight:700;font-size:clamp(1.3rem,4.6vw,2.3rem)}
+.pw.g{color:var(--go)} .pw.r{color:var(--coral)}
+.pp{font-size:clamp(2.6rem,9vw,4.4rem);line-height:1}
+
+/* End card */
+.endcard{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0}
 .endcard .duo{display:flex;gap:8px;align-items:flex-end}
-.endcard .duo .critter{width:clamp(100px,18vw,150px);height:auto}
-.endcard h2{font-size:clamp(2.4rem,7vw,3.8rem);color:var(--white);text-transform:uppercase;letter-spacing:.04em}
+.endcard .duo .critter{width:clamp(96px,17vw,140px);height:auto}
+.endcard h2{font-size:clamp(2.2rem,7vw,3.6rem);color:var(--white);text-transform:uppercase;letter-spacing:.04em}
 .bigstars{font-size:clamp(3rem,10vw,4.6rem);color:var(--sun);letter-spacing:.08em;line-height:1}
 .bigstars .off{color:rgba(255,255,255,.45)}
-.endcard p{margin:0;font-size:1.2rem;font-weight:500;max-width:40ch}
+.earned{display:inline-flex;align-items:center;gap:10px;background:var(--white);border-radius:999px;padding:8px 22px;font-weight:700;font-size:1.5rem}
+.endcard p{margin:0;font-size:1.15rem;font-weight:500;max-width:40ch}
 .btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
-.btn{border-radius:999px;padding:14px 32px;font-weight:700;font-size:1.15rem;letter-spacing:.06em;text-transform:uppercase;background:var(--ink);color:var(--white);min-height:54px}
-.btn.alt{background:var(--white);color:var(--ink)}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
 .confetti i{position:absolute;top:-20px;width:14px;height:14px;border-radius:4px;animation:fall linear forwards}
 .confetti i:nth-child(3n){border-radius:50%}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 
-/* Teacher lists */
-.lists{max-width:1040px;margin:0 auto;display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
-.listbox{background:var(--white);border-radius:var(--r);padding:20px 22px}
-.listbox h3{font-size:1.2rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px}
-.listbox h3.g{color:var(--go)} .listbox h3.r{color:var(--coral)}
-.wordwrap{display:flex;flex-wrap:wrap;gap:10px 16px}
-.wordwrap .sw{font-size:1.3rem;color:var(--ink)}
-.redchip{font-family:var(--font-read);font-weight:700;font-size:1.15rem;color:var(--white);background:var(--coral);padding:2px 12px;border-radius:12px}
-.listnote{max-width:1040px;margin:0 auto 16px;font-weight:500;background:rgba(255,255,255,.55);border-radius:20px;padding:12px 18px}
+/* Leaderboard */
+.board{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+.boardnote{text-align:center;font-weight:500;margin:0 0 6px}
+.brow{display:grid;grid-template-columns:44px 50px minmax(0,1fr) auto auto;align-items:center;gap:12px;background:var(--white);border-radius:22px;padding:10px 18px}
+.brow.mine{box-shadow:0 0 0 4px var(--sun)}
+.rank{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:1.2rem;background:#EEF1F6}
+.rank.r1{background:var(--sun)} .rank.r2{background:#D9DFEA} .rank.r3{background:#F3BE92}
+.bava{font-size:2.3rem;line-height:1;text-align:center}
+.bname{font-weight:700;font-size:1.2rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bstat{font-weight:700;display:inline-flex;align-items:center;gap:6px;font-size:1.15rem;font-variant-numeric:tabular-nums}
+.bstat .st{color:var(--sun);font-size:1.35rem;-webkit-text-stroke:.6px rgba(38,48,77,.2)}
+@media (max-width:480px){ .brow{grid-template-columns:36px 40px minmax(0,1fr) auto;padding:10px 12px;gap:8px} .brow .bst{display:none} .rank{width:34px;height:34px} }
+
+/* Sounds & red words */
+.soundsintro{max-width:760px;margin:0 auto 16px;background:rgba(255,255,255,.6);border-radius:22px;padding:12px 18px;font-weight:500;display:flex;flex-wrap:wrap;gap:6px 18px;justify-content:center;align-items:center}
+.soundsintro .sw{font-size:1.5rem;color:var(--ink)}
+.soundsintro span.key{display:inline-flex;align-items:center;gap:8px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:16px}
+.tab{background:rgba(255,255,255,.55);border-radius:999px;padding:10px 20px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;min-height:50px;display:inline-flex;align-items:center;gap:8px}
+.tab[aria-selected="true"]{background:var(--ink);color:var(--white)}
+.tab .nowtag{background:var(--sun);color:var(--ink);border-radius:999px;padding:1px 9px;font-size:.72rem;letter-spacing:.08em}
+.setnote{text-align:center;font-weight:500;margin:0 auto 14px;max-width:60ch}
+.soundgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:12px;max-width:1040px;margin:0 auto}
+.stile{background:var(--white);border-radius:22px;padding:16px 8px 14px;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:12px;min-height:150px}
+.stile .gr{font-size:3.1rem;color:var(--ink)}
+.stile .ex{font-size:1.2rem;color:var(--ink-soft)}
+.subhead{max-width:1040px;margin:22px auto 10px;font-size:1rem;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--ink)}
+.redgroup{max-width:1040px;margin:0 auto 14px;background:var(--white);border-radius:22px;padding:16px 18px}
+.redgroup h3{font-size:1rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.redgroup h3 .nowtag{background:var(--sun);border-radius:999px;padding:2px 10px;font-size:.75rem}
+.redwrap{display:flex;flex-wrap:wrap;gap:10px}
+.redchip{font-family:var(--font-read);font-weight:700;font-size:1.5rem;color:var(--coral);background:var(--pink);padding:4px 16px;border-radius:14px}
 
 @media (prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
@@ -195,63 +301,44 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 </style>
 </head>
 <body>
-<!-- SETUP: which class + which term -->
+<!-- SETUP: who's playing / new player / class / term -->
 <main class="setup" id="setup" hidden>
-  <div class="setup-in">
-    <div class="duo" id="setupDuo"></div>
-    <h1 id="setupQ">Which class are you in?</h1>
-    <div class="choices" id="choices"></div>
-    <button class="linkback" id="setupBack" hidden>← Back</button>
-  </div>
+  <div class="setup-in" id="setupIn"></div>
 </main>
 
-<!-- HOME -->
-<main class="home" id="home">
-  <section class="hero">
-    <div class="duo" id="heroDuo"></div>
+<!-- MAP -->
+<main class="map" id="map" hidden>
+  <div class="mapbar">
+    <button class="who" id="whoBtn" aria-label="Change player"><span class="ava" id="mapAva"></span><span id="mapName"></span></button>
+    <span class="pillstat" aria-label="coins"><span class="coin"></span><span id="mapCoins">0</span></span>
+    <span class="pillstat" aria-label="stars"><span class="st">★</span><span id="mapStars">0</span></span>
+    <span class="grow"></span>
+    <button class="pill" id="soundsBtn">Sounds</button>
+    <button class="pill" id="boardBtn"><span aria-hidden="true">🏆</span> Leaders</button>
+  </div>
+  <div class="maphead">
     <h1>Word Lights</h1>
-    <p><b class="g">Green words</b> go: sound them out. <b class="r">Red words</b> stop: you just know them.</p>
-    <button class="stagechip" id="changeStage" aria-label="Change class and term"><span id="stageLabel">Reception · Autumn</span><span class="chg">Change</span></button>
+    <button class="stagechip" id="changeStage" aria-label="Change class and term"><span id="stageLabel"></span><span class="chg">Change</span></button>
     <p class="focusline" id="focusLine"></p>
-  </section>
-  <nav class="bands" aria-label="Games">
-    <button class="band b-mint" id="goSpeedy">
-      <span class="art" aria-hidden="true"><span data-critter="go"></span><span class="tile" id="demoPic"></span></span>
-      <span class="label">Speedy Tap</span>
-      <span class="best" data-best="speedy"></span>
-    </button>
-    <button class="band b-pink" id="goMatch">
-      <span class="art" aria-hidden="true"><span data-critter="stop"></span><span class="mini red">said</span></span>
-      <span class="label">Red Word Match</span>
-      <span class="best" data-best="match"></span>
-    </button>
-    <button class="band b-lilac" id="goLists">
-      <span class="plus" aria-hidden="true">+</span>
-      <span class="label">Word lists</span>
-      <span class="best">For teachers</span>
-    </button>
-  </nav>
+  </div>
+  <div class="mapbox" id="mapbox"></div>
 </main>
 
 <!-- PLAY -->
 <main class="play" id="play" hidden>
   <div class="bar">
-    <button class="pill" id="backBtn" aria-label="Back to all games">← Games</button>
+    <button class="pill" id="backBtn">← Map</button>
     <h2 id="gameTitle"></h2>
     <div class="pips" id="pips" aria-hidden="true"></div>
-    <div class="score" id="scoreBox" aria-live="polite"><span class="st">★</span><span id="scoreNum">0</span></div>
+    <span class="pillstat" id="coinBox" aria-label="coins"><span class="coin"></span><span id="playCoins">0</span></span>
   </div>
   <div class="stage" id="stage"></div>
 </main>
 
 <script>
 /* ======================= WORD BANKS ======================= */
-// [word, sounds (space separated), picture, stage tag]
-// Tags follow the usual Read Write Inc. order:
-//   s1  = Set 1 single sounds (CVC words)     sf = Set 1 special friends (sh th ch qu ng nk ck, double letters)
-//   cc  = words with consonant blends (frog, drum)
-//   s2  = Set 2 sounds (ay ee igh ow oo ar or air ir ou oy)
-//   s3  = Set 3 sounds (ea oi aw ai oa ow ire ear ...)
+// [word, sounds (space separated, "a-e" = split sound), picture, stage tag]
+//   s1 = Set 1 single sounds   sf = Set 1 special friends   cc = blends   s2 = Set 2   s3 = Set 3
 const WORDS = [
   ['cat','c a t','🐱','s1'],['dog','d o g','🐶','s1'],['pig','p i g','🐷','s1'],['sun','s u n','☀️','s1'],['hat','h a t','🎩','s1'],
   ['bed','b e d','🛏️','s1'],['bus','b u s','🚌','s1'],['fox','f o x','🦊','s1'],['hen','h e n','🐔','s1'],['map','m a p','🗺️','s1'],
@@ -269,9 +356,10 @@ const WORDS = [
   ['boat','b oa t','⛵','s3'],['goat','g oa t','🐐','s3'],['rain','r ai n','🌧️','s3'],['snail','s n ai l','🐌','s3'],['train','t r ai n','🚆','s3'],
   ['cow','c ow','🐄','s3'],['owl','ow l','🦉','s3'],['crown','c r ow n','👑','s3'],['coin','c oi n','🪙','s3'],['tea','t ea','🍵','s3'],
   ['leaf','l ea f','🍃','s3'],['peach','p ea ch','🍑','s3'],['beach','b ea ch','🏖️','s3'],['saw','s aw','🪚','s3'],['straw','s t r aw','🥤','s3'],
-  ['fire','f ire','🔥','s3'],['ear','ear','👂','s3']
+  ['fire','f ire','🔥','s3'],['ear','ear','👂','s3'],['cake','c a-e k','🎂','s3'],['kite','k i-e t','🪁','s3'],['bone','b o-e n','🦴','s3'],
+  ['snake','s n a-e k','🐍','s3']
 ];
-// Red words introduced each term (each term also keeps the earlier ones of that class)
+// Red words introduced each term (each term keeps the earlier ones of that class)
 const RED_NEW = {
   'reception-autumn': ['I','the','to','no','go','my'],
   'reception-spring': ['of','he','she','we','me','be','you','said','your'],
@@ -282,16 +370,53 @@ const RED_NEW = {
 };
 const TERMS = ['autumn','spring','summer'];
 const STAGES = {
-  'reception-autumn': {green:['s1'],                focus:['s1'],      about:'Set 1 sounds and short words like cat, dog and sun.'},
-  'reception-spring': {green:['s1','sf'],           focus:['sf'],      about:'Set 1 special friends: sh, th, ch, ng, nk, ck.'},
-  'reception-summer': {green:['s1','sf','cc','s2'], focus:['cc','s2'], about:'Longer words like frog, and first Set 2 sounds: ee, igh, oo, ar.'},
-  'year1-autumn':     {green:['sf','cc','s2'],      focus:['s2'],      about:'Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy.'},
-  'year1-spring':     {green:['cc','s2','s3'],      focus:['s3'],      about:'Set 3 sounds: ea, oi, aw, ai, oa, ow, ire, ear.'},
-  'year1-summer':     {green:['cc','s2','s3'],      focus:['s2','s3'], about:'All Set 2 and Set 3 sounds, and every Year 1 red word.'}
+  'reception-autumn': {green:['s1'],                focus:['s1'],      set:1, about:'Set 1 sounds and short words like cat, dog and sun.'},
+  'reception-spring': {green:['s1','sf'],           focus:['sf'],      set:1, about:'Set 1 special friends: sh, th, ch, ng, nk, ck.'},
+  'reception-summer': {green:['s1','sf','cc','s2'], focus:['cc','s2'], set:2, about:'Longer words like frog, and first Set 2 sounds: ee, igh, oo, ar.'},
+  'year1-autumn':     {green:['sf','cc','s2'],      focus:['s2'],      set:2, about:'Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy.'},
+  'year1-spring':     {green:['cc','s2','s3'],      focus:['s3'],      set:3, about:'Set 3 sounds: ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear.'},
+  'year1-summer':     {green:['cc','s2','s3'],      focus:['s2','s3'], set:3, about:'All Set 2 and Set 3 sounds, and every Year 1 red word.'}
 };
+// Speed sounds in Read Write Inc. teaching order: [sound, example word with its sounds]
+const SOUND_SETS = {
+  1: { name:'Set 1', note:'Single sounds first, then special friends: two letters that make one sound.',
+       groups:[
+        ['Single sounds', [['m','m a p'],['a','a n t'],['s','s u n'],['d','d o g'],['t','t e n t'],['i','i n k'],['n','n e t'],['p','p i g'],
+          ['g','b a g'],['o','h o t'],['c','c a t'],['k','k i t'],['u','u p'],['b','b u s'],['f','f o x'],['e','e gg'],['l','l e g'],['h','h a t'],
+          ['r','r a t'],['j','j u g'],['v','v a n'],['y','y e s'],['w','w e b'],['z','z i p'],['x','b o x']]],
+        ['Special friends', [['sh','sh i p'],['th','th i n'],['ch','ch i p'],['qu','qu i z'],['ng','r i ng'],['nk','p i nk']]],
+        ['Double letters', [['ck','d u ck'],['ff','o ff'],['ll','b e ll'],['ss','k i ss'],['zz','b u zz']]]
+       ]},
+  2: { name:'Set 2', note:'Set 2 sounds are made of two or three letters. Each one makes one sound.',
+       groups:[['Set 2 sounds', [['ay','p l ay'],['ee','t r ee'],['igh','h igh'],['ow','b l ow'],['oo','m oo n'],['oo','l oo k'],
+          ['ar','c ar'],['or','f or k'],['air','f air'],['ir','b ir d'],['ou','sh ou t'],['oy','b oy']]]]},
+  3: { name:'Set 3', note:'Set 3 adds new ways to write sounds. In a-e the e jumps over a letter: c a-e k makes cake.',
+       groups:[['Set 3 sounds', [['ea','t ea'],['oi','c oi n'],['a-e','c a-e k'],['i-e','k i-e t'],['o-e','h o-e m'],['u-e','c u-e b'],
+          ['aw','s aw'],['are','c are'],['ur','b ur n'],['er','s i s t er'],['ow','c ow'],['ai','r ai n'],['oa','b oa t'],['ew','ch ew'],
+          ['ire','f ire'],['ear','h ear'],['ure','s ure']]]]}
+};
+const AVATARS = [['🦊','Fox'],['🐼','Panda'],['🐸','Frog'],['🐯','Tiger'],['🐰','Bunny'],['🦁','Lion'],['🐨','Koala'],['🐵','Monkey'],
+                 ['🐷','Piggy'],['🐙','Octopus'],['🦄','Unicorn'],['🐢','Turtle']];
+
+/* ======================= LEVEL MAP ======================= */
+// 12 levels per class + term. k: g = green words, r = red words, mix = both. The last one is the trophy level.
+const LEVELS = [
+  {m:'tap',k:'g'},{m:'tap',k:'r'},{m:'drag',k:'g'},{m:'bubbles',k:'g'},
+  {m:'pairs',k:'g'},{m:'drag',k:'r'},{m:'bubbles',k:'r'},{m:'tap',k:'g'},
+  {m:'pairs',k:'r'},{m:'bubbles',k:'g'},{m:'drag',k:'g'},{m:'tap',k:'mix',boss:true}
+];
+const MECH = {tap:'Speedy Tap', bubbles:'Bubble Pop', drag:'Drag & Match', pairs:'Find the Pairs'};
+const DECO = {autumn:['🍂','🍁','🌰','🦔','🍄'], spring:['🌷','🌼','🐣','🌱','🦋'], summer:['🌻','🐞','🌳','🍓','🐝']};
+function mechIcon(m){
+  const a = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
+  if(m==='tap') return `<svg ${a}><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="8"/></svg>`;
+  if(m==='bubbles') return `<svg ${a}><circle cx="9" cy="15" r="5"/><circle cx="17" cy="8" r="3.5"/><circle cx="18" cy="17.5" r="2"/></svg>`;
+  if(m==='drag') return `<svg ${a}><path d="M5 19 L18 6"/><path d="M10 6 H18 V14"/></svg>`;
+  return `<svg ${a}><rect x="3" y="6" width="10" height="14" rx="2"/><rect x="11" y="4" width="10" height="14" rx="2" fill="currentColor" fill-opacity=".35"/></svg>`;
+}
+const LOCK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2.5" fill="currentColor" fill-opacity=".25"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 
 /* ======================= CRITTERS ======================= */
-// Pip (green, "go") is a round sprout; Stopper (red) is a stop-sign octagon holding up its hands.
 function goCritter(){
   return `<svg class="critter go" viewBox="0 0 120 132" aria-hidden="true"><g class="bob">
     <path d="M60 30 C59 22 60 15 63 9" stroke="#279A5D" stroke-width="5" fill="none" stroke-linecap="round"/>
@@ -316,8 +441,6 @@ function stopCritter(){
     <path d="M52 89 Q60 95 68 89" stroke="#26304D" stroke-width="4.5" fill="none" stroke-linecap="round"/>
   </g></svg>`;
 }
-const critter = k => k === 'go' ? goCritter() : stopCritter();
-function fillCritters(root=document){ root.querySelectorAll('[data-critter]').forEach(el => { el.innerHTML = critter(el.dataset.critter); }); }
 function react(sel, mood){
   document.querySelectorAll(sel).forEach(c => { c.classList.remove('happy','oops'); void c.getBoundingClientRect(); c.classList.add(mood); });
 }
@@ -326,95 +449,28 @@ function react(sel, mood){
 const $ = s => document.querySelector(s);
 const stage = $('#stage');
 const shuffle = a => { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const pickOne = a => a[Math.floor(Math.random()*a.length)];
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const store = {
   get(k,d){ try{ const v = localStorage.getItem('wordlights:'+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem('wordlights:'+k, JSON.stringify(v)); }catch(e){} }
 };
-let year = store.get('year', null);
-let term = store.get('term', null);
-if(!['reception','year1'].includes(year)) year = null;
-if(!TERMS.includes(term)) term = null;
-const stageKey = () => `${year}-${term}`;
-const stageName = () => `${year==='reception' ? 'Reception' : 'Year 1'} · ${term[0].toUpperCase()+term.slice(1)}`;
-function termNow(){ const m = new Date().getMonth(); return m >= 8 ? 'autumn' : m <= 2 ? 'spring' : 'summer'; }
-// Green words this term can use, and the ones it is focusing on
-function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
-function greenFocus(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.focus.includes(w[3])); }
-// Red words: everything taught so far in this class, newest first
-function redPool(){
-  const out = [];
-  for(const t of TERMS){ out.push(...RED_NEW[`${year}-${t}`]); if(t === term) break; }
-  return [...new Set(out)];
-}
-const redFocus = () => RED_NEW[stageKey()];
-// Pick n items, about 60% from this term's focus and the rest as review
-function mix(focus, pool, n){
-  const f = shuffle(focus.slice()), keys = new Set(f);
-  const rest = shuffle(pool.filter(x => !keys.has(x)));
-  const nf = rest.length ? Math.min(f.length, Math.ceil(n*.6)) : f.length;
-  let out = f.slice(0, nf).concat(rest.slice(0, n-nf));
-  if(out.length < n) out = out.concat(f.slice(nf, nf + n - out.length));
-  return shuffle(out.slice(0, n));
-}
-let gameId = 0;
-const live = id => id === gameId;
-
+// Sound buttons: a dot under a single sound, a dash under special friends, an arc joining a split sound (a-e)
 function soundButtons(sounds){
-  return '<span class="sw">' + sounds.split(' ').map(g =>
-    `<span class="gph"><span>${esc(g)}</span><span class="mk ${g.length>1?'bar':'dot'}"></span></span>`).join('') + '</span>';
+  const t = sounds.split(' ');
+  const g = (txt, mk) => `<span class="gph"><span>${esc(txt)}</span><span class="mk ${mk}"></span></span>`;
+  let h = '';
+  for(let i=0;i<t.length;i++){
+    const m = t[i].match(/^([a-z])-e$/);
+    if(m && t[i+1]){ h += `<span class="split">${g(m[1],'none')}${g(t[i+1], t[i+1].length>1?'bar':'dot')}${g('e','none')}</span>`; i++; }
+    else h += g(t[i], t[i].length>1 ? 'bar' : 'dot');
+  }
+  return `<span class="sw">${h}</span>`;
 }
-
 function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
 function flash(text){
   const f = document.createElement('div'); f.className = 'flash'; f.textContent = text;
   stage.appendChild(f); setTimeout(()=>f.remove(), 1000);
-}
-
-/* ======================= SHELL ======================= */
-let score = 0;
-function showView(id, scene){
-  $('#home').hidden = id!=='home'; $('#play').hidden = id!=='play'; $('#setup').hidden = id!=='setup';
-  document.body.dataset.scene = scene || '';
-  window.scrollTo(0,0);
-}
-function shell(title, scene, total){
-  gameId++; score = 0;
-  $('#gameTitle').textContent = title;
-  $('#scoreNum').textContent = '0';
-  $('#scoreBox').hidden = false; $('#pips').hidden = false;
-  $('#pips').innerHTML = Array.from({length: total}, () => '<i></i>').join('');
-  showView('play', scene);
-  return gameId;
-}
-function pip(i, state){
-  const ps = $('#pips').children;
-  [...ps].forEach(p => p.classList.remove('now'));
-  if(ps[i]){ if(state) ps[i].classList.add(state); else ps[i].classList.add('now'); }
-}
-function addStar(){ score++; $('#scoreNum').textContent = score; }
-
-function finish(game, total, extra){
-  const best = store.get(`best:${game}:${stageKey()}`, null);
-  const isBest = !best || score/total > best.s/best.t;
-  if(isBest) store.set(`best:${game}:${stageKey()}`, {s:score, t:total});
-  const ratio = score/total;
-  const starsOf3 = ratio >= .9 ? 3 : ratio >= .6 ? 2 : ratio > 0 ? 1 : 0;
-  const head = starsOf3===3 ? 'Superstar!' : starsOf3===2 ? 'Great reading!' : 'Good try!';
-  document.body.dataset.scene = 'done';
-  stage.innerHTML = `<div class="endcard">
-      <div class="duo">${goCritter()}${stopCritter()}</div>
-      <div class="bigstars" aria-label="${starsOf3} out of 3 stars">${'★'.repeat(starsOf3)}<span class="off">${'★'.repeat(3-starsOf3)}</span></div>
-      <h2>${head}</h2>
-      <p>You got <b>${score} out of ${total}</b> right first time.${extra ? ' ' + extra : ''}${isBest && best ? ' A new best!' : ''}</p>
-      <div class="btnrow"><button class="btn" id="again">Play again</button><button class="btn alt" id="home2">All games</button></div>
-    </div>`;
-  $('#again').onclick = () => GAMES[game]();
-  $('#home2').onclick = goHome;
-  $('#again').focus();
- 
-  if(starsOf3 >= 2){ confetti(); setTimeout(()=>react('.endcard .critter','happy'), 100); }
- 
 }
 function confetti(){
   const box = document.createElement('div'); box.className = 'confetti';
@@ -430,47 +486,322 @@ function confetti(){
   document.body.appendChild(box); setTimeout(()=>box.remove(), 4200);
 }
 
-/* ======================= GAME 1: SPEEDY TAP (green words) ======================= */
-function startSpeedy(){
-  const ROUNDS = 10;
-  const nOpts = year==='reception' ? 3 : 4;
-  const limit = year==='reception' ? 14000 : 9000;
-  const words = mix(greenFocus(), greenPool(), ROUNDS);
-  const id = shell('Speedy Tap', 'speedy', words.length);
-  let i = 0, speedy = 0;
+/* ======================= PLAYERS ======================= */
+let players = store.get('players', []);
+if(!Array.isArray(players)) players = [];
+let player = players.find(p => p.id === store.get('current', null)) || null;
+let year = player && player.year, term = player && player.term;
+function save(){ store.set('players', players); store.set('current', player ? player.id : null); }
+function usePlayer(p){ player = p; year = p.year; term = p.term; save(); }
+const stageKey = () => `${year}-${term}`;
+const stageName = () => `${year==='reception' ? 'Reception' : 'Year 1'} · ${term[0].toUpperCase()+term.slice(1)}`;
+function termNow(){ const m = new Date().getMonth(); return m >= 8 ? 'autumn' : m <= 2 ? 'spring' : 'summer'; }
+function progress(){ player.progress = player.progress || {}; return (player.progress[stageKey()] = player.progress[stageKey()] || []); }
+const starTotal = p => Object.values(p.progress || {}).reduce((a,arr) => a + arr.reduce((x,y) => x + (y||0), 0), 0);
 
+/* ======================= WORD PICKING ======================= */
+function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
+function greenFocus(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.focus.includes(w[3])); }
+function redPool(){
+  const out = [];
+  for(const t of TERMS){ out.push(...RED_NEW[`${year}-${t}`]); if(t === term) break; }
+  return [...new Set(out)];
+}
+const redFocus = () => RED_NEW[stageKey()];
+// About 60% from this term's focus, the rest as review
+function mix(focus, pool, n){
+  const f = shuffle(focus.slice()), keys = new Set(f);
+  const rest = shuffle(pool.filter(x => !keys.has(x)));
+  const nf = rest.length ? Math.min(f.length, Math.ceil(n*.6)) : f.length;
+  let out = f.slice(0, nf).concat(rest.slice(0, n-nf));
+  if(out.length < n) out = out.concat(f.slice(nf, nf + n - out.length));
+  return shuffle(out.slice(0, n));
+}
+const greenItems = n => mix(greenFocus(), greenPool(), n).map(x => ({kind:'g', w:x[0], sounds:x[1], pic:x[2]}));
+function redItems(n){   // may repeat when the class has few red words, but never twice in a row
+  const pool = redPool(); let out = [];
+  while(out.length < n){
+    const b = mix(redFocus(), pool, Math.min(n - out.length, pool.length));
+    if(out.length && b[0] === out[out.length-1]) b.push(b.shift());
+    out = out.concat(b);
+  }
+  return out.map(w => ({kind:'r', w}));
+}
+const redSet = n => mix(redFocus(), redPool(), n).map(w => ({kind:'r', w}));   // all different
+function lookAlikes(w, pool, n){
+  const lw = w.toLowerCase();
+  const score = x => { const lx = x.toLowerCase(); let c = 0; for(const ch of new Set(lx)) if(lw.includes(ch)) c++;
+    return c*2 - Math.abs(lx.length - lw.length) + (lx[0]===lw[0] ? 2 : 0) + Math.random(); };
+  return pool.filter(x => x.toLowerCase() !== lw).sort((a,b) => score(b) - score(a)).slice(0, n);
+}
+
+/* ======================= VIEWS + COINS ======================= */
+let gameId = 0, view = '';
+const live = id => id === gameId;
+function show(id, scene){
+  gameId++; view = id;
+  ['setup','map','play'].forEach(v => $('#'+v).hidden = v !== id);
+  document.body.dataset.scene = scene || '';
+  window.scrollTo(0,0);
+}
+function refreshCoins(bump){
+  ['#mapCoins','#playCoins'].forEach(s => {
+    const el = $(s); el.textContent = player ? player.coins : 0;
+    if(bump){ const box = el.parentElement; box.classList.remove('bump'); void box.offsetWidth; box.classList.add('bump'); }
+  });
+}
+let run = null;
+function earn(n, fromEl){
+  player.coins += n; if(run) run.coins += n; save();
+  const target = view === 'map' ? $('#mapCoins') : $('#playCoins');
+  if(!fromEl || !target){ refreshCoins(true); return; }
+  const fr = fromEl.getBoundingClientRect(), tr = target.parentElement.getBoundingClientRect();
+  const fx = fr.left + fr.width/2 - 15, fy = fr.top + fr.height/2 - 15;
+  for(let k=0;k<n;k++){
+    const c = document.createElement('span'); c.className = 'coin flycoin';
+    c.style.left = fx + 'px'; c.style.top = fy + 'px';
+    document.body.appendChild(c);
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      c.style.transitionDelay = (k*.12) + 's';
+      c.style.transform = `translate(${tr.left + 22 - fx}px, ${tr.top + tr.height/2 - 15 - fy}px) scale(.7)`;
+      c.style.opacity = '.3';
+    }));
+    setTimeout(() => { c.remove(); refreshCoins(true); }, 800 + k*120);
+  }
+}
+
+/* ======================= START: WHO'S PLAYING ======================= */
+function setupScreen(html){ show('setup', ''); $('#setupIn').innerHTML = html; }
+function showPlayers(){
+  if(!players.length) return newPlayer();
+  setupScreen(`
+    <div class="brand">Word Lights</div>
+    <div class="duo">${goCritter()}${stopCritter()}</div>
+    <h1>Who's playing?</h1>
+    <div class="choices small">
+      ${players.map(p => `<button class="choice" data-id="${esc(p.id)}"><span class="big" aria-hidden="true">${p.avatar}</span><b style="font-size:1.1rem">${esc(p.name)}</b><small><span class="coin"></span>${p.coins}</small></button>`).join('')}
+      <button class="choice add" id="addP" aria-label="New player"><span class="big">+</span><b style="font-size:1.1rem">New</b></button>
+    </div>
+    <div class="setup-actions"><button class="pill" id="pBoard"><span aria-hidden="true">🏆</span> Leaders</button><button class="pill" id="pSounds">Sounds</button></div>`);
+  $('#setupIn').querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
+    usePlayer(players.find(p => p.id === b.dataset.id));
+    if(year && term) showMap(); else askClass();
+  });
+  $('#addP').onclick = newPlayer;
+  $('#pBoard').onclick = () => showBoard(showPlayers);
+  $('#pSounds').onclick = () => showSounds(showPlayers);
+}
+function newPlayer(){
+  setupScreen(`
+    <div class="brand">Word Lights</div>
+    <h1>Pick your animal</h1>
+    <div class="choices small">${AVATARS.map(([a,n],i) => `<button class="choice" data-i="${i}" aria-label="${n}"><span class="big" aria-hidden="true">${a}</span></button>`).join('')}</div>
+    ${players.length ? '<button class="linkback" id="setupBack">← Back</button>' : ''}`);
+  $('#setupIn').querySelectorAll('[data-i]').forEach(b => b.onclick = () => nameStep(AVATARS[+b.dataset.i]));
+  if(players.length) $('#setupBack').onclick = showPlayers;
+}
+function nameStep([avatar, animal]){
+  setupScreen(`
+    <h1>What's your name?</h1>
+    <form class="namebox" id="nameForm">
+      <span class="big" aria-hidden="true">${avatar}</span>
+      <label for="pname">A grown-up can type it, or leave it as ${esc(animal)}.</label>
+      <input id="pname" maxlength="14" autocomplete="off" placeholder="${esc(animal)}">
+      <button class="btn" type="submit">Next →</button>
+    </form>
+    <button class="linkback" id="setupBack">← Back</button>`);
+  $('#setupBack').onclick = newPlayer;
+  $('#nameForm').onsubmit = e => {
+    e.preventDefault();
+    const p = {id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), name: $('#pname').value.trim() || animal,
+               avatar, coins: 0, year: null, term: null, progress: {}};
+    players.push(p); usePlayer(p); askClass();
+  };
+}
+function askClass(){
+  setupScreen(`
+    <div class="brand">${player.avatar} ${esc(player.name)}</div>
+    <h1>Which class are you in?</h1>
+    <div class="choices">
+      <button class="choice c-mint" data-y="reception">${goCritter()}<b>Reception</b><small>I am 4 or 5</small></button>
+      <button class="choice c-pink" data-y="year1">${stopCritter()}<b>Year 1</b><small>I am 5 or 6</small></button>
+    </div>
+    <button class="linkback" id="setupBack">← Back</button>`);
+  $('#setupBack').onclick = () => (year && term) ? showMap() : showPlayers();
+  $('#setupIn').querySelectorAll('[data-y]').forEach(b => b.onclick = () => askTerm(b.dataset.y));
+}
+function askTerm(y){
+  const now = termNow();
+  const T = [['autumn','🍂','Autumn','September to December','c-peach'],
+             ['spring','🌷','Spring','January to March','c-mint'],
+             ['summer','☀️','Summer','April to July','c-sun']];
+  setupScreen(`
+    <div class="brand">${player.avatar} ${esc(player.name)}</div>
+    <h1>Which term is it?</h1>
+    <div class="choices">${T.map(([k,icon,name,months,cls]) =>
+      `<button class="choice ${cls}" data-t="${k}">${k===now ? '<span class="now">Now</span>' : ''}<span class="big" aria-hidden="true">${icon}</span><b>${name}</b><small>${months}</small></button>`).join('')}</div>
+    <button class="linkback" id="setupBack">← Back</button>`);
+  $('#setupBack').onclick = askClass;
+  $('#setupIn').querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
+    player.year = y; player.term = b.dataset.t; usePlayer(player); showMap();
+  });
+  ($('#setupIn [data-t="'+now+'"]') || $('#setupIn [data-t]')).focus();
+}
+
+/* ======================= MAP ======================= */
+function currentLevel(){ const pr = progress(); const i = LEVELS.findIndex((_,k) => !pr[k]); return i < 0 ? LEVELS.length : i; }
+function showMap(){
+  show('map', 'map-' + term);
+  $('#mapAva').textContent = player.avatar; $('#mapName').textContent = player.name;
+  $('#mapStars').textContent = starTotal(player);
+  refreshCoins();
+  $('#stageLabel').textContent = stageName();
+  $('#focusLine').textContent = 'This term: ' + STAGES[stageKey()].about;
+
+  const pr = progress(), cur = currentLevel(), n = LEVELS.length;
+  const W = 360, gap = 132, top = 70;
+  const pts = LEVELS.map((_,i) => ({x: 180 + 105*Math.sin(i*1.05 + .3), y: top + i*gap}));
+  const H = top + (n-1)*gap + 120;
+  let d = `M ${pts[0].x} ${pts[0].y - 60} L ${pts[0].x} ${pts[0].y}`;
+  for(let i=1;i<n;i++){ const a = pts[i-1], b = pts[i]; d += ` C ${a.x} ${a.y + gap/2}, ${b.x} ${b.y - gap/2}, ${b.x} ${b.y}`; }
+  const deco = DECO[term];
+  const pct = (x,y) => `left:${x/W*100}%;top:${y/H*100}%`;
+  let html = `<svg class="road" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+      <path d="${d}" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="26" fill="none" stroke-linecap="round"/>
+      <path d="${d}" stroke="#26304D" stroke-opacity=".18" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="2 14"/>
+    </svg>`;
+  pts.forEach((p,i) => {
+    if(i < n-1){ const mx = 360 - (p.x + pts[i+1].x)/2; html += `<span class="deco" style="${pct(Math.min(330,Math.max(30,mx)), p.y + gap/2)}" aria-hidden="true">${deco[i % deco.length]}</span>`; }
+    const L = LEVELS[i], stars = pr[i] || 0, locked = i > cur;
+    const cls = ['node', 'k-' + L.k, locked ? 'locked' : '', i === cur ? 'current' : ''].join(' ');
+    const label = `Level ${i+1}, ${MECH[L.m]}, ${L.k==='g'?'green words':L.k==='r'?'red words':'green and red words'}${locked ? ', locked' : stars ? `, ${stars} stars` : ''}`;
+    html += `<button class="${cls}" style="${pct(p.x,p.y)}" data-i="${i}" aria-label="${label}">
+        ${locked ? `<span class="lock">${LOCK}</span>` : L.boss ? '🏆' : i+1}
+        <span class="mech">${mechIcon(L.m)}</span>
+        ${stars ? `<span class="nstars">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3-stars)}</span></span>` : ''}
+      </button>`;
+  });
+  html += `<span class="maplabel" style="${pct(pts[0].x, pts[0].y - 66)}">Start</span>`;
+  const meAt = Math.min(cur, n-1), mp = pts[meAt];
+  html += `<span class="me" style="${pct(mp.x + (mp.x > 180 ? -78 : 78), mp.y - 18)}" aria-hidden="true">${player.avatar}</span>`;
+  const box = $('#mapbox');
+  box.style.aspectRatio = `${W} / ${H}`;
+  box.innerHTML = html;
+  box.querySelectorAll('.node').forEach(b => b.onclick = () => {
+    const i = +b.dataset.i;
+    if(i > cur){ shake(b); return; }
+    startLevel(i);
+  });
+  const node = box.querySelector('.node.current') || box.querySelector(`.node[data-i="${n-1}"]`);
+  if(node && cur > 1) requestAnimationFrame(() => node.scrollIntoView({block:'center'}));
+}
+
+/* ======================= LEVEL RUNNER ======================= */
+let backTo = showMap;
+function shell(title, scene, total, back){
+  show('play', scene);
+  backTo = back || showMap;
+  $('#gameTitle').textContent = title;
+  $('#coinBox').hidden = !player;
+  refreshCoins();
+  $('#pips').hidden = !total;
+  $('#pips').innerHTML = Array.from({length: total || 0}, () => '<i></i>').join('');
+  $('#backBtn').textContent = backTo === showMap ? '← Map' : '← Back';
+  return gameId;
+}
+function pip(i, state){
+  const ps = $('#pips').children;
+  [...ps].forEach(p => p.classList.remove('now'));
+  if(ps[i]){ if(state) ps[i].classList.add(state); else ps[i].classList.add('now'); }
+}
+function startLevel(i){
+  const L = LEVELS[i];
+  const scene = L.k === 'g' ? 'green' : L.k === 'r' ? 'red' : 'mix';
+  run = {i, good:0, total:0, coins:0, stars:null};
+  const title = `${L.boss ? 'Trophy level' : 'Level ' + (i+1)} · ${MECH[L.m]}`;
+  const done = () => finishLevel();
+  if(L.m === 'tap'){
+    const items = L.k === 'mix' ? shuffle([...greenItems(4), ...redItems(4)]) : L.k === 'g' ? greenItems(6) : redItems(6);
+    run.total = items.length; playTap(shell(title, scene, items.length), items, done);
+  } else if(L.m === 'bubbles'){
+    run.total = 4; playBubbles(shell(title, scene, 4), L.k, 4, done);
+  } else if(L.m === 'drag'){
+    run.total = 6; playDrag(shell(title, scene, 6), L.k, done);
+  } else {
+    const n = year === 'reception' ? 3 : 4;
+    run.total = n; playPairs(shell(title, scene, n), L.k, n, done);
+  }
+}
+function finishLevel(){
+  const r = run, L = LEVELS[r.i];
+  const ratio = r.good / r.total;
+  const stars = r.stars || (ratio >= .9 ? 3 : ratio >= .6 ? 2 : 1);
+  const pr = progress(), first = !pr[r.i];
+  if(!pr[r.i] || stars > pr[r.i]) pr[r.i] = stars;
+  const treasure = L.boss && first ? 10 : 0;
+  player.coins += stars + treasure; r.coins += stars + treasure; save();
+  refreshCoins(true);
+  document.body.dataset.scene = 'done';
+  const head = stars === 3 ? 'Superstar!' : stars === 2 ? 'Great reading!' : 'Well done!';
+  const next = r.i + 1 < LEVELS.length;
+  stage.innerHTML = `<div class="endcard">
+      <div class="duo">${goCritter()}${stopCritter()}</div>
+      <div class="bigstars" aria-label="${stars} out of 3 stars">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3-stars)}</span></div>
+      <h2>${treasure ? 'Treasure!' : head}</h2>
+      <div class="earned"><span class="coin"></span>+${r.coins} coins</div>
+      ${treasure ? `<p>You finished the ${term} map! The treasure chest gave you 10 extra coins.</p>` : ''}
+      <div class="btnrow">
+        ${next ? '<button class="btn sun" id="nextLvl">Next level →</button>' : ''}
+        <button class="btn alt" id="again">Play again</button>
+        <button class="btn" id="toMap">Map</button>
+      </div>
+    </div>`;
+  $('#pips').hidden = true;
+  if(next) $('#nextLvl').onclick = () => startLevel(r.i + 1);
+  $('#again').onclick = () => startLevel(r.i);
+  $('#toMap').onclick = showMap;
+  ($('#nextLvl') || $('#toMap')).focus();
+  if(stars >= 2 || treasure){ confetti(); setTimeout(() => react('.endcard .critter','happy'), 100); }
+}
+
+/* ======================= MECHANIC 1: SPEEDY TAP ======================= */
+function playTap(id, items, done){
+  const nOpts = year === 'reception' ? 3 : 4;
+  const limit = year === 'reception' ? 15000 : 10000;
+  const fast = year === 'reception' ? 5000 : 3500;
+  let i = 0;
   function round(){
     if(!live(id)) return;
-    if(i >= words.length) return finish('speedy', words.length, speedy ? `${speedy} ${speedy===1?'was':'were'} speedy!` : '');
+    if(i >= items.length) return done();
     pip(i);
-    const [w, sounds, pic] = words[i];
-    const others = shuffle(greenPool().filter(x => x[0]!==w && x[2]!==pic)).slice(0, nOpts-1);
-    const opts = shuffle([words[i], ...others]);
-    stage.innerHTML = `
-      <div class="prompt">
-        ${goCritter()}
-        <div class="wordcard"><div class="bigword" aria-label="${esc(w)}">${soundButtons(sounds)}</div></div>
-      </div>
-      <div class="tools">
-        <button class="tool" id="fred">Sound it out</button>
-      </div>
+    const it = items[i];
+    let prompt, tiles;
+    if(it.kind === 'g'){
+      document.body.dataset.scene = items.some(x => x.kind === 'r') ? 'mix' : 'green';
+      const others = shuffle(greenPool().filter(x => x[0] !== it.w && x[2] !== it.pic)).slice(0, nOpts-1).map(x => ({w:x[0], pic:x[2]}));
+      const opts = shuffle([it, ...others]);
+      prompt = `${goCritter()}<div class="wordcard"><div class="bigword" aria-label="${esc(it.w)}">${soundButtons(it.sounds)}</div></div>`;
+      tiles = opts.map(o => `<button class="pic" data-w="${esc(o.w)}" aria-label="picture: ${esc(o.w)}">${o.pic}</button>`).join('');
+    } else {
+      const opts = shuffle([it.w, ...lookAlikes(it.w, redPool(), nOpts-1)]);
+      prompt = `${stopCritter()}<div class="wordcard"><div class="bigword red">${esc(it.w)}</div></div>`;
+      tiles = opts.map(o => `<button class="pic word" data-w="${esc(o)}">${esc(o)}</button>`).join('');
+    }
+    stage.innerHTML = `<div class="prompt">${prompt}</div>
+      ${it.kind === 'g' ? '<div class="tools"><button class="tool" id="fred">Sound it out</button></div>' : ''}
       <div class="timer" id="timer"><i></i></div>
-      <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">
-        ${opts.map(o => `<button class="pic" data-w="${esc(o[0])}" aria-label="picture: ${esc(o[0])}">${o[2]}</button>`).join('')}
-      </div>`;
+      <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">${tiles}</div>`;
     const bar = $('#timer i'), timerBox = $('#timer');
     const t0 = performance.now();
     let over = false, missed = false;
-
-    $('#fred').onclick = () => {
+    if(it.kind === 'g') $('#fred').onclick = () => {
       const gs = [...stage.querySelectorAll('.bigword .gph')];
       gs.forEach((g,k) => setTimeout(() => {
         if(!live(id)) return;
-        gs.forEach(x=>x.classList.remove('lit')); g.classList.add('lit');
-        if(k === gs.length-1) setTimeout(() => gs.forEach(x=>x.classList.remove('lit')), 600);
+        gs.forEach(x => x.classList.remove('lit')); g.classList.add('lit');
+        if(k === gs.length-1) setTimeout(() => gs.forEach(x => x.classList.remove('lit')), 600);
       }, k*520));
     };
-
     function tick(now){
       if(!live(id) || over) return;
       const left = 1 - (now - t0)/limit;
@@ -480,7 +811,6 @@ function startSpeedy(){
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
-
     function end(correct){
       over = true;
       stage.querySelectorAll('.pic').forEach(b => b.disabled = true);
@@ -490,18 +820,19 @@ function startSpeedy(){
     }
     function timeout(){
       react('.prompt .critter','oops');
-      stage.querySelector(`.pic[data-w="${CSS.escape(w)}"]`).classList.add('right');
+      stage.querySelector(`.pic[data-w="${CSS.escape(it.w)}"]`).classList.add('right');
       flash('Time!');
       end(false);
     }
     stage.querySelectorAll('.pic').forEach(b => b.onclick = () => {
       if(over || b.disabled) return;
-      if(b.dataset.w === w){
+      if(b.dataset.w === it.w){
         b.classList.add('right'); react('.prompt .critter','happy');
         if(!missed){
-          addStar();
-          if(performance.now() - t0 < (year==='reception' ? 5000 : 3500)){ speedy++; flash('Speedy!'); }
-          else flash('Yes!');
+          run.good++;
+          const speedy = performance.now() - t0 < fast;
+          earn(speedy ? 2 : 1, b);
+          flash(speedy ? 'Speedy!' : 'Yes!');
         }
         end(!missed);
       } else {
@@ -512,161 +843,302 @@ function startSpeedy(){
   round();
 }
 
-/* ======================= GAME 2: RED WORD MATCH (speedy tap) ======================= */
-// Wrong answers are red words that look most like the target (shared letters, similar length)
-function lookAlikes(w, pool, n){
-  const lw = w.toLowerCase();
-  const score = x => { const lx = x.toLowerCase(); let c = 0; for(const ch of new Set(lx)) if(lw.includes(ch)) c++;
-    return c*2 - Math.abs(lx.length - lw.length) + (lx[0]===lw[0] ? 2 : 0) + Math.random(); };
-  return pool.filter(x => x.toLowerCase() !== lw).sort((a,b) => score(b) - score(a)).slice(0, n);
-}
-function startMatch(){
-  const ROUNDS = 10;
-  const nOpts = year==='reception' ? 3 : 4;
-  const limit = year==='reception' ? 14000 : 9000;
-  const pool = redPool();
-  let words = [];
-  while(words.length < ROUNDS){            // small early pools repeat, never twice in a row
-    const batch = mix(redFocus(), pool, Math.min(ROUNDS - words.length, pool.length));
-    if(words.length && batch[0] === words[words.length-1]) batch.push(batch.shift());
-    words = words.concat(batch);
+/* ======================= MECHANIC 2: BUBBLE POP ======================= */
+function playBubbles(id, kind, rounds, done){
+  const need = year === 'reception' ? 2 : 3;
+  const targets = kind === 'g' ? greenItems(rounds) : redItems(rounds);
+  const baseSize = year === 'reception' ? 120 : 106;
+  const riseMs = year === 'reception' ? 10000 : 8000;
+  let r = 0, bubbles = [], last = performance.now(), spawnT = 0, roundOver = true, popped = 0, missed = false;
+  stage.innerHTML = `<div class="prompt" id="bprompt"></div><div class="arena" id="arena" aria-label="bubbles"></div>`;
+  const arena = $('#arena');
+  function renderNeed(){ $('#need').innerHTML = Array.from({length: need}, (_,k) => `<i class="${k < popped ? 'got' : ''}"></i>`).join(''); }
+  function setRound(){
+    if(!live(id)) return;
+    if(r >= rounds) return done();
+    pip(r); popped = 0; missed = false; roundOver = false; spawnT = 0;
+    const t = targets[r];
+    $('#bprompt').innerHTML = kind === 'g'
+      ? `${goCritter()}<div class="wordcard"><span class="tpic" aria-label="Pop the word for this picture: ${esc(t.w)}">${t.pic}</span><span class="need" id="need"></span></div>`
+      : `${stopCritter()}<div class="wordcard"><div class="bigword red">${esc(t.w)}</div><span class="need" id="need"></span></div>`;
+    renderNeed();
   }
-  const id = shell('Red Word Match', 'match', words.length);
-  let i = 0, speedy = 0;
+  function spawn(){
+    const W = arena.clientWidth, H = arena.clientHeight;
+    const s = Math.min(baseSize, W/3.2);
+    const t = targets[r];
+    const hasTarget = bubbles.some(b => b.target && !b.gone);
+    const roll = Math.random();
+    let word = null, isT = false, coin = false;
+    if(!hasTarget || roll < .42){ word = t.w; isT = true; }
+    else if(roll < .52) coin = true;
+    else {
+      const pool = kind === 'g' ? greenPool().filter(x => x[0] !== t.w).map(x => x[0]) : lookAlikes(t.w, redPool(), 4);
+      if(pool.length) word = pickOne(pool); else coin = true;
+    }
+    const el = document.createElement('button');
+    el.className = 'bubble ' + (coin ? 'coinb' : kind);
+    el.style.width = el.style.height = s + 'px';
+    el.style.fontSize = (s * (word && word.length > 4 ? .22 : .29)) + 'px';
+    el.innerHTML = coin ? '<span class="coin"></span>' : esc(word);
+    el.setAttribute('aria-label', coin ? 'coin' : word);
+    arena.appendChild(el);
+    // pick the start spot furthest from the bubbles still near the bottom, so they don't overlap
+    const low = bubbles.filter(o => !o.gone && o.y > H - s*1.6);
+    let x = 0, best = -1;
+    for(let k=0;k<8;k++){
+      const cx = Math.random() * Math.max(1, W - s);
+      const dmin = low.length ? Math.min(...low.map(o => Math.abs(o.x - cx))) : W;
+      if(dmin > best){ best = dmin; x = cx; }
+    }
+    const b = {el, x, y: H + 4, s, v: (H + s) / riseMs, ph: Math.random()*6, target: isT, coin, gone: false};
+    bubbles.push(b);
+    el.addEventListener('pointerdown', e => { e.preventDefault(); hit(b); });
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); hit(b); } });
+  }
+  function pop(b){
+    if(b.gone) return; b.gone = true;
+    b.el.classList.add('popping');
+    b.el.style.transform = `translate(${b.cx ?? b.x}px,${b.y}px) scale(1.45)`;
+    setTimeout(() => b.el.remove(), 240);
+  }
+  function hit(b){
+    if(b.gone || roundOver || !live(id)) return;
+    if(b.coin){ pop(b); earn(1, b.el); return; }
+    if(b.target){
+      pop(b); popped++; renderNeed(); react('#bprompt .critter','happy');
+      if(!missed) earn(1, b.el);
+      if(popped >= need){
+        roundOver = true;
+        if(!missed) run.good++;
+        pip(r, missed ? 'miss' : 'done');
+        flash(missed ? 'Done!' : 'Yes!');
+        setTimeout(() => { bubbles.forEach(pop); bubbles = []; r++; setRound(); }, 900);
+      }
+    } else {
+      missed = true; b.el.classList.remove('nope'); void b.el.offsetWidth; b.el.classList.add('nope');
+      react('#bprompt .critter','oops');
+    }
+  }
+  function loop(now){
+    if(!live(id)) return;
+    const dt = Math.min(50, now - last); last = now;
+    spawnT -= dt;
+    if(!roundOver && spawnT <= 0 && bubbles.filter(b => !b.gone).length < 7){
+      spawn(); spawnT = year === 'reception' ? 1200 : 950;
+    }
+    for(const b of bubbles){
+      if(b.gone) continue;
+      b.y -= b.v * dt;
+      b.cx = b.x + Math.sin(now/700 + b.ph) * 10;
+      b.el.style.transform = `translate(${b.cx}px,${b.y}px)`;
+      if(b.y < -b.s){ b.gone = true; b.el.remove(); }
+    }
+    bubbles = bubbles.filter(b => !b.gone);
+    requestAnimationFrame(loop);
+  }
+  setRound();
+  requestAnimationFrame(loop);
+}
 
+/* ======================= MECHANIC 3: DRAG & MATCH ======================= */
+let selected = null;
+function selectCard(c){
+  if(selected) selected.classList.remove('selected');
+  selected = c;
+  if(c) c.classList.add('selected');
+}
+function draggable(el, onDrop){
+  el.addEventListener('pointerdown', e => {
+    if(el.dataset.locked) return;
+    if(e.pointerType === 'mouse' && e.button !== 0) return;
+    const sx = e.clientX, sy = e.clientY;
+    let dragging = false, over = null;
+    const move = ev => {
+      const dx = ev.clientX - sx, dy = ev.clientY - sy;
+      if(!dragging && Math.hypot(dx,dy) > 7){
+        dragging = true; selectCard(null); el.classList.remove('hint');
+        el.classList.remove('return'); el.classList.add('dragging'); el.style.pointerEvents = 'none';
+      }
+      if(dragging){
+        ev.preventDefault();
+        el.style.transform = `translate(${dx}px,${dy}px) scale(1.08) rotate(${Math.max(-6,Math.min(6,dx/30))}deg)`;
+        const hitEl = document.elementFromPoint(ev.clientX, ev.clientY);
+        const t = hitEl ? hitEl.closest('[data-drop]') : null;
+        if(t !== over){ over && over.classList.remove('hover'); over = t; over && over.classList.add('hover'); }
+      }
+    };
+    const up = () => {
+      window.removeEventListener('pointermove', move);
+      window.removeEventListener('pointerup', up);
+      window.removeEventListener('pointercancel', up);
+      if(!dragging) return;
+      el.classList.remove('dragging'); el.style.pointerEvents = '';
+      over && over.classList.remove('hover');
+      const ok = over ? onDrop(el, over) : false;
+      if(!ok){ el.classList.add('return'); el.style.transform = ''; }
+      el.dataset.justDragged = '1'; setTimeout(() => { delete el.dataset.justDragged; }, 50);
+    };
+    window.addEventListener('pointermove', move, {passive:false});
+    window.addEventListener('pointerup', up);
+    window.addEventListener('pointercancel', up);
+  });
+  el.addEventListener('click', () => {
+    if(el.dataset.justDragged || el.dataset.locked) return;
+    el.classList.remove('hint');
+    selectCard(selected === el ? null : el);
+  });
+}
+function dropTarget(el, onDrop){
+  el.setAttribute('data-drop','');
+  el.addEventListener('click', () => {
+    if(!selected) return;
+    const c = selected; selectCard(null);
+    if(!onDrop(c, el)) shake(c);
+  });
+  el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); el.click(); } });
+}
+function playDrag(id, kind, done){
+  const per = 3, rounds = 2;
+  let r = 0, placed = 0;
   function round(){
     if(!live(id)) return;
-    if(i >= words.length) return finish('match', words.length, speedy ? `${speedy} ${speedy===1?'was':'were'} speedy!` : '');
-    pip(i);
-    const w = words[i];
-    const opts = shuffle([w, ...lookAlikes(w, pool, nOpts-1)]);
+    if(r >= rounds) return done();
+    const items = kind === 'g' ? greenItems(per) : redSet(per);
+    let inRound = 0;
+    pip(placed);
+    const targets = shuffle(items.slice()), cards = shuffle(items.slice());
     stage.innerHTML = `
-      <div class="prompt">
-        ${stopCritter()}
-        <div class="wordcard"><div class="bigword red">${esc(w)}</div></div>
-      </div>
-      <div class="timer" id="timer"><i></i></div>
-      <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">
-        ${opts.map(o => `<button class="pic word" data-w="${esc(o)}">${esc(o)}</button>`).join('')}
-      </div>`;
-    const bar = $('#timer i'), timerBox = $('#timer');
-    const t0 = performance.now();
-    let over = false, missed = false;
-
-    function tick(now){
-      if(!live(id) || over) return;
-      const left = 1 - (now - t0)/limit;
-      bar.style.transform = `scaleX(${Math.max(0,left)})`;
-      timerBox.classList.toggle('low', left < .3);
-      if(left <= 0) return timeout();
-      requestAnimationFrame(tick);
-    }
-    requestAnimationFrame(tick);
-
-    function end(correct){
-      over = true;
-      stage.querySelectorAll('.pic').forEach(b => b.disabled = true);
-      pip(i, correct ? 'done' : 'miss');
-      i++;
-      setTimeout(round, correct ? 1200 : 2000);
-    }
-    function timeout(){
-      react('.prompt .critter','oops');
-      stage.querySelector(`.pic[data-w="${CSS.escape(w)}"]`).classList.add('right');
-      flash('Time!');
-      end(false);
-    }
-    stage.querySelectorAll('.pic').forEach(b => b.onclick = () => {
-      if(over || b.disabled) return;
-      if(b.dataset.w === w){
-        b.classList.add('right'); react('.prompt .critter','happy');
-        if(!missed){
-          addStar();
-          if(performance.now() - t0 < (year==='reception' ? 5000 : 3500)){ speedy++; flash('Speedy!'); }
-          else flash('Yes!');
-        }
-        end(!missed);
-      } else {
-        missed = true; b.classList.add('wrong'); b.disabled = true; shake(b); react('.prompt .critter','oops');
+      <div class="dprompt">${kind === 'g' ? goCritter() : stopCritter()}</div>
+      <div class="dtargets">${targets.map(t => kind === 'g'
+        ? `<div class="dtarget" role="button" tabindex="0" data-w="${esc(t.w)}" aria-label="picture: ${esc(t.w)}"><span class="dp">${t.pic}</span><span class="dl"></span></div>`
+        : `<div class="dtarget word" role="button" tabindex="0" data-w="${esc(t.w)}" aria-label="space for ${esc(t.w)}">${esc(t.w)}</div>`).join('')}</div>
+      <div class="dtray">${cards.map((c,k) => `<button class="dcard ${kind}${r===0 && k===0 ? ' hint' : ''}" data-w="${esc(c.w)}">${esc(c.w)}</button>`).join('')}</div>`;
+    const onDrop = (card, target) => {
+      if(!live(id) || target.classList.contains('filled')) return false;
+      if(card.dataset.w === target.dataset.w){
+        card.dataset.locked = '1'; card.classList.remove('selected');
+        target.classList.add('filled'); target.removeAttribute('data-drop');
+        if(kind === 'g') target.querySelector('.dl').textContent = card.dataset.w;
+        card.remove();
+        react('.dprompt .critter','happy');
+        if(!card.dataset.missed){ run.good++; earn(1, target); }
+        pip(placed, card.dataset.missed ? 'miss' : 'done');
+        placed++; inRound++;
+        if(inRound === per){ flash('Yes!'); r++; setTimeout(round, 1300); }
+        else pip(placed);
+        return true;
       }
-    });
+      card.dataset.missed = '1'; shake(target); react('.dprompt .critter','oops');
+      return false;
+    };
+    stage.querySelectorAll('.dcard').forEach(c => draggable(c, onDrop));
+    stage.querySelectorAll('.dtarget').forEach(t => dropTarget(t, onDrop));
   }
   round();
 }
 
-/* ======================= WORD LISTS (teachers) ======================= */
-function showLists(){
-  gameId++;
-  $('#gameTitle').textContent = stageName();
-  $('#scoreBox').hidden = true; $('#pips').hidden = true;
-  showView('play', 'lists');
-  const gf = greenFocus(), gr = greenPool().filter(x => !gf.includes(x));
-  const rf = redFocus(), rr = redPool().filter(w => !rf.includes(w));
-  stage.innerHTML = `
-    <p class="listnote"><b>This term:</b> ${STAGES[stageKey()].about} About 6 in 10 words in each game come from this term's focus; the rest are review. Dots under a letter show one sound; a line shows letters making one sound together (special friends). Use Change on the home screen to see another class or term.</p>
-    <div class="lists">
-      <div class="listbox"><h3 class="g">Green words</h3>
-        <h4>Focus this term</h4><div class="wordwrap">${gf.map(x => soundButtons(x[1])).join('')}</div>
-        ${gr.length ? `<h4>Review</h4><div class="wordwrap">${gr.map(x => soundButtons(x[1])).join('')}</div>` : ''}</div>
-      <div class="listbox"><h3 class="r">Red words</h3>
-        <h4>New this term</h4><div class="wordwrap">${rf.map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div>
-        ${rr.length ? `<h4>Review</h4><div class="wordwrap">${rr.map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div>` : ''}</div>
-    </div>`;
+/* ======================= MECHANIC 4: FIND THE PAIRS ======================= */
+function playPairs(id, kind, n, done){
+  const items = kind === 'g' ? greenItems(n) : redSet(n);
+  const cards = shuffle(items.flatMap((it,k) => [
+    {k, face: kind === 'g' ? `<span class="pw g">${soundButtons(it.sounds)}</span>` : `<span class="pw r">${esc(it.w)}</span>`, label: it.w},
+    {k, face: kind === 'g' ? `<span class="pp">${it.pic}</span>` : `<span class="pw r">${esc(it.w)}</span>`, label: kind === 'g' ? 'picture: ' + it.w : it.w}
+  ]));
+  stage.innerHTML = `<div class="pairs" style="--cols:${n === 3 ? 3 : 4}">${cards.map(c =>
+    `<button class="pcard" data-k="${c.k}" aria-label="hidden card" data-label="${esc(c.label)}"><span class="pin"><span class="pback">?</span><span class="pfront">${c.face}</span></span></button>`).join('')}</div>`;
+  let open = [], found = 0, tries = 0, lock = false;
+  pip(0);
+  stage.querySelectorAll('.pcard').forEach(b => b.onclick = () => {
+    if(!live(id) || lock || b.classList.contains('open') || b.classList.contains('matched')) return;
+    b.classList.add('open'); b.setAttribute('aria-label', b.dataset.label);
+    open.push(b);
+    if(open.length < 2) return;
+    tries++; lock = true;
+    const [a, c] = open;
+    if(a.dataset.k === c.dataset.k){
+      setTimeout(() => {
+        if(!live(id)) return;
+        a.classList.add('matched'); c.classList.add('matched');
+        earn(1, c); pip(found, 'done'); found++;
+        open = []; lock = false;
+        if(found === n){
+          run.good = n;
+          run.stars = tries <= n + 1 ? 3 : tries <= n + 4 ? 2 : 1;
+          flash('All found!');
+          setTimeout(done, 1000);
+        } else pip(found);
+      }, 380);
+    } else {
+      setTimeout(() => {
+        a.classList.remove('open'); c.classList.remove('open');
+        a.setAttribute('aria-label','hidden card'); c.setAttribute('aria-label','hidden card');
+        open = []; lock = false;
+      }, 1050);
+    }
+  });
 }
 
-/* ======================= HOME ======================= */
-const GAMES = { speedy: startSpeedy, match: startMatch };
-function goHome(){
-  gameId++;
-  renderHome(); showView('home', '');
+/* ======================= LEADERBOARD ======================= */
+function showBoard(back){
+  shell('Leaderboard', 'board', 0, back);
+  const list = players.slice().sort((a,b) => b.coins - a.coins || starTotal(b) - starTotal(a));
+  stage.innerHTML = `
+    <p class="boardnote">Everyone who plays on this device.</p>
+    <div class="board">${list.length ? list.map((p,k) => `
+      <div class="brow${player && p.id === player.id ? ' mine' : ''}">
+        <span class="rank${k < 3 ? ' r' + (k+1) : ''}">${k+1}</span>
+        <span class="bava" aria-hidden="true">${p.avatar}</span>
+        <span class="bname">${esc(p.name)}</span>
+        <span class="bstat bst"><span class="st">★</span>${starTotal(p)}</span>
+        <span class="bstat"><span class="coin"></span>${p.coins}</span>
+      </div>`).join('') : '<p class="boardnote">No players yet.</p>'}</div>`;
 }
-function renderHome(){
-  $('#stageLabel').textContent = stageName();
-  $('#focusLine').textContent = 'This term: ' + STAGES[stageKey()].about;
-  const demo = greenFocus()[0];
-  $('#demoPic').textContent = demo[2];
-  document.querySelectorAll('[data-best]').forEach(el => {
-    const b = store.get(`best:${el.dataset.best}:${stageKey()}`, null);
-    el.innerHTML = b ? `Best <b>★ ${b.s} / ${b.t}</b>` : 'Not played yet';
+
+/* ======================= SOUNDS & RED WORDS ======================= */
+function showSounds(back, tab){
+  shell('Sounds & Red Words', 'sounds', 0, back);
+  const nowSet = player && year && term ? STAGES[stageKey()].set : 0;
+  tab = tab || (nowSet || 1);
+  const tabs = [1,2,3].map(s => `<button class="tab" role="tab" aria-selected="${tab === s}" data-tab="${s}">Set ${s}${s === nowSet ? '<span class="nowtag">Now</span>' : ''}</button>`).join('')
+    + `<button class="tab" role="tab" aria-selected="${tab === 'red'}" data-tab="red">Red words</button>`;
+  let body;
+  if(tab === 'red'){
+    const groups = [['reception','Reception'],['year1','Year 1']].flatMap(([y,yn]) => TERMS.map(t => [y,t,yn]));
+    body = `<p class="setnote">Red words can't be sounded out. Learn to spot them straight away.</p>` + groups.map(([y,t,yn]) => {
+      const isNow = player && y === year && t === term;
+      return `<div class="redgroup"><h3>${yn} · ${t[0].toUpperCase()+t.slice(1)}${isNow ? '<span class="nowtag">Now</span>' : ''}</h3>
+        <div class="redwrap">${RED_NEW[`${y}-${t}`].map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div></div>`;
+    }).join('');
+  } else {
+    const S = SOUND_SETS[tab];
+    body = `<p class="setnote">${S.note}</p>` + S.groups.map(([gname, list]) =>
+      `${S.groups.length > 1 ? `<div class="subhead">${gname}</div>` : ''}<div class="soundgrid">${list.map(([snd, ex]) =>
+        `<div class="stile"><span class="gr">${soundButtons(snd)}</span><span class="ex">${soundButtons(ex)}</span></div>`).join('')}</div>`).join('');
+  }
+  stage.innerHTML = `
+    <div class="soundsintro">
+      <span class="key">${soundButtons('s')} one sound</span>
+      <span class="key">${soundButtons('sh')} special friends</span>
+      <span class="key">${soundButtons('a-e k')} split sound</span>
+    </div>
+    <div class="tabs" role="tablist">${tabs}</div>
+    ${body}`;
+  stage.querySelectorAll('.tab').forEach(b => b.onclick = () => {
+    const t = b.dataset.tab === 'red' ? 'red' : +b.dataset.tab;
+    showSounds(back, t);
   });
 }
-$('#heroDuo').innerHTML = goCritter() + stopCritter();
-fillCritters();
-/* ---- start: which class, which term ---- */
-function askClass(){
-  gameId++;
-  showView('setup', '');
-  $('#setupQ').textContent = 'Which class are you in?';
-  $('#setupBack').hidden = !(year && term);
-  $('#setupBack').onclick = goHome;
-  $('#choices').innerHTML = `
-    <button class="choice c-mint" data-y="reception">${goCritter()}<b>Reception</b><small>I am 4 or 5</small></button>
-    <button class="choice c-pink" data-y="year1">${stopCritter()}<b>Year 1</b><small>I am 5 or 6</small></button>`;
-  $('#choices').querySelectorAll('button').forEach(b => b.onclick = () => { year = b.dataset.y; store.set('year', year); askTerm(); });
-  $('#choices button').focus();
-}
-function askTerm(){
-  $('#setupQ').textContent = 'Which term is it?';
-  $('#setupBack').hidden = false;
-  $('#setupBack').onclick = askClass;
-  const now = termNow();
-  const T = [['autumn','🍂','Autumn','September to December','c-peach'],
-             ['spring','🌷','Spring','January to March','c-mint'],
-             ['summer','☀️','Summer','April to July','c-sun']];
-  $('#choices').innerHTML = T.map(([k,icon,name,months,cls]) =>
-    `<button class="choice ${cls}" data-t="${k}">${k===now ? '<span class="now">Now</span>' : ''}<span class="big" aria-hidden="true">${icon}</span><b>${name}</b><small>${months}</small></button>`).join('');
-  $('#choices').querySelectorAll('button').forEach(b => b.onclick = () => {
-    term = b.dataset.t; store.set('term', term); goHome(); react('#heroDuo .critter','happy');
-  });
-  ($('#choices [data-t="'+now+'"]') || $('#choices button')).focus();
-}
-$('#setupDuo').innerHTML = goCritter() + stopCritter();
+
+/* ======================= INIT ======================= */
+$('#backBtn').onclick = () => backTo();
+$('#whoBtn').onclick = showPlayers;
 $('#changeStage').onclick = askClass;
-$('#goSpeedy').onclick = startSpeedy;
-$('#goMatch').onclick = startMatch;
-$('#goLists').onclick = showLists;
-$('#backBtn').onclick = goHome;
-if(year && term){ renderHome(); showView('home', ''); } else askClass();
+$('#boardBtn').onclick = () => showBoard(showMap);
+$('#soundsBtn').onclick = () => showSounds(showMap);
+if(player && year && term) showMap();
+else if(player) askClass();
+else showPlayers();
 </script>
 
 </body>

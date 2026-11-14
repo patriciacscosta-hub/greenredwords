@@ -29,7 +29,6 @@ body{background:var(--sky);color:var(--ink);font-family:var(--font-display);font
   -webkit-tap-highlight-color:transparent;overscroll-behavior:none}
 body[data-scene="speedy"],body[data-scene="speedy"] .play{background:var(--mint)}
 body[data-scene="match"],body[data-scene="match"] .play{background:var(--pink)}
-body[data-scene="sort"],body[data-scene="sort"] .play{background:var(--blue)}
 body[data-scene="done"],body[data-scene="done"] .play{background:var(--lilac)}
 body[data-scene="lists"],body[data-scene="lists"] .play{background:var(--lilac)}
 button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
@@ -156,48 +155,12 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
   background:var(--sun);color:var(--ink);padding:4px 22px;border-radius:999px;pointer-events:none;z-index:40;animation:pop .95s ease forwards;white-space:nowrap}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
 
-/* Drag & match */
-.howto{display:flex;align-items:center;justify-content:center;gap:14px;margin:0 auto 18px;max-width:640px}
-.howto .critter{width:76px;height:auto;flex:none}
-.howto p{margin:0;font-weight:500;font-size:1.1rem;background:var(--white);border-radius:20px;padding:10px 18px}
-.slots{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:26px}
-.slot{border:4px dashed rgba(38,48,77,.18);background:rgba(255,255,255,.55);border-radius:var(--r);min-height:112px;display:grid;place-items:center;
-  font-family:var(--font-read);font-weight:700;font-size:clamp(2rem,6vw,2.9rem);color:rgba(38,48,77,.32);transition:background .15s,border-color .15s,transform .15s;padding:8px}
-.slot.hover,.slot:hover{border-color:var(--coral);background:var(--white)}
-.slot.filled{border:4px solid transparent;background:var(--coral);color:var(--white);transform:scale(1.02)}
-.sentences{display:flex;flex-direction:column;gap:14px;margin-bottom:26px}
-.sentence{font-family:var(--font-read);font-size:clamp(1.4rem,4.4vw,2.2rem);font-weight:700;display:flex;flex-wrap:wrap;align-items:center;gap:.25em .3em;
-  background:var(--white);border-radius:var(--r);padding:14px 22px}
-.sentence .slot{display:inline-grid;min-height:62px;min-width:150px;font-size:1em;border-width:3px;border-radius:16px;color:transparent;padding:2px 14px;background:var(--pink)}
-.sentence .slot.filled{color:var(--white);background:var(--coral)}
-.tray{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;min-height:90px;padding:10px}
-.card{touch-action:none;user-select:none;-webkit-user-select:none;background:var(--coral);color:var(--white);
-  font-family:var(--font-read);font-weight:700;font-size:clamp(1.8rem,5.5vw,2.6rem);padding:8px 28px 6px;border-radius:22px;
-  position:relative;z-index:1;min-height:66px;line-height:1.2;transition:box-shadow .15s}
-.card:hover{box-shadow:0 6px 0 rgba(38,48,77,.12)}
-.card.dragging{z-index:50;box-shadow:0 16px 28px rgba(38,48,77,.25);cursor:grabbing}
-.card.return{transition:transform .25s ease}
-.card.selected{box-shadow:0 0 0 5px var(--white),0 0 0 9px var(--sun)}
-.card.neutral{background:var(--white);color:var(--ink);font-size:clamp(2.4rem,8vw,3.4rem);padding:12px 36px 10px}
+/* Red word tap */
+.bigword.red{color:var(--coral);font-family:var(--font-read);font-weight:700}
+.pic.word{aspect-ratio:auto;min-height:clamp(110px,22vw,170px);font-family:var(--font-read);font-weight:700;font-size:clamp(2.2rem,7vw,3.6rem);color:var(--coral)}
+.pic.word.right{background:var(--coral);color:var(--white)}
 .shake{animation:shake .4s}
 @keyframes shake{20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-5px)}80%{transform:translateX(5px)}}
-
-/* Sort */
-.sortarea{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:center;margin-top:6px}
-@media (max-width:680px){ .sortarea{grid-template-columns:1fr 1fr} .sortarea .center{grid-column:1 / -1;grid-row:1} }
-.basket{border-radius:var(--r);min-height:250px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:16px;transition:transform .15s,filter .15s}
-.basket.g{background:var(--mint)} .basket.r{background:var(--pink)}
-.basket.hover{transform:scale(1.04);filter:brightness(1.04)}
-.basket .critter{width:96px;height:auto}
-.basket b{font-size:1.25rem;letter-spacing:.06em;text-transform:uppercase}
-.basket.g b{color:var(--go)} .basket.r b{color:var(--coral)}
-.basket small{color:var(--ink-soft);text-align:center;font-size:.95rem;font-weight:500}
-.basket .got{display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;font-family:var(--font-read);font-weight:700;font-size:1.05rem}
-.center{display:flex;flex-direction:column;align-items:center;gap:14px;min-width:200px;min-height:130px;justify-content:center}
-.feedback{min-height:3.4em;text-align:center;font-weight:500;font-size:1.15rem;margin:18px auto 0;max-width:640px}
-.feedback:not(:empty){background:var(--white);border-radius:20px;padding:12px 18px}
-.feedback .g{color:var(--go);font-weight:700} .feedback .r{color:var(--coral);font-weight:700}
-.feedback .sw{font-size:1.5rem;color:var(--go);vertical-align:middle;margin-left:6px}
 
 /* Done */
 .endcard{text-align:center;display:flex;flex-direction:column;align-items:center;gap:16px;padding:20px 0}
@@ -261,11 +224,6 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
       <span class="art" aria-hidden="true"><span data-critter="stop"></span><span class="mini red">said</span></span>
       <span class="label">Red Word Match</span>
       <span class="best" data-best="match"></span>
-    </button>
-    <button class="band b-blue" id="goSort">
-      <span class="art" aria-hidden="true"><span data-critter="go"></span><span data-critter="stop"></span></span>
-      <span class="label">Green or Red?</span>
-      <span class="best" data-best="sort"></span>
     </button>
     <button class="band b-lilac" id="goLists">
       <span class="plus" aria-hidden="true">+</span>
@@ -331,37 +289,6 @@ const STAGES = {
   'year1-spring':     {green:['cc','s2','s3'],      focus:['s3'],      about:'Set 3 sounds: ea, oi, aw, ai, oa, ow, ire, ear.'},
   'year1-summer':     {green:['cc','s2','s3'],      focus:['s2','s3'], about:'All Set 2 and Set 3 sounds, and every Year 1 red word.'}
 };
-// Year 1 red word sentences. alt = other red words that would also make sense (kept out of the same round).
-const SENTENCES = [
-  {s:'Can you ___ to my party?', a:'come', alt:['walk']},
-  {s:'I have ___ big dog.', a:'one', alt:[]},
-  {s:'I have ___ cats.', a:'two', alt:['many','some','any']},
-  {s:'___ is my hat?', a:'where', alt:['what']},
-  {s:'___ is at the door?', a:'who', alt:['what']},
-  {s:'I ___ a drink.', a:'want', alt:[]},
-  {s:'My best ___ is Sam.', a:'friend', alt:[]},
-  {s:'We learn at ___.', a:'school', alt:[]},
-  {s:'Fish swim in the ___.', a:'water', alt:[]},
-  {s:'I like to ___ to the park.', a:'walk', alt:['come']},
-  {s:'Mum ___ hello.', a:'said', alt:[]},
-  {s:'The dog ___ wet.', a:'was', alt:[]},
-  {s:'___ is your name?', a:'what', alt:[]},
-  {s:'A mouse is very ___.', a:'small', alt:['tall']},
-  {s:'A giraffe is very ___.', a:'tall', alt:['small']},
-  {s:'They ___ happy.', a:'were', alt:[]},
-  {s:'I ___ on the phone.', a:'talk', alt:[]},
-  {s:'Look over ___!', a:'there', alt:[]},
-  {s:'___ are you sad?', a:'why', alt:[]},
-  {s:'Can I have ___ cake?', a:'some', alt:['one','any']},
-  {s:'My cat ___ not bark.', a:'does', alt:['could','would','should']},
-  {s:'Do you have ___ pets?', a:'any', alt:['many','some','two']},
-  {s:'I like to ___ TV.', a:'watch', alt:[]},
-  {s:'I ___ my mum on the phone.', a:'call', alt:[]},
-  {s:'There are ___ cars on the road.', a:'many', alt:['two','some','any']},
-  {s:'She ___ it was fun.', a:'said', alt:[]},
-  {s:'It ___ cold today.', a:'was', alt:[]},
-  {s:'___ can I sit?', a:'where', alt:['why']}
-];
 
 /* ======================= CRITTERS ======================= */
 // Pip (green, "go") is a round sprout; Stopper (red) is a stop-sign octagon holding up its hands.
@@ -438,61 +365,6 @@ function soundButtons(sounds){
     `<span class="gph"><span>${esc(g)}</span><span class="mk ${g.length>1?'bar':'dot'}"></span></span>`).join('') + '</span>';
 }
 
-/* ---- drag (mouse + touch) with tap-to-select fallback ---- */
-let selected = null;
-function selectCard(c){
-  if(selected) selected.classList.remove('selected');
-  selected = c;
-  if(c) c.classList.add('selected');
-}
-function draggable(el, onDrop){
-  el.addEventListener('pointerdown', e => {
-    if(el.dataset.locked) return;
-    if(e.pointerType==='mouse' && e.button!==0) return;
-    const sx = e.clientX, sy = e.clientY;
-    let dragging = false, over = null;
-    const move = ev => {
-      const dx = ev.clientX-sx, dy = ev.clientY-sy;
-      if(!dragging && Math.hypot(dx,dy) > 7){
-        dragging = true; selectCard(null);
-        el.classList.remove('return'); el.classList.add('dragging'); el.style.pointerEvents = 'none';
-      }
-      if(dragging){
-        ev.preventDefault();
-        el.style.transform = `translate(${dx}px,${dy}px) scale(1.08) rotate(${Math.max(-6,Math.min(6,dx/30))}deg)`;
-        const hit = document.elementFromPoint(ev.clientX, ev.clientY);
-        const t = hit ? hit.closest('[data-drop]') : null;
-        if(t !== over){ over && over.classList.remove('hover'); over = t; over && over.classList.add('hover'); }
-      }
-    };
-    const up = () => {
-      window.removeEventListener('pointermove', move);
-      window.removeEventListener('pointerup', up);
-      window.removeEventListener('pointercancel', up);
-      if(!dragging) return;
-      el.classList.remove('dragging'); el.style.pointerEvents = '';
-      over && over.classList.remove('hover');
-      const ok = over ? onDrop(el, over) : false;
-      if(!ok){ el.classList.add('return'); el.style.transform = ''; }
-      el.dataset.justDragged = '1'; setTimeout(()=>{ delete el.dataset.justDragged; }, 50);
-    };
-    window.addEventListener('pointermove', move, {passive:false});
-    window.addEventListener('pointerup', up);
-    window.addEventListener('pointercancel', up);
-  });
-  el.addEventListener('click', () => {
-    if(el.dataset.justDragged || el.dataset.locked) return;
-    selectCard(selected === el ? null : el);
-  });
-}
-function dropTarget(el, onDrop){
-  el.setAttribute('data-drop','');
-  el.addEventListener('click', () => {
-    if(!selected) return;
-    const c = selected; selectCard(null);
-    if(!onDrop(c, el)) shake(c);
-  });
-}
 function shake(el){ el.classList.remove('shake'); void el.offsetWidth; el.classList.add('shake'); }
 function flash(text){
   const f = document.createElement('div'); f.className = 'flash'; f.textContent = text;
@@ -507,7 +379,7 @@ function showView(id, scene){
   window.scrollTo(0,0);
 }
 function shell(title, scene, total){
-  gameId++; score = 0; selectCard(null);
+  gameId++; score = 0;
   $('#gameTitle').textContent = title;
   $('#scoreNum').textContent = '0';
   $('#scoreBox').hidden = false; $('#pips').hidden = false;
@@ -640,145 +512,86 @@ function startSpeedy(){
   round();
 }
 
-/* ======================= GAME 2: RED WORD MATCH (drag) ======================= */
-function buildSentenceRounds(n){
-  const reds = new Set(redPool()), fresh = new Set(redFocus());
-  // this term's new words first, then review
-  const ok = SENTENCES.filter(x => reds.has(x.a));
-  const pool = [...shuffle(ok.filter(x => fresh.has(x.a))), ...shuffle(ok.filter(x => !fresh.has(x.a)))], rounds = [], used = new Set();
-  for(let r=0; r<n; r++){
-    const pick = [];
-    for(const s of pool){
-      if(pick.length === 3) break;
-      if(used.has(s)) continue;
-      if(pick.every(p => p.a!==s.a && !p.alt.includes(s.a) && !s.alt.includes(p.a))){ pick.push(s); }
-    }
-    if(pick.length < 3) break;
-    pick.forEach(p => used.add(p));
-    const answers = pick.map(p=>p.a);
-    const blocked = new Set([...answers, ...pick.flatMap(p=>p.alt)]);
-    const spare = shuffle(redPool().filter(w => !blocked.has(w)))[0];
-    rounds.push({sentences: pick, cards: shuffle([...answers, spare])});
-  }
-  return rounds;
+/* ======================= GAME 2: RED WORD MATCH (speedy tap) ======================= */
+// Wrong answers are red words that look most like the target (shared letters, similar length)
+function lookAlikes(w, pool, n){
+  const lw = w.toLowerCase();
+  const score = x => { const lx = x.toLowerCase(); let c = 0; for(const ch of new Set(lx)) if(lw.includes(ch)) c++;
+    return c*2 - Math.abs(lx.length - lw.length) + (lx[0]===lw[0] ? 2 : 0) + Math.random(); };
+  return pool.filter(x => x.toLowerCase() !== lw).sort((a,b) => score(b) - score(a)).slice(0, n);
 }
 function startMatch(){
-  const ROUNDS = 4;
-  let rounds;
-  if(year === 'reception'){
-    rounds = Array.from({length: ROUNDS}, () => {
-      const set = mix(redFocus(), redPool(), 3);
-      return {targets: shuffle(set.slice()), cards: shuffle(set.slice())};
-    });
-  } else {
-    rounds = buildSentenceRounds(ROUNDS);
+  const ROUNDS = 10;
+  const nOpts = year==='reception' ? 3 : 4;
+  const limit = year==='reception' ? 14000 : 9000;
+  const pool = redPool();
+  let words = [];
+  while(words.length < ROUNDS){            // small early pools repeat, never twice in a row
+    const batch = mix(redFocus(), pool, Math.min(ROUNDS - words.length, pool.length));
+    if(words.length && batch[0] === words[words.length-1]) batch.push(batch.shift());
+    words = words.concat(batch);
   }
-  const total = rounds.length * 3;
-  const id = shell('Red Word Match', 'match', total);
-  let r = 0, done = 0;
+  const id = shell('Red Word Match', 'match', words.length);
+  let i = 0, speedy = 0;
 
   function round(){
     if(!live(id)) return;
-    if(r >= rounds.length) return finish('match', total);
-    const R = rounds[r];
-    let placed = 0;
-    pip(done);
-    const cardsHtml = R.cards.map((w,k) => `<button class="card" id="c${r}_${k}" data-word="${esc(w)}">${esc(w)}</button>`).join('');
-    const help = year === 'reception'
-      ? 'Drag each red word onto the word that looks the same. Or tap a word, then tap where it goes.'
-      : 'Drag the red word that finishes each sentence. One word is left over.';
-    let body;
-    if(year === 'reception'){
-      body = `<div class="slots">${R.targets.map(w => `<div class="slot" role="button" tabindex="0" data-word="${esc(w)}" aria-label="space for ${esc(w)}">${esc(w)}</div>`).join('')}</div>`;
-    } else {
-      body = `<div class="sentences">${R.sentences.map(s => {
-          const [a,b] = s.s.split('___');
-          return `<div class="sentence">${a.trim() ? `<span>${esc(a.trim())}</span>` : ''}<span class="slot" role="button" tabindex="0" data-word="${esc(s.a)}" data-cap="${a.trim()?'':'1'}" aria-label="gap"></span>${b.trim() ? `<span>${esc(b.trim())}</span>` : ''}</div>`;
-        }).join('')}</div>`;
-    }
-    stage.innerHTML = `<div class="howto">${stopCritter()}<p>${help}</p></div>${body}<div class="tray">${cardsHtml}</div>`;
+    if(i >= words.length) return finish('match', words.length, speedy ? `${speedy} ${speedy===1?'was':'were'} speedy!` : '');
+    pip(i);
+    const w = words[i];
+    const opts = shuffle([w, ...lookAlikes(w, pool, nOpts-1)]);
+    stage.innerHTML = `
+      <div class="prompt">
+        ${stopCritter()}
+        <div class="wordcard"><div class="bigword red">${esc(w)}</div></div>
+      </div>
+      <div class="timer" id="timer"><i></i></div>
+      <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">
+        ${opts.map(o => `<button class="pic word" data-w="${esc(o)}">${esc(o)}</button>`).join('')}
+      </div>`;
+    const bar = $('#timer i'), timerBox = $('#timer');
+    const t0 = performance.now();
+    let over = false, missed = false;
 
-    const onDrop = (card, slot) => {
-      if(!live(id) || slot.classList.contains('filled') || !slot.classList.contains('slot')) return false;
-      if(card.dataset.word === slot.dataset.word){
-        card.dataset.locked = '1'; card.classList.remove('return','selected');
-        slot.textContent = slot.dataset.cap ? card.dataset.word[0].toUpperCase() + card.dataset.word.slice(1) : card.dataset.word;
-        slot.classList.add('filled'); slot.removeAttribute('data-drop');
-        card.remove();
-        react('.howto .critter','happy');
-        if(!card.dataset.missed) addStar();
-        pip(done, card.dataset.missed ? 'miss' : 'done');
-        done++; placed++;
-        if(placed === 3){ flash(R.missedAny ? 'Done!' : 'Brilliant!'); r++; setTimeout(round, 1700); }
-        else pip(done);
-        return true;
+    function tick(now){
+      if(!live(id) || over) return;
+      const left = 1 - (now - t0)/limit;
+      bar.style.transform = `scaleX(${Math.max(0,left)})`;
+      timerBox.classList.toggle('low', left < .3);
+      if(left <= 0) return timeout();
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    function end(correct){
+      over = true;
+      stage.querySelectorAll('.pic').forEach(b => b.disabled = true);
+      pip(i, correct ? 'done' : 'miss');
+      i++;
+      setTimeout(round, correct ? 1200 : 2000);
+    }
+    function timeout(){
+      react('.prompt .critter','oops');
+      stage.querySelector(`.pic[data-w="${CSS.escape(w)}"]`).classList.add('right');
+      flash('Time!');
+      end(false);
+    }
+    stage.querySelectorAll('.pic').forEach(b => b.onclick = () => {
+      if(over || b.disabled) return;
+      if(b.dataset.w === w){
+        b.classList.add('right'); react('.prompt .critter','happy');
+        if(!missed){
+          addStar();
+          if(performance.now() - t0 < (year==='reception' ? 5000 : 3500)){ speedy++; flash('Speedy!'); }
+          else flash('Yes!');
+        }
+        end(!missed);
+      } else {
+        missed = true; b.classList.add('wrong'); b.disabled = true; shake(b); react('.prompt .critter','oops');
       }
-      card.dataset.missed = '1'; R.missedAny = true;
-      shake(slot); react('.howto .critter','oops');
-      return false;
-    };
-    stage.querySelectorAll('.card').forEach(c => draggable(c, onDrop));
-    stage.querySelectorAll('.slot').forEach(s => {
-      dropTarget(s, onDrop);
-      s.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); s.click(); } });
     });
   }
   round();
-}
-
-/* ======================= GAME 3: GREEN OR RED? (sort) ======================= */
-function startSort(){
-  const N = 12;
-  const g = mix(greenFocus(), greenPool(), N/2).map(x => ({w:x[0], kind:'g', sounds:x[1]}));
-  const rd = mix(redFocus(), redPool(), N/2).map(w => ({w, kind:'r'}));
-  const items = shuffle([...g, ...rd]);
-  const id = shell('Green or Red?', 'sort', items.length);
-  let i = 0;
-
-  stage.innerHTML = `
-    <div class="sortarea">
-      <div class="basket g" id="bg" role="button" tabindex="0" data-kind="g">${goCritter()}<b>Green word</b><small>I can sound it out</small><div class="got"></div></div>
-      <div class="center"><div id="slotC"></div></div>
-      <div class="basket r" id="br" role="button" tabindex="0" data-kind="r">${stopCritter()}<b>Red word</b><small>I just have to know it</small><div class="got"></div></div>
-    </div>
-    <div class="feedback" id="fb" aria-live="polite"></div>`;
-  const fb = $('#fb');
-
-  function choose(card, basket){
-    if(!live(id) || !basket.dataset.kind || card.dataset.locked) return false;
-    const it = items[i];
-    if(basket.dataset.kind === it.kind){
-      card.dataset.locked = '1';
-      if(!card.dataset.missed) addStar();
-      pip(i, card.dataset.missed ? 'miss' : 'done');
-      react(`#${basket.id} .critter`,'happy');
-      basket.querySelector('.got').insertAdjacentHTML('beforeend', `<span>${esc(it.w)}</span>`);
-      fb.innerHTML = it.kind === 'g'
-        ? `<span class="g">“${esc(it.w)}” is a green word.</span> Sound it out: ${soundButtons(it.sounds)}`
-        : `<span class="r">“${esc(it.w)}” is a red word.</span> You can't sound it out, you just know it.`;
-      card.remove();
-      i++; setTimeout(next, 1600);
-      return true;
-    }
-    card.dataset.missed = '1'; shake(basket); react(`#${basket.id} .critter`,'oops');
-    fb.innerHTML = it.kind === 'g' ? 'Try again. Can you say each sound?' : 'Try again. Can you really sound this one out?';
-    return false;
-  }
-  function next(){
-    if(!live(id)) return;
-    if(i >= items.length) return finish('sort', items.length);
-    pip(i);
-    fb.innerHTML = '';
-    $('#slotC').innerHTML = `<button class="card neutral" data-word="${esc(items[i].w)}">${esc(items[i].w)}</button>`;
-    draggable($('#slotC .card'), choose);
-  }
-  ['#bg','#br'].forEach(sel => {
-    const b = $(sel);
-    b.setAttribute('data-drop','');
-    b.addEventListener('click', () => { const c = $('#slotC .card'); if(c && !choose(c, b)) shake(c); selectCard(null); });
-    b.addEventListener('keydown', e => { if(e.key==='Enter' || e.key===' '){ e.preventDefault(); b.click(); } });
-  });
-  next();
 }
 
 /* ======================= WORD LISTS (teachers) ======================= */
@@ -802,9 +615,9 @@ function showLists(){
 }
 
 /* ======================= HOME ======================= */
-const GAMES = { speedy: startSpeedy, match: startMatch, sort: startSort };
+const GAMES = { speedy: startSpeedy, match: startMatch };
 function goHome(){
-  gameId++; selectCard(null);
+  gameId++;
   renderHome(); showView('home', '');
 }
 function renderHome(){
@@ -851,7 +664,6 @@ $('#setupDuo').innerHTML = goCritter() + stopCritter();
 $('#changeStage').onclick = askClass;
 $('#goSpeedy').onclick = startSpeedy;
 $('#goMatch').onclick = startMatch;
-$('#goSort').onclick = startSort;
 $('#goLists').onclick = showLists;
 $('#backBtn').onclick = goHome;
 if(year && term){ renderHome(); showView('home', ''); } else askClass();

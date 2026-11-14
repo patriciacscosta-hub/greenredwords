@@ -106,6 +106,15 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
   padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--scene)}
 .mapbar .grow{flex:1}
+.aa{font-family:var(--font-read);font-weight:700;text-transform:none;letter-spacing:0;font-size:1.1rem}
+@media (max-width:560px){
+  .mapbar{gap:6px;padding-block:8px}
+  .mapbar .lbl,.mapbar .grow{display:none}
+  .mapbar .pill,.mapbar .pillstat{padding:6px 11px;font-size:1rem;min-height:44px}
+  .who{padding:4px 12px 4px 4px;min-height:44px;font-size:1rem}
+  .who .ava{width:36px;height:36px}
+  .who span:last-child{max-width:7em}
+}
 .who{background:var(--white);border-radius:999px;padding:5px 18px 5px 5px;display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;min-height:50px;max-width:100%}
 .who .ava{width:40px;height:40px;border-radius:50%;background:var(--sun-soft);display:grid;place-items:center;font-size:1.6rem;flex:none}
 .who span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -261,6 +270,27 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .confetti i:nth-child(3n){border-radius:50%}
 @keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
 
+/* Clock + settings */
+.clock svg{width:22px;height:22px;display:block}
+.clock.low{background:var(--coral);color:var(--white)}
+.setcard{max-width:720px;margin:0 auto 14px;background:var(--white);border-radius:22px;padding:18px 20px}
+.setcard h3{font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase;margin-bottom:6px}
+.setcard .hint{margin:0 0 12px;color:var(--ink-soft);font-weight:500}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border-radius:999px;padding:9px 18px;font-weight:700;background:#EEF1F6;min-height:46px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--white)}
+.prow{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:2px solid #EEF1F6;flex-wrap:wrap}
+.prow:first-of-type{border-top:0}
+.prow .bava{font-size:2rem}
+.prow .pinfo{flex:1;min-width:130px;font-weight:700;font-size:1.1rem}
+.prow .pinfo small{display:block;color:var(--ink-soft);font-weight:500;font-size:.92rem}
+.mini{border-radius:999px;padding:8px 16px;font-weight:700;background:#EEF1F6;min-height:42px}
+.mini.danger{background:var(--pink);color:#B3262C}
+.mini.yes{background:#B3262C;color:var(--white)}
+.critter.sleepy .eyes{animation:none;transform:scaleY(.12)}
+.critter.sleepy .bob{animation-duration:4.5s}
+.gatesum{font-size:clamp(2.4rem,8vw,3.4rem);font-weight:700;letter-spacing:.04em}
+
 /* Leaderboard */
 .board{max-width:660px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
 .boardnote{text-align:center;font-weight:500;margin:0 0 6px}
@@ -312,9 +342,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <button class="who" id="whoBtn" aria-label="Change player"><span class="ava" id="mapAva"></span><span id="mapName"></span></button>
     <span class="pillstat" aria-label="coins"><span class="coin"></span><span id="mapCoins">0</span></span>
     <span class="pillstat" aria-label="stars"><span class="st">★</span><span id="mapStars">0</span></span>
+    <span class="pillstat clock" id="mapClockBox" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span id="mapClock"></span></span>
     <span class="grow"></span>
-    <button class="pill" id="soundsBtn">Sounds</button>
-    <button class="pill" id="boardBtn"><span aria-hidden="true">🏆</span> Leaders</button>
+    <button class="pill" id="soundsBtn" aria-label="Sounds and red words"><span class="aa" aria-hidden="true">Aa</span><span class="lbl">Sounds</span></button>
+    <button class="pill" id="boardBtn" aria-label="Leaderboard"><span aria-hidden="true">🏆</span><span class="lbl">Leaders</span></button>
+    <button class="pill" id="setBtn" aria-label="Grown-up settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
   </div>
   <div class="maphead">
     <h1>Word Lights</h1>
@@ -330,6 +362,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <button class="pill" id="backBtn">← Map</button>
     <h2 id="gameTitle"></h2>
     <div class="pips" id="pips" aria-hidden="true"></div>
+    <span class="pillstat clock" id="playClockBox" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span id="playClock"></span></span>
     <span class="pillstat" id="coinBox" aria-label="coins"><span class="coin"></span><span id="playCoins">0</span></span>
   </div>
   <div class="stage" id="stage"></div>
@@ -499,6 +532,36 @@ function termNow(){ const m = new Date().getMonth(); return m >= 8 ? 'autumn' : 
 function progress(){ player.progress = player.progress || {}; return (player.progress[stageKey()] = player.progress[stageKey()] || []); }
 const starTotal = p => Object.values(p.progress || {}).reduce((a,arr) => a + arr.reduce((x,y) => x + (y||0), 0), 0);
 
+/* ======================= SETTINGS + PLAY TIME ======================= */
+// limit: daily minutes per child (0 = no limit). timer: Speedy Tap countdown (normal / relaxed / off).
+let settings = Object.assign({limit: 0, timer: 'normal'}, store.get('settings', {}));
+const saveSettings = () => store.set('settings', settings);
+const today = () => new Date().toLocaleDateString('en-CA');
+function timeRec(p){ if(!p.time || p.time.date !== today()) p.time = {date: today(), used: 0, extra: 0}; return p.time; }
+function timeLeft(p = player){ if(!settings.limit || !p) return Infinity; const t = timeRec(p); return (settings.limit + t.extra)*60 - t.used; }
+let clockOn = false;   // true on the map and inside a level
+function renderClock(){
+  const left = timeLeft();
+  ['map','play'].forEach(v => {
+    const box = $('#'+v+'ClockBox');
+    box.hidden = !isFinite(left);
+    if(!isFinite(left)) return;
+    const l = Math.max(0, left);
+    $('#'+v+'Clock').textContent = l >= 60 ? `${Math.ceil(l/60)} min` : `0:${String(l).padStart(2,'0')}`;
+    box.classList.toggle('low', l <= 60);
+    box.setAttribute('aria-label', `time left: ${$('#'+v+'Clock').textContent}`);
+  });
+}
+setInterval(() => {
+  if(!player || !clockOn || document.visibilityState !== 'visible') return;
+  const t = timeRec(player); t.used++;
+  if(t.used % 10 === 0) save();
+  renderClock();
+  const left = timeLeft();
+  if(left === 60){ ['#mapClockBox','#playClockBox'].forEach(s => { const b = $(s); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }); }
+  if(left <= 0 && view === 'map'){ save(); showTimesUp(); }
+}, 1000);
+
 /* ======================= WORD PICKING ======================= */
 function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
 function greenFocus(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.focus.includes(w[3])); }
@@ -539,7 +602,7 @@ function lookAlikes(w, pool, n){
 let gameId = 0, view = '';
 const live = id => id === gameId;
 function show(id, scene){
-  gameId++; view = id;
+  gameId++; view = id; clockOn = false;
   ['setup','map','play'].forEach(v => $('#'+v).hidden = v !== id);
   document.body.dataset.scene = scene || '';
   window.scrollTo(0,0);
@@ -582,10 +645,11 @@ function showPlayers(){
       ${players.map(p => `<button class="choice" data-id="${esc(p.id)}"><span class="big" aria-hidden="true">${p.avatar}</span><b style="font-size:1.1rem">${esc(p.name)}</b><small><span class="coin"></span>${p.coins}</small></button>`).join('')}
       <button class="choice add" id="addP" aria-label="New player"><span class="big">+</span><b style="font-size:1.1rem">New</b></button>
     </div>
-    <div class="setup-actions"><button class="pill" id="pBoard"><span aria-hidden="true">🏆</span> Leaders</button><button class="pill" id="pSounds">Sounds</button></div>`);
+    <div class="setup-actions"><button class="pill" id="pBoard"><span aria-hidden="true">🏆</span> Leaders</button><button class="pill" id="pSounds">Sounds</button><button class="pill" id="pSet"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg> Grown-ups</button></div>`);
+  $('#pSet').onclick = () => parentGate(() => showSettings(showPlayers), showPlayers);
   $('#setupIn').querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
     usePlayer(players.find(p => p.id === b.dataset.id));
-    if(year && term) showMap(); else askClass();
+    if(timeLeft() <= 0) showTimesUp(); else if(year && term) showMap(); else askClass();
   });
   $('#addP').onclick = newPlayer;
   $('#pBoard').onclick = () => showBoard(showPlayers);
@@ -651,7 +715,9 @@ function askTerm(y){
 /* ======================= MAP ======================= */
 function currentLevel(){ const pr = progress(); const i = LEVELS.findIndex((_,k) => !pr[k]); return i < 0 ? LEVELS.length : i; }
 function showMap(){
+  if(timeLeft() <= 0) return showTimesUp();
   show('map', 'map-' + term);
+  clockOn = true; renderClock();
   $('#mapAva').textContent = player.avatar; $('#mapName').textContent = player.name;
   $('#mapStars').textContent = starTotal(player);
   refreshCoins();
@@ -703,6 +769,7 @@ function shell(title, scene, total, back){
   backTo = back || showMap;
   $('#gameTitle').textContent = title;
   $('#coinBox').hidden = !player;
+  $('#playClockBox').hidden = true;
   refreshCoins();
   $('#pips').hidden = !total;
   $('#pips').innerHTML = Array.from({length: total || 0}, () => '<i></i>').join('');
@@ -715,11 +782,13 @@ function pip(i, state){
   if(ps[i]){ if(state) ps[i].classList.add(state); else ps[i].classList.add('now'); }
 }
 function startLevel(i){
+  if(timeLeft() <= 0) return showTimesUp();
   const L = LEVELS[i];
   const scene = L.k === 'g' ? 'green' : L.k === 'r' ? 'red' : 'mix';
   run = {i, good:0, total:0, coins:0, stars:null};
   const title = `${L.boss ? 'Trophy level' : 'Level ' + (i+1)} · ${MECH[L.m]}`;
   const done = () => finishLevel();
+  clockOn = true;
   if(L.m === 'tap'){
     const items = L.k === 'mix' ? shuffle([...greenItems(4), ...redItems(4)]) : L.k === 'g' ? greenItems(6) : redItems(6);
     run.total = items.length; playTap(shell(title, scene, items.length), items, done);
@@ -731,6 +800,7 @@ function startLevel(i){
     const n = year === 'reception' ? 3 : 4;
     run.total = n; playPairs(shell(title, scene, n), L.k, n, done);
   }
+  clockOn = true; renderClock();
 }
 function finishLevel(){
   const r = run, L = LEVELS[r.i];
@@ -742,6 +812,7 @@ function finishLevel(){
   player.coins += stars + treasure; r.coins += stars + treasure; save();
   refreshCoins(true);
   document.body.dataset.scene = 'done';
+  clockOn = false;
   const head = stars === 3 ? 'Superstar!' : stars === 2 ? 'Great reading!' : 'Well done!';
   const next = r.i + 1 < LEVELS.length;
   stage.innerHTML = `<div class="endcard">
@@ -760,14 +831,20 @@ function finishLevel(){
   if(next) $('#nextLvl').onclick = () => startLevel(r.i + 1);
   $('#again').onclick = () => startLevel(r.i);
   $('#toMap').onclick = showMap;
-  ($('#nextLvl') || $('#toMap')).focus();
+  if(timeLeft() <= 0){
+    clockOn = false;
+    stage.querySelector('.btnrow').innerHTML = '<button class="btn sun" id="tuBtn">Next →</button>';
+    $('#tuBtn').onclick = showTimesUp;
+  }
+  ($('#nextLvl') || $('#tuBtn') || $('#toMap')).focus();
   if(stars >= 2 || treasure){ confetti(); setTimeout(() => react('.endcard .critter','happy'), 100); }
 }
 
 /* ======================= MECHANIC 1: SPEEDY TAP ======================= */
 function playTap(id, items, done){
   const nOpts = year === 'reception' ? 3 : 4;
-  const limit = year === 'reception' ? 15000 : 10000;
+  const limit = (year === 'reception' ? 15000 : 10000) * (settings.timer === 'relaxed' ? 2 : 1);
+  const noTimer = settings.timer === 'off';
   const fast = year === 'reception' ? 5000 : 3500;
   let i = 0;
   function round(){
@@ -789,7 +866,7 @@ function playTap(id, items, done){
     }
     stage.innerHTML = `<div class="prompt">${prompt}</div>
       ${it.kind === 'g' ? '<div class="tools"><button class="tool" id="fred">Sound it out</button></div>' : ''}
-      <div class="timer" id="timer"><i></i></div>
+      <div class="timer" id="timer"${noTimer ? ' style="visibility:hidden"' : ''}><i></i></div>
       <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">${tiles}</div>`;
     const bar = $('#timer i'), timerBox = $('#timer');
     const t0 = performance.now();
@@ -803,7 +880,7 @@ function playTap(id, items, done){
       }, k*520));
     };
     function tick(now){
-      if(!live(id) || over) return;
+      if(!live(id) || over || noTimer) return;
       const left = 1 - (now - t0)/limit;
       bar.style.transform = `scaleX(${Math.max(0,left)})`;
       timerBox.classList.toggle('low', left < .3);
@@ -1079,6 +1156,95 @@ function playPairs(id, kind, n, done){
   });
 }
 
+/* ======================= TIME'S UP ======================= */
+function showTimesUp(){
+  save();
+  setupScreen(`
+    <div class="duo">${goCritter().replace('critter go','critter go sleepy')}${stopCritter().replace('critter stop','critter stop sleepy')}</div>
+    <h1>Time's up!</h1>
+    <div class="namebox"><span class="big" aria-hidden="true">${player ? player.avatar : '🌙'}</span>
+      <p style="margin:0;font-size:1.2rem;font-weight:500">Great reading today${player ? ', ' + esc(player.name) : ''}! The critters are having a rest. Come back tomorrow.</p></div>
+    <div class="setup-actions">
+      <button class="btn alt" id="tuPlayers">Change player</button>
+      <button class="btn" id="tuGrown">${'Grown-ups'}</button>
+    </div>`);
+  $('#tuPlayers').onclick = showPlayers;
+  $('#tuGrown').onclick = () => parentGate(() => showSettings(showMap), showTimesUp);
+}
+
+/* ======================= GROWN-UP GATE + SETTINGS ======================= */
+function parentGate(onPass, onCancel){
+  const a = 4 + Math.floor(Math.random()*6), b = 5 + Math.floor(Math.random()*5);
+  setupScreen(`
+    <h1>Grown-ups only</h1>
+    <form class="namebox" id="gateForm">
+      <label for="gateAns">To open settings, answer this sum.</label>
+      <span class="gatesum">${a} + ${b} = ?</span>
+      <input id="gateAns" inputmode="numeric" pattern="[0-9]*" maxlength="3" autocomplete="off" aria-label="answer">
+      <button class="btn" type="submit">Open settings</button>
+    </form>
+    <button class="linkback" id="setupBack">← Back</button>`);
+  $('#setupBack').onclick = onCancel;
+  $('#gateForm').onsubmit = e => {
+    e.preventDefault();
+    if(+$('#gateAns').value === a + b) onPass();
+    else { shake($('#gateForm')); $('#gateAns').value = ''; $('#gateAns').focus(); }
+  };
+  $('#gateAns').focus();
+}
+function showSettings(back){
+  shell('Grown-up settings', 'board', 0, back);
+  const fmt = sec => { const m = Math.floor(sec/60); return m < 1 ? 'less than 1 min' : m + ' min'; };
+  const limits = [0, 10, 15, 20, 30, 45, 60];
+  const timers = [['normal','Normal'],['relaxed','Relaxed (twice as long)'],['off','Off']];
+  stage.innerHTML = `
+    <div class="setcard">
+      <h3>Daily play time</h3>
+      <p class="hint">How long each child can play each day. Time counts on the map and in games, and starts again every morning. When time runs out, they finish the level they are on first.</p>
+      <div class="chips" role="group" aria-label="Daily play time">${limits.map(m =>
+        `<button class="chip" data-limit="${m}" aria-pressed="${settings.limit === m}">${m ? m + ' min' : 'No limit'}</button>`).join('')}</div>
+    </div>
+    <div class="setcard">
+      <h3>Speedy Tap countdown</h3>
+      <p class="hint">The bar that runs down while a child chooses an answer.</p>
+      <div class="chips" role="group" aria-label="Speedy Tap countdown">${timers.map(([k,n]) =>
+        `<button class="chip" data-timer="${k}" aria-pressed="${settings.timer === k}">${n}</button>`).join('')}</div>
+    </div>
+    <div class="setcard">
+      <h3>Players</h3>
+      <p class="hint">Time played today${settings.limit ? `, out of ${settings.limit} min` : ''}.</p>
+      <div id="plist">${players.length ? players.map(p => {
+        const t = timeRec(p), lim = settings.limit ? settings.limit + t.extra : 0;
+        return `<div class="prow" data-id="${esc(p.id)}">
+          <span class="bava" aria-hidden="true">${p.avatar}</span>
+          <span class="pinfo">${esc(p.name)}<small>${fmt(t.used)} today${t.extra ? ` · +${t.extra} min extra` : ''}${lim && t.used >= lim*60 ? ' · time is up' : ''}</small></span>
+          ${settings.limit ? '<button class="mini" data-act="extra">+10 min today</button>' : ''}
+          <button class="mini danger" data-act="remove">Remove</button>
+        </div>`;
+      }).join('') : '<p class="hint">No players yet.</p>'}</div>
+    </div>`;
+  save();
+  stage.querySelectorAll('[data-limit]').forEach(b => b.onclick = () => { settings.limit = +b.dataset.limit; saveSettings(); showSettings(back); });
+  stage.querySelectorAll('[data-timer]').forEach(b => b.onclick = () => { settings.timer = b.dataset.timer; saveSettings(); showSettings(back); });
+  stage.querySelectorAll('.prow').forEach(row => {
+    const p = players.find(x => x.id === row.dataset.id);
+    const extra = row.querySelector('[data-act="extra"]');
+    if(extra) extra.onclick = () => { timeRec(p).extra += 10; save(); showSettings(back); };
+    row.querySelector('[data-act="remove"]').onclick = e => {
+      const cell = e.currentTarget;
+      cell.outerHTML = `<span class="pinfo" style="flex:0 1 auto;min-width:0">Remove ${esc(p.name)} and their coins?</span><button class="mini yes" data-act="yes">Yes, remove</button><button class="mini" data-act="no">Keep</button>`;
+      row.querySelector('[data-act="no"]').onclick = () => showSettings(back);
+      row.querySelector('[data-act="yes"]').onclick = () => {
+        players = players.filter(x => x.id !== p.id);
+        if(player && player.id === p.id){ player = null; year = term = null; back = showPlayers; }
+        save(); showSettings(back);
+      };
+    };
+  });
+  // leaving settings: go somewhere that still makes sense
+  backTo = () => { if(!player) return showPlayers(); if(back === showTimesUp || back === showMap) return showMap(); back(); };
+}
+
 /* ======================= LEADERBOARD ======================= */
 function showBoard(back){
   shell('Leaderboard', 'board', 0, back);
@@ -1136,6 +1302,7 @@ $('#whoBtn').onclick = showPlayers;
 $('#changeStage').onclick = askClass;
 $('#boardBtn').onclick = () => showBoard(showMap);
 $('#soundsBtn').onclick = () => showSounds(showMap);
+$('#setBtn').onclick = () => parentGate(() => showSettings(showMap), showMap);
 if(player && year && term) showMap();
 else if(player) askClass();
 else showPlayers();

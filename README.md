@@ -27,6 +27,15 @@ All progress is saved in the browser on that device. Nothing is sent anywhere.
 
 Drag & Match also works by tapping a word and then tapping where it goes.
 
+## Grown-up settings
+
+Tap the gear on the map (or **Grown-ups** on the "Who's playing?" screen) and answer a quick sum to open settings:
+
+- **Daily play time** – No limit, or 10, 15, 20, 30, 45 or 60 minutes per child per day. A timer on the map and in games shows the time left and turns red in the last minute. Time only counts on the map and in games, and starts again each morning. When time runs out, the child finishes the level they are on and then sees a "Time's up, come back tomorrow" screen.
+- **+10 min today** – give one child extra time for today.
+- **Speedy Tap countdown** – Normal, Relaxed (twice as long) or Off.
+- **Players** – see how long each child played today, or remove a player.
+
 ## Sounds & Red Words
 
 A page for children and parents showing RWI Set 1, Set 2 and Set 3 sounds in teaching order, and the red words for each class and term. Sounds are marked the RWI way: a dot under a single sound, a dash under special friends, and an arc joining split sounds such as a-e.

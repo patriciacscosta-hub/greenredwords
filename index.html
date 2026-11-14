@@ -60,12 +60,32 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 .hero p{margin:0;max-width:34ch;font-size:1.1rem;font-weight:500;color:var(--ink)}
 .hero p b{font-weight:700}
 .hero p .g{color:var(--go)} .hero p .r{color:var(--coral)}
-.topnote{position:absolute;top:28px;left:max(28px,env(safe-area-inset-left,0px));color:var(--white);font-weight:700;font-size:1.15rem}
-.years{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-.years button{border-radius:999px;padding:12px 26px;font-weight:700;font-size:1.05rem;letter-spacing:.06em;text-transform:uppercase;
-  background:rgba(255,255,255,.35);color:var(--white);transition:background .2s,color .2s,transform .15s;min-height:50px}
-.years button[aria-pressed="true"]{background:var(--white);color:var(--ink)}
-.years button:active{transform:scale(.96)}
+.stagechip{background:var(--white);color:var(--ink);border-radius:999px;padding:7px 7px 7px 22px;display:inline-flex;align-items:center;gap:14px;
+  font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:1.05rem;min-height:54px;transition:transform .15s}
+.stagechip:hover{transform:translateY(-2px)}
+.stagechip .chg{background:var(--sky);color:var(--white);border-radius:999px;padding:7px 16px;font-size:.85rem}
+.hero p.focusline{font-size:.98rem;color:var(--ink);background:rgba(255,255,255,.45);border-radius:18px;padding:8px 16px;max-width:40ch}
+
+/* ---------- Setup (class + term) ---------- */
+.setup{min-height:100%;display:flex;align-items:center;justify-content:center;padding-block:40px;
+  padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+.setup-in{display:flex;flex-direction:column;align-items:center;gap:26px;text-align:center;max-width:920px;width:100%}
+.setup .duo{display:flex;gap:6px;align-items:flex-end}
+.setup .duo .critter{width:clamp(80px,12vw,120px);height:auto}
+.setup h1{color:var(--white);font-size:clamp(2rem,6vw,3.6rem);text-transform:uppercase;letter-spacing:.04em}
+.choices{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:16px;width:100%}
+.choice .critter{width:clamp(70px,10vw,96px);height:auto}
+.choice{border-radius:var(--r);padding:28px 18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-height:200px;position:relative;transition:transform .15s}
+.choice:hover{transform:translateY(-4px)}
+.choice:active{transform:scale(.97)}
+.choice .big{font-size:3.6rem;line-height:1}
+.choice b{font-size:clamp(1.4rem,3.5vw,1.9rem);letter-spacing:.06em;text-transform:uppercase}
+.choice small{font-weight:500;color:var(--ink-soft);font-size:1rem}
+.choice .now{position:absolute;top:12px;right:12px;background:var(--ink);color:var(--white);border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+.c-mint{background:var(--mint)} .c-pink{background:var(--pink)} .c-peach{background:#FFD9BF} .c-sun{background:#FFEBA8} .c-blue{background:var(--blue)}
+.linkback{color:var(--white);font-weight:700;letter-spacing:.06em;text-transform:uppercase;text-decoration:underline;text-underline-offset:4px;min-height:44px}
+.listbox h4{margin:14px 0 8px;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.listbox h4:first-of-type{margin-top:0}
 
 .bands{display:flex;flex-direction:column;border-left:14px solid rgba(38,48,77,.08)}
 .band{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-height:170px;
@@ -212,17 +232,24 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 </style>
 </head>
 <body>
+<!-- SETUP: which class + which term -->
+<main class="setup" id="setup" hidden>
+  <div class="setup-in">
+    <div class="duo" id="setupDuo"></div>
+    <h1 id="setupQ">Which class are you in?</h1>
+    <div class="choices" id="choices"></div>
+    <button class="linkback" id="setupBack" hidden>← Back</button>
+  </div>
+</main>
+
 <!-- HOME -->
 <main class="home" id="home">
   <section class="hero">
-    <span class="topnote up" id="classNote">Reception</span>
     <div class="duo" id="heroDuo"></div>
     <h1>Word Lights</h1>
     <p><b class="g">Green words</b> go: sound them out. <b class="r">Red words</b> stop: you just know them.</p>
-    <div class="years" role="group" aria-label="Choose class">
-      <button id="yrR" data-year="reception" aria-pressed="true">Reception</button>
-      <button id="yrY" data-year="year1" aria-pressed="false">Year 1</button>
-    </div>
+    <button class="stagechip" id="changeStage" aria-label="Change class and term"><span id="stageLabel">Reception · Autumn</span><span class="chg">Change</span></button>
+    <p class="focusline" id="focusLine"></p>
   </section>
   <nav class="bands" aria-label="Games">
     <button class="band b-mint" id="goSpeedy">
@@ -255,38 +282,54 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
     <h2 id="gameTitle"></h2>
     <div class="pips" id="pips" aria-hidden="true"></div>
     <div class="score" id="scoreBox" aria-live="polite"><span class="st">★</span><span id="scoreNum">0</span></div>
-    <button class="pill" id="soundBtn" aria-pressed="true">Sound on</button>
   </div>
   <div class="stage" id="stage"></div>
 </main>
 
 <script>
 /* ======================= WORD BANKS ======================= */
-// [word, sounds (space separated), picture]
-const GREEN = {
-  reception: [
-    ['cat','c a t','🐱'],['dog','d o g','🐶'],['pig','p i g','🐷'],['sun','s u n','☀️'],['hat','h a t','🎩'],
-    ['bed','b e d','🛏️'],['bus','b u s','🚌'],['fox','f o x','🦊'],['hen','h e n','🐔'],['map','m a p','🗺️'],
-    ['pen','p e n','🖊️'],['cup','c u p','☕'],['bat','b a t','🦇'],['box','b o x','📦'],['net','n e t','🥅'],
-    ['web','w e b','🕸️'],['van','v a n','🚐'],['leg','l e g','🦵'],['bag','b a g','👜'],['ant','a n t','🐜'],
-    ['egg','e gg','🥚'],['rat','r a t','🐀'],['fish','f i sh','🐟'],['ship','sh i p','🚢'],['duck','d u ck','🦆'],
-    ['sock','s o ck','🧦'],['ring','r i ng','💍'],['king','k i ng','🤴'],['chick','ch i ck','🐤'],['shell','sh e ll','🐚'],
-    ['bell','b e ll','🔔'],['chips','ch i p s','🍟']
-  ],
-  year1: [
-    ['tree','t r ee','🌳'],['bee','b ee','🐝'],['sheep','sh ee p','🐑'],['moon','m oo n','🌙'],['spoon','s p oo n','🥄'],
-    ['star','s t ar','⭐'],['car','c ar','🚗'],['shark','sh ar k','🦈'],['fork','f or k','🍴'],['corn','c or n','🌽'],
-    ['snow','s n ow','❄️'],['boat','b oa t','⛵'],['goat','g oa t','🐐'],['rain','r ai n','🌧️'],['snail','s n ai l','🐌'],
-    ['train','t r ai n','🚆'],['light','l igh t','💡'],['night','n igh t','🌃'],['chair','ch air','🪑'],['bird','b ir d','🐦'],
-    ['shirt','sh ir t','👕'],['mouth','m ou th','👄'],['cloud','c l ou d','☁️'],['boy','b oy','👦'],['cow','c ow','🐄'],
-    ['owl','ow l','🦉'],['crown','c r ow n','👑'],['coin','c oi n','🪙'],['tea','t ea','🍵'],['leaf','l ea f','🍃'],
-    ['frog','f r o g','🐸'],['drum','d r u m','🥁'],['crab','c r a b','🦀'],['flag','f l a g','🚩'],['clock','c l o ck','⏰']
-  ]
+// [word, sounds (space separated), picture, stage tag]
+// Tags follow the usual Read Write Inc. order:
+//   s1  = Set 1 single sounds (CVC words)     sf = Set 1 special friends (sh th ch qu ng nk ck, double letters)
+//   cc  = words with consonant blends (frog, drum)
+//   s2  = Set 2 sounds (ay ee igh ow oo ar or air ir ou oy)
+//   s3  = Set 3 sounds (ea oi aw ai oa ow ire ear ...)
+const WORDS = [
+  ['cat','c a t','🐱','s1'],['dog','d o g','🐶','s1'],['pig','p i g','🐷','s1'],['sun','s u n','☀️','s1'],['hat','h a t','🎩','s1'],
+  ['bed','b e d','🛏️','s1'],['bus','b u s','🚌','s1'],['fox','f o x','🦊','s1'],['hen','h e n','🐔','s1'],['map','m a p','🗺️','s1'],
+  ['pen','p e n','🖊️','s1'],['cup','c u p','☕','s1'],['bat','b a t','🦇','s1'],['box','b o x','📦','s1'],['net','n e t','🥅','s1'],
+  ['web','w e b','🕸️','s1'],['van','v a n','🚐','s1'],['leg','l e g','🦵','s1'],['bag','b a g','👜','s1'],['ant','a n t','🐜','s1'],
+  ['rat','r a t','🐀','s1'],
+  ['egg','e gg','🥚','sf'],['fish','f i sh','🐟','sf'],['ship','sh i p','🚢','sf'],['duck','d u ck','🦆','sf'],['sock','s o ck','🧦','sf'],
+  ['ring','r i ng','💍','sf'],['king','k i ng','🤴','sf'],['chick','ch i ck','🐤','sf'],['shell','sh e ll','🐚','sf'],['bell','b e ll','🔔','sf'],
+  ['chips','ch i p s','🍟','sf'],
+  ['frog','f r o g','🐸','cc'],['drum','d r u m','🥁','cc'],['crab','c r a b','🦀','cc'],['flag','f l a g','🚩','cc'],['clock','c l o ck','⏰','cc'],
+  ['tree','t r ee','🌳','s2'],['bee','b ee','🐝','s2'],['sheep','sh ee p','🐑','s2'],['moon','m oo n','🌙','s2'],['spoon','s p oo n','🥄','s2'],
+  ['star','s t ar','⭐','s2'],['car','c ar','🚗','s2'],['shark','sh ar k','🦈','s2'],['fork','f or k','🍴','s2'],['corn','c or n','🌽','s2'],
+  ['snow','s n ow','❄️','s2'],['light','l igh t','💡','s2'],['night','n igh t','🌃','s2'],['chair','ch air','🪑','s2'],['bird','b ir d','🐦','s2'],
+  ['shirt','sh ir t','👕','s2'],['mouth','m ou th','👄','s2'],['cloud','c l ou d','☁️','s2'],['boy','b oy','👦','s2'],
+  ['boat','b oa t','⛵','s3'],['goat','g oa t','🐐','s3'],['rain','r ai n','🌧️','s3'],['snail','s n ai l','🐌','s3'],['train','t r ai n','🚆','s3'],
+  ['cow','c ow','🐄','s3'],['owl','ow l','🦉','s3'],['crown','c r ow n','👑','s3'],['coin','c oi n','🪙','s3'],['tea','t ea','🍵','s3'],
+  ['leaf','l ea f','🍃','s3'],['peach','p ea ch','🍑','s3'],['beach','b ea ch','🏖️','s3'],['saw','s aw','🪚','s3'],['straw','s t r aw','🥤','s3'],
+  ['fire','f ire','🔥','s3'],['ear','ear','👂','s3']
+];
+// Red words introduced each term (each term also keeps the earlier ones of that class)
+const RED_NEW = {
+  'reception-autumn': ['I','the','to','no','go','my'],
+  'reception-spring': ['of','he','she','we','me','be','you','said','your'],
+  'reception-summer': ['was','are','put','all','they','her','some','come'],
+  'year1-autumn':     ['said','was','what','want','any','many','there','where','who','why'],
+  'year1-spring':     ['could','would','should','some','come','one','once','two','does','other','were'],
+  'year1-summer':     ['water','call','talk','walk','small','tall','school','friend','watch']
 };
-const RED = {
-  reception: ['the','to','I','no','go','of','my','he','she','we','me','be','you','said','your','was','are','put','all','they','her'],
-  year1: ['said','was','what','want','any','many','there','where','who','why','could','would','should','some','come','one',
-          'two','does','other','were','water','call','talk','walk','small','tall','school','friend','watch','once']
+const TERMS = ['autumn','spring','summer'];
+const STAGES = {
+  'reception-autumn': {green:['s1'],                focus:['s1'],      about:'Set 1 sounds and short words like cat, dog and sun.'},
+  'reception-spring': {green:['s1','sf'],           focus:['sf'],      about:'Set 1 special friends: sh, th, ch, ng, nk, ck.'},
+  'reception-summer': {green:['s1','sf','cc','s2'], focus:['cc','s2'], about:'Longer words like frog, and first Set 2 sounds: ee, igh, oo, ar.'},
+  'year1-autumn':     {green:['sf','cc','s2'],      focus:['s2'],      about:'Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy.'},
+  'year1-spring':     {green:['cc','s2','s3'],      focus:['s3'],      about:'Set 3 sounds: ea, oi, aw, ai, oa, ow, ire, ear.'},
+  'year1-summer':     {green:['cc','s2','s3'],      focus:['s2','s3'], about:'All Set 2 and Set 3 sounds, and every Year 1 red word.'}
 };
 // Year 1 red word sentences. alt = other red words that would also make sense (kept out of the same round).
 const SENTENCES = [
@@ -313,7 +356,11 @@ const SENTENCES = [
   {s:'My cat ___ not bark.', a:'does', alt:['could','would','should']},
   {s:'Do you have ___ pets?', a:'any', alt:['many','some','two']},
   {s:'I like to ___ TV.', a:'watch', alt:[]},
-  {s:'I ___ my mum on the phone.', a:'call', alt:[]}
+  {s:'I ___ my mum on the phone.', a:'call', alt:[]},
+  {s:'There are ___ cars on the road.', a:'many', alt:['two','some','any']},
+  {s:'She ___ it was fun.', a:'said', alt:[]},
+  {s:'It ___ cold today.', a:'was', alt:[]},
+  {s:'___ can I sit?', a:'where', alt:['why']}
 ];
 
 /* ======================= CRITTERS ======================= */
@@ -357,9 +404,32 @@ const store = {
   get(k,d){ try{ const v = localStorage.getItem('wordlights:'+k); return v===null ? d : JSON.parse(v); }catch(e){ return d; } },
   set(k,v){ try{ localStorage.setItem('wordlights:'+k, JSON.stringify(v)); }catch(e){} }
 };
-let year = store.get('year','reception');
-if(!GREEN[year]) year = 'reception';
-let soundOn = store.get('sound', true);
+let year = store.get('year', null);
+let term = store.get('term', null);
+if(!['reception','year1'].includes(year)) year = null;
+if(!TERMS.includes(term)) term = null;
+const stageKey = () => `${year}-${term}`;
+const stageName = () => `${year==='reception' ? 'Reception' : 'Year 1'} · ${term[0].toUpperCase()+term.slice(1)}`;
+function termNow(){ const m = new Date().getMonth(); return m >= 8 ? 'autumn' : m <= 2 ? 'spring' : 'summer'; }
+// Green words this term can use, and the ones it is focusing on
+function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
+function greenFocus(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.focus.includes(w[3])); }
+// Red words: everything taught so far in this class, newest first
+function redPool(){
+  const out = [];
+  for(const t of TERMS){ out.push(...RED_NEW[`${year}-${t}`]); if(t === term) break; }
+  return [...new Set(out)];
+}
+const redFocus = () => RED_NEW[stageKey()];
+// Pick n items, about 60% from this term's focus and the rest as review
+function mix(focus, pool, n){
+  const f = shuffle(focus.slice()), keys = new Set(f);
+  const rest = shuffle(pool.filter(x => !keys.has(x)));
+  const nf = rest.length ? Math.min(f.length, Math.ceil(n*.6)) : f.length;
+  let out = f.slice(0, nf).concat(rest.slice(0, n-nf));
+  if(out.length < n) out = out.concat(f.slice(nf, nf + n - out.length));
+  return shuffle(out.slice(0, n));
+}
 let gameId = 0;
 const live = id => id === gameId;
 
@@ -367,44 +437,6 @@ function soundButtons(sounds){
   return '<span class="sw">' + sounds.split(' ').map(g =>
     `<span class="gph"><span>${esc(g)}</span><span class="mk ${g.length>1?'bar':'dot'}"></span></span>`).join('') + '</span>';
 }
-
-/* ---- voice + sound effects ---- */
-let voice = null;
-function pickVoice(){
-  try{
-    const vs = speechSynthesis.getVoices();
-    voice = vs.find(v=>/en[-_]GB/i.test(v.lang)) || vs.find(v=>/^en/i.test(v.lang)) || null;
-  }catch(e){}
-}
-if('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.onvoiceschanged = pickVoice; }catch(e){} }
-function say(text){
-  if(!soundOn || !('speechSynthesis' in window)) return;
-  try{
-    speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    if(voice) u.voice = voice;
-    u.lang = voice ? voice.lang : 'en-GB'; u.rate = .8; u.pitch = 1.05;
-    speechSynthesis.speak(u);
-  }catch(e){}
-}
-let actx = null;
-function tone(freqs, dur=.12, type='sine'){
-  if(!soundOn) return;
-  try{
-    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
-    const t = actx.currentTime;
-    freqs.forEach((f,i)=>{
-      const o = actx.createOscillator(), g = actx.createGain();
-      o.type = type; o.frequency.value = f;
-      g.gain.setValueAtTime(.0001, t+i*dur);
-      g.gain.exponentialRampToValueAtTime(.16, t+i*dur+.02);
-      g.gain.exponentialRampToValueAtTime(.0001, t+(i+1)*dur);
-      o.connect(g).connect(actx.destination);
-      o.start(t+i*dur); o.stop(t+(i+1)*dur+.03);
-    });
-  }catch(e){}
-}
-const sfx = { ok:()=>tone([660,990]), bad:()=>tone([240,190],.16,'triangle'), win:()=>tone([523,659,784,1046],.15), tick:()=>tone([880],.05) };
 
 /* ---- drag (mouse + touch) with tap-to-select fallback ---- */
 let selected = null;
@@ -451,7 +483,6 @@ function draggable(el, onDrop){
   el.addEventListener('click', () => {
     if(el.dataset.justDragged || el.dataset.locked) return;
     selectCard(selected === el ? null : el);
-    if(selected) say(el.dataset.word);
   });
 }
 function dropTarget(el, onDrop){
@@ -471,7 +502,7 @@ function flash(text){
 /* ======================= SHELL ======================= */
 let score = 0;
 function showView(id, scene){
-  $('#home').hidden = id!=='home'; $('#play').hidden = id!=='play';
+  $('#home').hidden = id!=='home'; $('#play').hidden = id!=='play'; $('#setup').hidden = id!=='setup';
   document.body.dataset.scene = scene || '';
   window.scrollTo(0,0);
 }
@@ -492,9 +523,9 @@ function pip(i, state){
 function addStar(){ score++; $('#scoreNum').textContent = score; }
 
 function finish(game, total, extra){
-  const best = store.get(`best:${game}:${year}`, null);
+  const best = store.get(`best:${game}:${stageKey()}`, null);
   const isBest = !best || score/total > best.s/best.t;
-  if(isBest) store.set(`best:${game}:${year}`, {s:score, t:total});
+  if(isBest) store.set(`best:${game}:${stageKey()}`, {s:score, t:total});
   const ratio = score/total;
   const starsOf3 = ratio >= .9 ? 3 : ratio >= .6 ? 2 : ratio > 0 ? 1 : 0;
   const head = starsOf3===3 ? 'Superstar!' : starsOf3===2 ? 'Great reading!' : 'Good try!';
@@ -509,9 +540,9 @@ function finish(game, total, extra){
   $('#again').onclick = () => GAMES[game]();
   $('#home2').onclick = goHome;
   $('#again').focus();
-  sfx.win();
+ 
   if(starsOf3 >= 2){ confetti(); setTimeout(()=>react('.endcard .critter','happy'), 100); }
-  say(head);
+ 
 }
 function confetti(){
   const box = document.createElement('div'); box.className = 'confetti';
@@ -532,7 +563,7 @@ function startSpeedy(){
   const ROUNDS = 10;
   const nOpts = year==='reception' ? 3 : 4;
   const limit = year==='reception' ? 14000 : 9000;
-  const words = shuffle(GREEN[year].slice()).slice(0, ROUNDS);
+  const words = mix(greenFocus(), greenPool(), ROUNDS);
   const id = shell('Speedy Tap', 'speedy', words.length);
   let i = 0, speedy = 0;
 
@@ -541,7 +572,7 @@ function startSpeedy(){
     if(i >= words.length) return finish('speedy', words.length, speedy ? `${speedy} ${speedy===1?'was':'were'} speedy!` : '');
     pip(i);
     const [w, sounds, pic] = words[i];
-    const others = shuffle(GREEN[year].filter(x => x[0]!==w && x[2]!==pic)).slice(0, nOpts-1);
+    const others = shuffle(greenPool().filter(x => x[0]!==w && x[2]!==pic)).slice(0, nOpts-1);
     const opts = shuffle([words[i], ...others]);
     stage.innerHTML = `
       <div class="prompt">
@@ -550,7 +581,6 @@ function startSpeedy(){
       </div>
       <div class="tools">
         <button class="tool" id="fred">Sound it out</button>
-        <button class="tool" id="hear">Hear it</button>
       </div>
       <div class="timer" id="timer"><i></i></div>
       <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">
@@ -560,13 +590,12 @@ function startSpeedy(){
     const t0 = performance.now();
     let over = false, missed = false;
 
-    $('#hear').onclick = () => say(w);
     $('#fred').onclick = () => {
       const gs = [...stage.querySelectorAll('.bigword .gph')];
       gs.forEach((g,k) => setTimeout(() => {
         if(!live(id)) return;
-        gs.forEach(x=>x.classList.remove('lit')); g.classList.add('lit'); sfx.tick();
-        if(k === gs.length-1) setTimeout(() => { gs.forEach(x=>x.classList.remove('lit')); say(w); }, 500);
+        gs.forEach(x=>x.classList.remove('lit')); g.classList.add('lit');
+        if(k === gs.length-1) setTimeout(() => gs.forEach(x=>x.classList.remove('lit')), 600);
       }, k*520));
     };
 
@@ -588,15 +617,15 @@ function startSpeedy(){
       setTimeout(round, correct ? 1300 : 2000);
     }
     function timeout(){
-      sfx.bad(); react('.prompt .critter','oops');
+      react('.prompt .critter','oops');
       stage.querySelector(`.pic[data-w="${CSS.escape(w)}"]`).classList.add('right');
-      flash('Time!'); say(w);
+      flash('Time!');
       end(false);
     }
     stage.querySelectorAll('.pic').forEach(b => b.onclick = () => {
       if(over || b.disabled) return;
       if(b.dataset.w === w){
-        b.classList.add('right'); sfx.ok(); say(w); react('.prompt .critter','happy');
+        b.classList.add('right'); react('.prompt .critter','happy');
         if(!missed){
           addStar();
           if(performance.now() - t0 < (year==='reception' ? 5000 : 3500)){ speedy++; flash('Speedy!'); }
@@ -604,7 +633,7 @@ function startSpeedy(){
         }
         end(!missed);
       } else {
-        missed = true; b.classList.add('wrong'); b.disabled = true; shake(b); sfx.bad(); react('.prompt .critter','oops');
+        missed = true; b.classList.add('wrong'); b.disabled = true; shake(b); react('.prompt .critter','oops');
       }
     });
   }
@@ -613,7 +642,10 @@ function startSpeedy(){
 
 /* ======================= GAME 2: RED WORD MATCH (drag) ======================= */
 function buildSentenceRounds(n){
-  const pool = shuffle(SENTENCES.slice()), rounds = [], used = new Set();
+  const reds = new Set(redPool()), fresh = new Set(redFocus());
+  // this term's new words first, then review
+  const ok = SENTENCES.filter(x => reds.has(x.a));
+  const pool = [...shuffle(ok.filter(x => fresh.has(x.a))), ...shuffle(ok.filter(x => !fresh.has(x.a)))], rounds = [], used = new Set();
   for(let r=0; r<n; r++){
     const pick = [];
     for(const s of pool){
@@ -625,7 +657,7 @@ function buildSentenceRounds(n){
     pick.forEach(p => used.add(p));
     const answers = pick.map(p=>p.a);
     const blocked = new Set([...answers, ...pick.flatMap(p=>p.alt)]);
-    const spare = shuffle(RED.year1.filter(w => !blocked.has(w)))[0];
+    const spare = shuffle(redPool().filter(w => !blocked.has(w)))[0];
     rounds.push({sentences: pick, cards: shuffle([...answers, spare])});
   }
   return rounds;
@@ -634,9 +666,8 @@ function startMatch(){
   const ROUNDS = 4;
   let rounds;
   if(year === 'reception'){
-    const ws = shuffle(RED.reception.slice()).slice(0, ROUNDS*3);
-    rounds = Array.from({length: ROUNDS}, (_,r) => {
-      const set = ws.slice(r*3, r*3+3);
+    rounds = Array.from({length: ROUNDS}, () => {
+      const set = mix(redFocus(), redPool(), 3);
       return {targets: shuffle(set.slice()), cards: shuffle(set.slice())};
     });
   } else {
@@ -662,7 +693,7 @@ function startMatch(){
     } else {
       body = `<div class="sentences">${R.sentences.map(s => {
           const [a,b] = s.s.split('___');
-          return `<div class="sentence">${a.trim() ? `<span>${esc(a.trim())}</span>` : ''}<span class="slot" role="button" tabindex="0" data-word="${esc(s.a)}" data-cap="${a.trim()?'':'1'}" data-full="${esc(s.s.replace('___', s.a))}" aria-label="gap"></span>${b.trim() ? `<span>${esc(b.trim())}</span>` : ''}</div>`;
+          return `<div class="sentence">${a.trim() ? `<span>${esc(a.trim())}</span>` : ''}<span class="slot" role="button" tabindex="0" data-word="${esc(s.a)}" data-cap="${a.trim()?'':'1'}" aria-label="gap"></span>${b.trim() ? `<span>${esc(b.trim())}</span>` : ''}</div>`;
         }).join('')}</div>`;
     }
     stage.innerHTML = `<div class="howto">${stopCritter()}<p>${help}</p></div>${body}<div class="tray">${cardsHtml}</div>`;
@@ -674,9 +705,7 @@ function startMatch(){
         slot.textContent = slot.dataset.cap ? card.dataset.word[0].toUpperCase() + card.dataset.word.slice(1) : card.dataset.word;
         slot.classList.add('filled'); slot.removeAttribute('data-drop');
         card.remove();
-        sfx.ok(); react('.howto .critter','happy');
-        if(year === 'reception') say(card.dataset.word);
-        else say(slot.dataset.full);
+        react('.howto .critter','happy');
         if(!card.dataset.missed) addStar();
         pip(done, card.dataset.missed ? 'miss' : 'done');
         done++; placed++;
@@ -685,7 +714,7 @@ function startMatch(){
         return true;
       }
       card.dataset.missed = '1'; R.missedAny = true;
-      sfx.bad(); shake(slot); react('.howto .critter','oops');
+      shake(slot); react('.howto .critter','oops');
       return false;
     };
     stage.querySelectorAll('.card').forEach(c => draggable(c, onDrop));
@@ -700,8 +729,8 @@ function startMatch(){
 /* ======================= GAME 3: GREEN OR RED? (sort) ======================= */
 function startSort(){
   const N = 12;
-  const g = shuffle(GREEN[year].slice()).slice(0, N/2).map(x => ({w:x[0], kind:'g', sounds:x[1]}));
-  const rd = shuffle(RED[year].slice()).slice(0, N/2).map(w => ({w, kind:'r'}));
+  const g = mix(greenFocus(), greenPool(), N/2).map(x => ({w:x[0], kind:'g', sounds:x[1]}));
+  const rd = mix(redFocus(), redPool(), N/2).map(w => ({w, kind:'r'}));
   const items = shuffle([...g, ...rd]);
   const id = shell('Green or Red?', 'sort', items.length);
   let i = 0;
@@ -709,12 +738,11 @@ function startSort(){
   stage.innerHTML = `
     <div class="sortarea">
       <div class="basket g" id="bg" role="button" tabindex="0" data-kind="g">${goCritter()}<b>Green word</b><small>I can sound it out</small><div class="got"></div></div>
-      <div class="center"><div id="slotC"></div><button class="tool" id="hear">Hear it</button></div>
+      <div class="center"><div id="slotC"></div></div>
       <div class="basket r" id="br" role="button" tabindex="0" data-kind="r">${stopCritter()}<b>Red word</b><small>I just have to know it</small><div class="got"></div></div>
     </div>
     <div class="feedback" id="fb" aria-live="polite"></div>`;
   const fb = $('#fb');
-  $('#hear').onclick = () => items[i] && say(items[i].w);
 
   function choose(card, basket){
     if(!live(id) || !basket.dataset.kind || card.dataset.locked) return false;
@@ -723,7 +751,7 @@ function startSort(){
       card.dataset.locked = '1';
       if(!card.dataset.missed) addStar();
       pip(i, card.dataset.missed ? 'miss' : 'done');
-      sfx.ok(); say(it.w); react(`#${basket.id} .critter`,'happy');
+      react(`#${basket.id} .critter`,'happy');
       basket.querySelector('.got').insertAdjacentHTML('beforeend', `<span>${esc(it.w)}</span>`);
       fb.innerHTML = it.kind === 'g'
         ? `<span class="g">“${esc(it.w)}” is a green word.</span> Sound it out: ${soundButtons(it.sounds)}`
@@ -732,7 +760,7 @@ function startSort(){
       i++; setTimeout(next, 1600);
       return true;
     }
-    card.dataset.missed = '1'; sfx.bad(); shake(basket); react(`#${basket.id} .critter`,'oops');
+    card.dataset.missed = '1'; shake(basket); react(`#${basket.id} .critter`,'oops');
     fb.innerHTML = it.kind === 'g' ? 'Try again. Can you say each sound?' : 'Try again. Can you really sound this one out?';
     return false;
   }
@@ -756,14 +784,20 @@ function startSort(){
 /* ======================= WORD LISTS (teachers) ======================= */
 function showLists(){
   gameId++;
-  $('#gameTitle').textContent = (year==='reception' ? 'Reception' : 'Year 1') + ' words';
+  $('#gameTitle').textContent = stageName();
   $('#scoreBox').hidden = true; $('#pips').hidden = true;
   showView('play', 'lists');
+  const gf = greenFocus(), gr = greenPool().filter(x => !gf.includes(x));
+  const rf = redFocus(), rr = redPool().filter(w => !rf.includes(w));
   stage.innerHTML = `
-    <p class="listnote">Dots under a letter show one sound. A line shows two or three letters making one sound (special friends). Switch class on the home screen to see the other list.</p>
+    <p class="listnote"><b>This term:</b> ${STAGES[stageKey()].about} About 6 in 10 words in each game come from this term's focus; the rest are review. Dots under a letter show one sound; a line shows letters making one sound together (special friends). Use Change on the home screen to see another class or term.</p>
     <div class="lists">
-      <div class="listbox"><h3 class="g">Green words (${GREEN[year].length})</h3><div class="wordwrap">${GREEN[year].map(x => soundButtons(x[1])).join('')}</div></div>
-      <div class="listbox"><h3 class="r">Red words (${RED[year].length})</h3><div class="wordwrap">${RED[year].map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div></div>
+      <div class="listbox"><h3 class="g">Green words</h3>
+        <h4>Focus this term</h4><div class="wordwrap">${gf.map(x => soundButtons(x[1])).join('')}</div>
+        ${gr.length ? `<h4>Review</h4><div class="wordwrap">${gr.map(x => soundButtons(x[1])).join('')}</div>` : ''}</div>
+      <div class="listbox"><h3 class="r">Red words</h3>
+        <h4>New this term</h4><div class="wordwrap">${rf.map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div>
+        ${rr.length ? `<h4>Review</h4><div class="wordwrap">${rr.map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div>` : ''}</div>
     </div>`;
 }
 
@@ -771,34 +805,56 @@ function showLists(){
 const GAMES = { speedy: startSpeedy, match: startMatch, sort: startSort };
 function goHome(){
   gameId++; selectCard(null);
-  try{ speechSynthesis.cancel(); }catch(e){}
   renderHome(); showView('home', '');
 }
 function renderHome(){
-  $('#yrR').setAttribute('aria-pressed', year==='reception');
-  $('#yrY').setAttribute('aria-pressed', year==='year1');
-  $('#classNote').textContent = year==='reception' ? 'Reception' : 'Year 1';
-  const demo = GREEN[year].find(x => x[0] === (year==='reception' ? 'ship' : 'sheep'));
+  $('#stageLabel').textContent = stageName();
+  $('#focusLine').textContent = 'This term: ' + STAGES[stageKey()].about;
+  const demo = greenFocus()[0];
   $('#demoPic').textContent = demo[2];
   document.querySelectorAll('[data-best]').forEach(el => {
-    const b = store.get(`best:${el.dataset.best}:${year}`, null);
+    const b = store.get(`best:${el.dataset.best}:${stageKey()}`, null);
     el.innerHTML = b ? `Best <b>★ ${b.s} / ${b.t}</b>` : 'Not played yet';
   });
 }
 $('#heroDuo').innerHTML = goCritter() + stopCritter();
 fillCritters();
-document.querySelectorAll('.years button').forEach(b => b.onclick = () => {
-  year = b.dataset.year; store.set('year', year); renderHome(); react('#heroDuo .critter','happy');
-});
+/* ---- start: which class, which term ---- */
+function askClass(){
+  gameId++;
+  showView('setup', '');
+  $('#setupQ').textContent = 'Which class are you in?';
+  $('#setupBack').hidden = !(year && term);
+  $('#setupBack').onclick = goHome;
+  $('#choices').innerHTML = `
+    <button class="choice c-mint" data-y="reception">${goCritter()}<b>Reception</b><small>I am 4 or 5</small></button>
+    <button class="choice c-pink" data-y="year1">${stopCritter()}<b>Year 1</b><small>I am 5 or 6</small></button>`;
+  $('#choices').querySelectorAll('button').forEach(b => b.onclick = () => { year = b.dataset.y; store.set('year', year); askTerm(); });
+  $('#choices button').focus();
+}
+function askTerm(){
+  $('#setupQ').textContent = 'Which term is it?';
+  $('#setupBack').hidden = false;
+  $('#setupBack').onclick = askClass;
+  const now = termNow();
+  const T = [['autumn','🍂','Autumn','September to December','c-peach'],
+             ['spring','🌷','Spring','January to March','c-mint'],
+             ['summer','☀️','Summer','April to July','c-sun']];
+  $('#choices').innerHTML = T.map(([k,icon,name,months,cls]) =>
+    `<button class="choice ${cls}" data-t="${k}">${k===now ? '<span class="now">Now</span>' : ''}<span class="big" aria-hidden="true">${icon}</span><b>${name}</b><small>${months}</small></button>`).join('');
+  $('#choices').querySelectorAll('button').forEach(b => b.onclick = () => {
+    term = b.dataset.t; store.set('term', term); goHome(); react('#heroDuo .critter','happy');
+  });
+  ($('#choices [data-t="'+now+'"]') || $('#choices button')).focus();
+}
+$('#setupDuo').innerHTML = goCritter() + stopCritter();
+$('#changeStage').onclick = askClass;
 $('#goSpeedy').onclick = startSpeedy;
 $('#goMatch').onclick = startMatch;
 $('#goSort').onclick = startSort;
 $('#goLists').onclick = showLists;
 $('#backBtn').onclick = goHome;
-function renderSound(){ const b = $('#soundBtn'); b.textContent = soundOn ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', soundOn); }
-$('#soundBtn').onclick = () => { soundOn = !soundOn; store.set('sound', soundOn); if(!soundOn){ try{ speechSynthesis.cancel(); }catch(e){} } renderSound(); };
-renderSound();
-renderHome();
+if(year && term){ renderHome(); showView('home', ''); } else askClass();
 </script>
 
 </body>

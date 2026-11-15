@@ -165,8 +165,9 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .navbtn{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:8;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 0 rgba(38,48,77,.15)}
 .navbtn svg{width:30px;height:30px}
 .navbtn.l{left:max(10px,env(safe-area-inset-left,0px))} .navbtn.r{right:max(10px,env(safe-area-inset-right,0px))}
-.choices.worlds{grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px}
-@media (max-width:520px){ .choices.worlds{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.choices.worlds{display:flex;flex-wrap:wrap;justify-content:center;max-width:960px}
+.choices.worlds .choice{flex:0 1 210px}
+@media (max-width:520px){ .choices.worlds .choice{flex-basis:calc(50% - 8px)} }
 .choice.wpick .big{font-size:4.2rem}
 .choice.wpick small{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;color:var(--ink)}
 body[data-scene="world-jungle"]{--scene:#BFEBD0} body[data-scene="world-pond"]{--scene:#B8E3FF} body[data-scene="world-desert"]{--scene:#FFD99E}
@@ -231,7 +232,16 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 .pips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .pips i{width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.65);display:block;flex:none}
 .pips i.done{background:var(--sun)} .pips i.miss{background:rgba(38,48,77,.25)} .pips i.now{box-shadow:0 0 0 3px var(--ink)}
-.stage{position:relative;max-width:1040px;width:100%;margin:0 auto;flex:1}
+.stage{position:relative;max-width:1040px;width:100%;margin:0 auto;flex:1;display:flex;flex-direction:column}
+.stage > :first-child{margin-top:auto} .stage > :last-child{margin-bottom:auto}
+.playbg{position:fixed;inset:0;z-index:0;pointer-events:none;display:none}
+.endcard .btn.alt{background:#EEF1F6}
+.playbg .bgsky{position:absolute;inset:0}
+.playbg svg{position:absolute;left:0;bottom:0;width:100%;height:100%}
+.playbg svg *{animation:none!important}
+.playbg .bgveil{position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.1),rgba(255,255,255,.35))}
+.play{position:relative;z-index:1}
+body[data-scene^="world-"] .play{background:transparent}
 .flash{position:absolute;left:50%;top:0;transform:translateX(-50%);font-weight:700;font-size:1.7rem;letter-spacing:.08em;text-transform:uppercase;
   background:var(--sun);color:var(--ink);padding:4px 22px;border-radius:999px;pointer-events:none;z-index:40;animation:pop .95s ease forwards;white-space:nowrap}
 @keyframes pop{0%{opacity:0;transform:translate(-50%,10px) scale(.8)}20%{opacity:1;transform:translate(-50%,0) scale(1.1)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-14px)}}
@@ -288,7 +298,7 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 .pic.word.right{background:var(--coral);color:var(--white)}
 
 /* Bubble pop */
-.arena{position:relative;height:min(60vh,540px);min-height:330px;border-radius:var(--r);background:rgba(255,255,255,.3);overflow:hidden;margin-top:14px;touch-action:manipulation}
+.arena{position:relative;height:min(60vh,540px);min-height:330px;border-radius:var(--r);background:rgba(255,255,255,.5);box-shadow:inset 0 0 0 3px rgba(255,255,255,.7);overflow:hidden;margin-top:14px;touch-action:manipulation}
 .bubble{position:absolute;left:0;top:0;border-radius:50%;display:grid;place-items:center;font-family:var(--font-read);font-weight:700;line-height:1;padding:0;
   background:radial-gradient(circle at 30% 26%,rgba(255,255,255,.98) 0 11%,rgba(255,255,255,.7) 12% 52%,rgba(255,255,255,.38) 75%);
   box-shadow:inset 0 0 0 3px rgba(255,255,255,.95),inset -8px -10px 16px rgba(120,170,220,.28);will-change:transform;touch-action:manipulation}
@@ -339,13 +349,19 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 .pp{font-size:clamp(2.6rem,9vw,4.4rem);line-height:1}
 
 /* End card */
-.endcard{text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 0}
+.endcard{position:relative;text-align:center;display:flex;flex-direction:column;align-items:center;gap:14px;align-self:center;width:min(560px,100%);
+  background:rgba(255,255,255,.92);border-radius:36px;padding:30px 24px 28px;box-shadow:0 10px 0 rgba(38,48,77,.1);overflow:hidden;isolation:isolate}
+.endcard::before{content:"";position:absolute;left:50%;top:150px;width:760px;height:760px;margin:-380px 0 0 -380px;z-index:-1;
+  background:repeating-conic-gradient(rgba(255,200,58,.22) 0 10deg, transparent 10deg 20deg);border-radius:50%;animation:spin 30s linear infinite}
+.endcard > *{position:relative}
+@keyframes spin{to{transform:rotate(360deg)}}
 .endcard .duo{display:flex;gap:8px;align-items:flex-end}
 .endcard .duo .critter{width:clamp(96px,17vw,140px);height:auto}
-.endcard h2{font-size:clamp(2.2rem,7vw,3.6rem);color:var(--white);text-transform:uppercase;letter-spacing:.04em}
+.endcard h2{font-size:clamp(2rem,6vw,3.2rem);color:var(--ink);text-transform:uppercase;letter-spacing:.04em}
 .bigstars{font-size:clamp(3rem,10vw,4.6rem);color:var(--sun);letter-spacing:.08em;line-height:1}
-.bigstars .off{color:rgba(255,255,255,.45)}
-.earned{display:inline-flex;align-items:center;gap:10px;background:var(--white);border-radius:999px;padding:8px 22px;font-weight:700;font-size:1.5rem}
+.bigstars .off{color:#DDE1EC}
+.bigstars{filter:drop-shadow(0 3px 0 rgba(38,48,77,.12))}
+.earned{display:inline-flex;align-items:center;gap:10px;background:var(--sun-soft);border-radius:999px;padding:8px 22px;font-weight:700;font-size:1.5rem}
 .endcard p{margin:0;font-size:1.15rem;font-weight:500;max-width:40ch}
 .btnrow{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:6px}
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:80;overflow:hidden}
@@ -439,6 +455,7 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 </main>
 
 <!-- PLAY -->
+<div class="playbg" id="playbg" aria-hidden="true"></div>
 <main class="play" id="play" hidden>
   <div class="bar">
     <button class="pill" id="backBtn">← Map</button>
@@ -511,7 +528,7 @@ const SOUND_SETS = {
           ['ire','f ire'],['ear','h ear'],['ure','s ure']]]]}
 };
 // Six animals, each with its own map world
-const AVATARS = [['🐵','Monkey','jungle'],['🐸','Frog','pond'],['🐪','Camel','desert'],['🦁','Lion','savanna'],['🐙','Octopus','ocean'],['🐧','Penguin','arctic']];
+const AVATARS = [['🐵','Monkey','jungle'],['🐼','Panda','bamboo'],['🐸','Frog','pond'],['🐪','Camel','desert'],['🦁','Lion','savanna'],['🐙','Octopus','ocean'],['🐧','Penguin','arctic']];
 
 /* ======================= LEVEL MAP ======================= */
 // 12 levels per class + term. k: g = green words, r = red words, mix = both. The last one is the trophy level.
@@ -700,6 +717,7 @@ const live = id => id === gameId;
 function show(id, scene){
   gameId++; view = id; clockOn = false;
   ['setup','map','play'].forEach(v => $('#'+v).hidden = v !== id);
+  $('#playbg').style.display = id === 'play' && player ? 'block' : 'none';
   document.body.dataset.scene = scene || '';
   window.scrollTo(0,0);
 }
@@ -816,9 +834,12 @@ const WORLDS = {
   desert:  {name:'Desert',   sky:['#FFD99E','#FFF6E2'], tile:['#FFE8BE','#F2C987'], wood:'#B9834F'},
   savanna: {name:'Savanna',  sky:['#FFBE8A','#FFF0D9'], tile:['#FFD9B0','#EBC46A'], wood:'#9C6B43'},
   ocean:   {name:'Ocean',    sky:['#92E2F0','#2E78B0'], tile:['#A6E8F3','#5BA9D3'], wood:'#9C6B43'},
-  arctic:  {name:'Snowland', sky:['#B9D7F2','#F2F9FF'], tile:['#DCEEFC','#F7FBFF'], wood:'#8E6A4E'}
+  arctic:  {name:'Snowland', sky:['#B9D7F2','#F2F9FF'], tile:['#DCEEFC','#F7FBFF'], wood:'#8E6A4E'},
+  bamboo:  {name:'Bamboo Forest', sky:['#CDEBD3','#F3FBEF'], tile:['#D9F1DC','#9FD6A3'], wood:'#A9744A'}
 };
-const worldOf = p => { const a = AVATARS.find(x => x[0] === p.avatar); return a ? a[2] : 'jungle'; };
+// Players made before the animal list was cut keep a matching world
+const OLD_AVATAR_WORLD = {'🐯':'jungle','🐨':'bamboo','🐢':'ocean','🐷':'pond','🐰':'pond','🦊':'arctic','🦄':'savanna'};
+const worldOf = p => { const a = AVATARS.find(x => x[0] === p.avatar); return a ? a[2] : (OLD_AVATAR_WORLD[p.avatar] || 'jungle'); };
 const rng = seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
 const f1 = n => Math.round(n*10)/10;
 const bez = (a,b,c,d,t) => { const u = 1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; };
@@ -1051,6 +1072,62 @@ const WORLD_BUILD = {
       L.fore += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s"><path d="M ${f1(x)} 630 C ${f1(x+24)} 590 ${f1(x-20)} 560 ${f1(x+8)} ${f1(520-r()*40)}" stroke="#1F7A5C" stroke-width="13" fill="none" stroke-linecap="round"/></g><path d="M ${f1(x+40)} 630 A 46 30 0 0 1 ${f1(x+132)} 630 Z" fill="#2C6E99"/>`;
   },
 
+  bamboo(c){
+    const {r, W, L, road, pts, props} = c;
+    for(let i=0;i<5;i++) L.far += cloud(r()*W, 40 + r()*50, .7 + r()*.5, .75);
+    L.far += hills(r, W, 200, 70, 280, '#C3E3C6') + hills(r, W, 236, 50, 220, '#AED9B3');
+    // distant pale bamboo grove
+    for(let x = -20; x < W + 40; x += 18 + r()*26){
+      const w = 6 + r()*5, top = 70 + r()*90;
+      L.far += `<rect x="${f1(x)}" y="${f1(top)}" width="${f1(w)}" height="${f1(270-top)}" rx="${f1(w/2)}" fill="${r() < .5 ? '#A5D3AA' : '#9ACB9F'}"/>`;
+    }
+    L.far += `<rect x="-80" y="200" width="${W+160}" height="70" fill="#F3FBEF" opacity=".55"/>`;
+    // mid bamboo: segmented stalks with leaf sprays
+    const stalk = (x, w, top, base, cols) => {
+      const [c1, c2, c3] = cols;
+      let g = `<g class="sway-b" style="animation-duration:${f1(6+r()*4)}s;animation-delay:-${f1(r()*5)}s">`;
+      g += `<rect x="${f1(x)}" y="${f1(top)}" width="${f1(w)}" height="${f1(base-top)}" rx="${f1(w*.45)}" fill="${c1}"/>`;
+      g += `<rect x="${f1(x+w*.18)}" y="${f1(top)}" width="${f1(w*.16)}" height="${f1(base-top)}" fill="#fff" opacity=".18"/>`;
+      for(let y = base - 40 - r()*20; y > top + 10; y -= 48 + r()*22){
+        g += `<rect x="${f1(x-1.5)}" y="${f1(y)}" width="${f1(w+3)}" height="5" rx="2.5" fill="${c3}"/>`;
+        if(r() < .55){
+          const side = r() < .5 ? -1 : 1, bx = side < 0 ? x : x + w;
+          g += `<path d="M ${f1(bx)} ${f1(y)} q ${f1(side*20)} -10 ${f1(side*38)} -24" stroke="${c3}" stroke-width="2.5" fill="none"/>`;
+          [0,1,2,3].forEach(k => { const lx = bx + side*(16 + k*9), ly = y - 8 - k*6, a = side*(18 + k*12);
+            g += `<ellipse cx="${f1(lx + side*14)}" cy="${f1(ly)}" rx="20" ry="4.6" fill="${k%2 ? c2 : '#7CC97E'}" transform="rotate(${f1(a)} ${f1(lx + side*14)} ${f1(ly)})"/>`; });
+        }
+      }
+      return g + '</g>';
+    };
+    for(let x = -10; x < W + 40; x += 34 + r()*46){
+      const w = 13 + r()*8, top = -30 + r()*60;
+      L.mid += stalk(x, w, top, 312, r() < .5 ? ['#64B066','#5CB563','#3F8A47'] : ['#72BD70','#5CB563','#4A9A52']);
+    }
+    // stream behind the path
+    L.mid += `<path d="M -80 300 C ${f1(W*.2)} 284 ${f1(W*.35)} 318 ${f1(W*.55)} 300 S ${f1(W*.85)} 286 ${f1(W+80)} 304 L ${f1(W+80)} 330 C ${f1(W*.8)} 318 ${f1(W*.5)} 340 ${f1(W*.3)} 322 S -40 330 -80 326 Z" fill="#A5DDEC"/>`;
+    L.ground += hills(r, W, 292, 14, 220, '#8CCB84') + hills(r, W, 448, 16, 300, '#7BBF75');
+    // stone path
+    L.ground += `<path d="${road}" stroke="#B7AE98" stroke-width="50" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${road}" stroke="#DCD5C1" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${road}" stroke="#C7BEA6" stroke-width="30" fill="none" stroke-linecap="butt" stroke-dasharray="20 12"/>`;
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+33}" rx="62" ry="18" fill="#8E9A8C"/><ellipse cx="${p.x}" cy="${p.y+27}" rx="60" ry="15" fill="#BFC8BC"/><ellipse cx="${p.x-18}" cy="${p.y+24}" rx="16" ry="4" fill="#fff" opacity=".35"/>`);
+    // bamboo shoots, mushrooms, rocks, flowers
+    props(14, 320, 590, (x,y) => { const h = 24 + r()*22; L.ground += `<path d="M ${f1(x-9)} ${f1(y)} L ${f1(x)} ${f1(y-h)} L ${f1(x+9)} ${f1(y)} Z" fill="#7CBF6A"/><path d="M ${f1(x-5)} ${f1(y-h*.45)} L ${f1(x)} ${f1(y-h)} L ${f1(x+3)} ${f1(y-h*.5)}" fill="#9AD27F"/><rect x="${f1(x-9)}" y="${f1(y-h*.35)}" width="18" height="3" fill="#5E9E54"/>`; }, 60);
+    props(8, 330, 590, (x,y) => { L.ground += `<rect x="${f1(x-3)}" y="${f1(y-12)}" width="6" height="12" rx="2" fill="#F4EBD8"/><path d="M ${f1(x-12)} ${f1(y-10)} A 12 10 0 0 1 ${f1(x+12)} ${f1(y-10)} Z" fill="#E8574F"/><circle cx="${f1(x-4)}" cy="${f1(y-15)}" r="2" fill="#fff"/><circle cx="${f1(x+4)}" cy="${f1(y-13)}" r="1.6" fill="#fff"/>`; }, 50);
+    props(8, 330, 590, (x,y) => { L.ground += `<ellipse cx="${f1(x)}" cy="${f1(y-6)}" rx="${f1(14+r()*12)}" ry="${f1(8+r()*5)}" fill="#A7B1A3"/>`; }, 50);
+    props(2, 360, 520, (x,y) => { L.ground += `<ellipse cx="${f1(x)}" cy="${f1(y+18)}" rx="40" ry="9" fill="rgba(38,48,77,.12)"/>` + emo('🐼', x, y - 6, 64, 'bobs', `animation-duration:${f1(3+r()*2)}s`) + `<rect x="${f1(x+22)}" y="${f1(y-40)}" width="6" height="46" rx="3" fill="#5CB563" transform="rotate(20 ${f1(x+25)} ${f1(y-17)})"/>`; }, 110);
+    props(5, 330, 540, (x,y) => { L.ground += emo('🦋', x, y - 60, 26, 'flutter', `animation-delay:-${f1(r()*7)}s`); }, 50);
+    props(2, 330, 540, (x,y) => { L.ground += emo('🐦', x, y - 40, 26, 'bobs'); }, 60);
+    // foreground: leaf sprays hanging from the top, grass at the bottom
+    for(let x = 20; x < W*1.2; x += 160 + r()*170){
+      L.fore += `<g class="sway-t" style="animation-delay:-${f1(r()*5)}s">` + Array.from({length:6}, (_,k) => { const a = 40 + k*18 + r()*10, lx = x + k*9, ly = 6 + k*6;
+        return `<ellipse cx="${f1(lx)}" cy="${f1(ly)}" rx="34" ry="7" fill="${k%2 ? '#4E9A55' : '#5FB566'}" transform="rotate(${f1(a)} ${f1(lx)} ${f1(ly)})"/>`; }).join('') + '</g>';
+    }
+    for(let x = 0; x < W*1.2; x += 120 + r()*140)
+      L.fore += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s">` + Array.from({length:5}, (_,k) => { const h = 40 + r()*40, xx = x + k*8;
+        return `<path d="M ${f1(xx)} 620 q ${f1(r()*12-6)} ${f1(-h/2)} ${f1(r()*10-5)} ${f1(-h)}" stroke="${k%2 ? '#5E9E54' : '#4E8F4B'}" stroke-width="4" fill="none" stroke-linecap="round"/>`; }).join('') + '</g>';
+  },
+
   arctic(c){
     const {r, W, L, road, pts, props} = c;
     for(let k=0;k<3;k++){ const y = 60 + k*30;
@@ -1080,6 +1157,12 @@ const WORLD_BUILD = {
 
 function worldScene(key, pts, W, H, chestOpen, title){
   const r = rng(key.split('').reduce((a,ch) => a*31 + ch.charCodeAt(0), 7));
+  if(!pts.length){   // backdrop for the game screens: scenery only
+    const L = {far:'', mid:'', ground:'', fore:''};
+    const props = (n, ymin, ymax, fn) => { for(let k=0;k<n;k++) fn(40 + r()*(W - 80), ymin + r()*(ymax - ymin)); };
+    WORLD_BUILD[key]({r, W, H, L, road: 'M -200 -200 L -199 -200', samples: [], pts: [], props, clear: () => true, start: {x:-200,y:-200}, end: {x:-200,y:-200}});
+    return L;
+  }
   const gap = pts[1].x - pts[0].x, last = pts[pts.length-1];
   const start = {x: pts[0].x - 170, y: pts[0].y}, end = {x: last.x + 175, y: last.y};
   const samples = [];
@@ -1179,8 +1262,21 @@ function showMap(){
 
 /* ======================= LEVEL RUNNER ======================= */
 let backTo = showMap;
+const backdropCache = {};
+function backdrop(){
+  const bg = $('#playbg');
+  if(!player){ bg.innerHTML = ''; bg.dataset.world = ''; return null; }
+  const wk = worldOf(player);
+  if(bg.dataset.world !== wk){
+    if(!backdropCache[wk]){ const S = worldScene(wk, [], 1500, 600, false, ''), WD = WORLDS[wk];
+      backdropCache[wk] = `<div class="bgsky" style="background:linear-gradient(${WD.sky[0]}, ${WD.sky[1]})"></div><svg viewBox="0 0 1500 600" preserveAspectRatio="xMidYMax slice">${S.far}${S.mid}${S.ground}</svg><div class="bgveil"></div>`; }
+    bg.innerHTML = backdropCache[wk]; bg.dataset.world = wk;
+  }
+  return 'world-' + wk;
+}
 function shell(title, scene, total, back){
-  show('play', scene);
+  const worldScene_ = backdrop();
+  show('play', worldScene_ || scene);
   backTo = back || showMap;
   $('#gameTitle').textContent = title;
   $('#coinBox').hidden = !player;
@@ -1228,7 +1324,7 @@ function finishLevel(){
   const treasure = L.boss && first ? 10 : 0;
   player.coins += stars + treasure; r.coins += stars + treasure; save();
   refreshCoins(true);
-  document.body.dataset.scene = 'done';
+  if(!player) document.body.dataset.scene = 'done';
   clockOn = false;
   const head = stars === 3 ? 'Superstar!' : stars === 2 ? 'Great reading!' : 'Well done!';
   const next = r.i + 1 < LEVELS.length;
@@ -1271,14 +1367,12 @@ function playTap(id, items, done){
     const it = items[i];
     let prompt, tiles;
     if(it.kind === 'g'){
-      document.body.dataset.scene = items.some(x => x.kind === 'r') ? 'mix' : 'green';
       const others = shuffle(greenPool().filter(x => x[0] !== it.w && x[2] !== it.pic)).slice(0, nOpts-1).map(x => ({w:x[0], pic:x[2]}));
       const opts = shuffle([it, ...others]);
       prompt = `${goCritter()}<div class="wordcard"><div class="bigword" aria-label="${esc(it.w)}">${soundButtons(it.sounds)}</div></div>`;
       tiles = opts.map(o => `<button class="pic" data-w="${esc(o.w)}" aria-label="picture: ${esc(o.w)}">${o.pic}</button>`).join('');
     } else {
       // Hear & Find: the word is spoken, not shown. With the voice off it flashes briefly, then hides.
-      document.body.dataset.scene = items.some(x => x.kind === 'g') ? 'mix' : 'red';
       const opts = shuffle([it.w, ...lookAlikes(it.w, redPool(), nOpts-1)]);
       prompt = `${stopCritter()}<div class="wordcard listen">
         <button class="speak" id="speak" aria-label="Hear the word again">${SPEAKER}</button>

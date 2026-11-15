@@ -29,14 +29,22 @@ All progress is saved in the browser on that device. Nothing is sent anywhere.
 
 ## Game types
 
-| Game | Green words | Red words |
-|---|---|---|
-| **Speedy Tap** | Read the word, tap its picture before the timer runs out | Tap the same red word among look-alikes |
-| **Bubble Pop** | Pop the bubbles with the word for the picture | Pop the bubbles with the red word |
-| **Drag & Match** | Drag each word onto its picture | Drag each red word onto its matching shape |
-| **Find the Pairs** | Flip cards to match word and picture | Flip cards to match two red words |
+**Green words** (read by sounding out):
 
-Drag & Match also works by tapping a word and then tapping where it goes.
+| Game | How it works |
+|---|---|
+| **Speedy Tap** | Read the word, tap its picture before the timer runs out |
+| **Bubble Pop** | See a picture, pop the bubbles with its word |
+| **Drag & Match** | Drag each word onto its picture (or tap the word, then the picture) |
+| **Find the Pairs** | Flip cards to match each word with its picture |
+
+**Red words** (read by sight – the game says the word, so children must recognise it, not copy it):
+
+| Game | How it works |
+|---|---|
+| **Hear & Find** | The iPad says a red word; tap it among look-alikes (said / sad / sail) |
+| **Bubble Pop** | The iPad says a red word; pop every bubble with that word |
+| **Red Word Hunt** | A short story – tap every *the* (or *said*, *was*…) you can find |
 
 ## Grown-up settings
 
@@ -44,6 +52,7 @@ Tap the gear on the map (or **Grown-ups** on the "Who's playing?" screen) and an
 
 - **Daily play time** – No limit, or 10, 15, 20, 30, 45 or 60 minutes per child per day. A timer on the map and in games shows the time left and turns red in the last minute. Time only counts on the map and in games, and starts again each morning. When time runs out, the child finishes the level they are on and then sees a "Time's up, come back tomorrow" screen.
 - **+10 min today** – give one child extra time for today.
+- **Read red words aloud** – On, or Off for silent play (the word then flashes for 2 seconds before hiding).
 - **Speedy Tap countdown** – Normal, Relaxed (twice as long) or Off.
 - **Players** – see how long each child played today, or remove a player.
 

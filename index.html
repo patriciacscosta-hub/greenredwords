@@ -253,11 +253,29 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 .tool{background:rgba(255,255,255,.6);color:var(--ink);border-radius:999px;padding:9px 20px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;font-size:.9rem;min-height:46px}
 .tool:hover{background:var(--white)}
 
+/* Listening prompt + red word hunt */
+.wordcard.listen{gap:18px}
+.speak{width:clamp(76px,12vw,104px);height:clamp(76px,12vw,104px);border-radius:50%;background:var(--coral);color:var(--white);display:grid;place-items:center;flex:none;box-shadow:0 5px 0 rgba(38,48,77,.15)}
+.speak svg{width:56%;height:56%}
+.speak:active{transform:scale(.94)}
+.peek{transition:opacity .3s}
+.peek.hide{opacity:0}
+.huntword{display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.huntword small{font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-size:.85rem;margin-bottom:4px}
+.huntword .bigword{font-size:clamp(2.6rem,8vw,4.4rem)}
+.story{max-width:900px;margin:18px auto 0;background:var(--white);border-radius:var(--r);padding:clamp(14px,3vw,28px) clamp(16px,3vw,32px);display:flex;flex-direction:column;gap:8px}
+.story p{margin:0;font-family:var(--font-read);font-weight:700;font-size:clamp(1.6rem,4.4vw,2.6rem);line-height:1.5;color:var(--ink)}
+.hw{padding:0 .12em;border-radius:12px;transition:background .15s,color .15s;line-height:1.25}
+.hw:hover{background:var(--pink)}
+.hw.got{background:var(--coral);color:var(--white)}
+.hw.nope{animation:shake .4s}
+.hw:disabled{cursor:default}
+
 /* Tap */
 .timer{height:16px;border-radius:99px;background:rgba(255,255,255,.55);overflow:hidden;margin:18px auto;max-width:640px}
 .timer i{display:block;height:100%;width:100%;background:var(--go);border-radius:99px;transform-origin:left}
 .timer.low i{background:var(--coral)}
-.pics{display:grid;gap:clamp(10px,2vw,18px);grid-template-columns:repeat(var(--n,3),minmax(0,1fr));max-width:760px;margin:0 auto}
+.pics{display:grid;gap:clamp(10px,2vw,18px);grid-template-columns:repeat(var(--n,3),minmax(0,1fr));max-width:min(760px, calc((100svh - 360px) * var(--n,3)));margin:0 auto}
 @media (max-width:560px){ .pics.n4{grid-template-columns:repeat(2,minmax(0,1fr))} .pics:not(.n4) .pic{font-size:2.8rem;border-radius:20px} }
 .pic{background:var(--white);border-radius:var(--r);aspect-ratio:1;max-width:100%;font-size:clamp(3.2rem,11vw,5.6rem);
   display:grid;place-items:center;line-height:1;transition:transform .12s,background .2s,opacity .2s}
@@ -303,7 +321,7 @@ body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]
 @keyframes hint{50%{transform:translateY(-12px)}}
 
 /* Pairs */
-.pairs{display:grid;gap:clamp(8px,2vw,16px);grid-template-columns:repeat(var(--cols),minmax(0,1fr));max-width:720px;margin:10px auto 0}
+.pairs{display:grid;gap:clamp(8px,2vw,16px);grid-template-columns:repeat(var(--cols),minmax(0,1fr));max-width:min(720px, calc((100svh - 190px) * .37 * var(--cols)));margin:10px auto 0}
 .pcard{aspect-ratio:3/4;padding:0;max-width:100%}
 .pin{position:relative;display:block;width:100%;height:100%}
 .pcard.open .pin,.pcard.matched .pin{animation:flip .32s ease}
@@ -498,15 +516,17 @@ const AVATARS = [['🐵','Monkey','jungle'],['🐸','Frog','pond'],['🐪','Came
 /* ======================= LEVEL MAP ======================= */
 // 12 levels per class + term. k: g = green words, r = red words, mix = both. The last one is the trophy level.
 const LEVELS = [
-  {m:'tap',k:'g'},{m:'tap',k:'r'},{m:'drag',k:'g'},{m:'bubbles',k:'g'},
-  {m:'pairs',k:'g'},{m:'drag',k:'r'},{m:'bubbles',k:'r'},{m:'tap',k:'g'},
-  {m:'pairs',k:'r'},{m:'bubbles',k:'g'},{m:'drag',k:'g'},{m:'tap',k:'mix',boss:true}
-];
-const MECH = {tap:'Speedy Tap', bubbles:'Bubble Pop', drag:'Drag & Match', pairs:'Find the Pairs'};
+  {m:'tap',k:'g'},{m:'hear',k:'r'},{m:'drag',k:'g'},{m:'bubbles',k:'g'},
+  {m:'pairs',k:'g'},{m:'hunt',k:'r'},{m:'bubbles',k:'r'},{m:'tap',k:'g'},
+  {m:'hunt',k:'r'},{m:'bubbles',k:'g'},{m:'drag',k:'g'},{m:'tap',k:'mix',boss:true}
+]
+const MECH = {tap:'Speedy Tap', hear:'Hear & Find', hunt:'Red Word Hunt', bubbles:'Bubble Pop', drag:'Drag & Match', pairs:'Find the Pairs'};
 function mechIcon(m){
   const a = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   if(m==='tap') return `<svg ${a}><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="8"/></svg>`;
   if(m==='bubbles') return `<svg ${a}><circle cx="9" cy="15" r="5"/><circle cx="17" cy="8" r="3.5"/><circle cx="18" cy="17.5" r="2"/></svg>`;
+  if(m==='hear') return `<svg ${a}><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor" stroke="none"/><path d="M16.5 9 Q18.5 12 16.5 15 M19 6.5 Q23 12 19 17.5"/></svg>`;
+  if(m==='hunt') return `<svg ${a}><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5 L20 20"/></svg>`;
   if(m==='drag') return `<svg ${a}><path d="M5 19 L18 6"/><path d="M10 6 H18 V14"/></svg>`;
   return `<svg ${a}><rect x="3" y="6" width="10" height="14" rx="2"/><rect x="11" y="4" width="10" height="14" rx="2" fill="currentColor" fill-opacity=".35"/></svg>`;
 }
@@ -597,7 +617,7 @@ const starTotal = p => Object.values(p.progress || {}).reduce((a,arr) => a + arr
 
 /* ======================= SETTINGS + PLAY TIME ======================= */
 // limit: daily minutes per child (0 = no limit). timer: Speedy Tap countdown (normal / relaxed / off).
-let settings = Object.assign({limit: 0, timer: 'normal'}, store.get('settings', {}));
+let settings = Object.assign({limit: 0, timer: 'normal', voice: true}, store.get('settings', {}));
 const saveSettings = () => store.set('settings', settings);
 const today = () => new Date().toLocaleDateString('en-CA');
 function timeRec(p){ if(!p.time || p.time.date !== today()) p.time = {date: today(), used: 0, extra: 0}; return p.time; }
@@ -624,6 +644,19 @@ setInterval(() => {
   if(left === 60){ ['#mapClockBox','#playClockBox'].forEach(s => { const b = $(s); b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump'); }); }
   if(left <= 0 && view === 'map'){ save(); showTimesUp(); }
 }, 1000);
+
+/* ======================= RED WORD VOICE ======================= */
+// Only red word games speak. Grown-ups can turn it off in settings.
+const SPEAKER = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9 H8 L13 5 V19 L8 15 H4 Z" fill="currentColor" stroke="none"/><path d="M16.5 9 Q18.5 12 16.5 15 M19 6.5 Q23 12 19 17.5"/></svg>';
+const canSpeak = () => settings.voice !== false && 'speechSynthesis' in window;
+let voice = null;
+function pickVoice(){ try{ const vs = speechSynthesis.getVoices();
+  voice = vs.find(v => /en[-_]GB/i.test(v.lang) && /female|serena|kate|martha|stephanie|samantha/i.test(v.name)) || vs.find(v => /en[-_]GB/i.test(v.lang)) || vs.find(v => /^en/i.test(v.lang)) || null; }catch(e){} }
+if('speechSynthesis' in window){ pickVoice(); try{ speechSynthesis.onvoiceschanged = pickVoice; }catch(e){} }
+function say(text){
+  if(!canSpeak()) return;
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(text); if(voice) u.voice = voice; u.lang = voice ? voice.lang : 'en-GB'; u.rate = .8; speechSynthesis.speak(u); }catch(e){}
+}
 
 /* ======================= WORD PICKING ======================= */
 function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
@@ -1171,9 +1204,11 @@ function startLevel(i){
   const title = `${L.boss ? 'Trophy level' : 'Level ' + (i+1)} · ${MECH[L.m]}`;
   const done = () => finishLevel();
   clockOn = true;
-  if(L.m === 'tap'){
+  if(L.m === 'tap' || L.m === 'hear'){
     const items = L.k === 'mix' ? shuffle([...greenItems(4), ...redItems(4)]) : L.k === 'g' ? greenItems(6) : redItems(6);
     run.total = items.length; playTap(shell(title, scene, items.length), items, done);
+  } else if(L.m === 'hunt'){
+    run.total = 3; playHunt(shell(title, scene, 3), 3, done);
   } else if(L.m === 'bubbles'){
     run.total = 4; playBubbles(shell(title, scene, 4), L.k, 4, done);
   } else if(L.m === 'drag'){
@@ -1242,17 +1277,26 @@ function playTap(id, items, done){
       prompt = `${goCritter()}<div class="wordcard"><div class="bigword" aria-label="${esc(it.w)}">${soundButtons(it.sounds)}</div></div>`;
       tiles = opts.map(o => `<button class="pic" data-w="${esc(o.w)}" aria-label="picture: ${esc(o.w)}">${o.pic}</button>`).join('');
     } else {
+      // Hear & Find: the word is spoken, not shown. With the voice off it flashes briefly, then hides.
+      document.body.dataset.scene = items.some(x => x.kind === 'g') ? 'mix' : 'red';
       const opts = shuffle([it.w, ...lookAlikes(it.w, redPool(), nOpts-1)]);
-      prompt = `${stopCritter()}<div class="wordcard"><div class="bigword red">${esc(it.w)}</div></div>`;
+      prompt = `${stopCritter()}<div class="wordcard listen">
+        <button class="speak" id="speak" aria-label="Hear the word again">${SPEAKER}</button>
+        ${canSpeak() ? '' : `<div class="bigword red peek" id="peek">${esc(it.w)}</div>`}</div>`;
       tiles = opts.map(o => `<button class="pic word" data-w="${esc(o)}">${esc(o)}</button>`).join('');
     }
     stage.innerHTML = `<div class="prompt">${prompt}</div>
       ${it.kind === 'g' ? '<div class="tools"><button class="tool" id="fred">Sound it out</button></div>' : ''}
-      <div class="timer" id="timer"${noTimer ? ' style="visibility:hidden"' : ''}><i></i></div>
+      <div class="timer" id="timer"${noTimer || it.kind === 'r' ? ' style="visibility:hidden"' : ''}><i></i></div>
       <div class="pics${nOpts===4?' n4':''}" style="--n:${nOpts}">${tiles}</div>`;
     const bar = $('#timer i'), timerBox = $('#timer');
     const t0 = performance.now();
     let over = false, missed = false;
+    if(it.kind === 'r'){
+      $('#speak').onclick = () => { say(it.w); const sp = $('#speak'); sp.classList.remove('bump'); void sp.offsetWidth; sp.classList.add('bump'); };
+      if(canSpeak()) say(it.w);
+      else { const peekEl = $('#peek'); $('#speak').onclick = () => { peekEl.classList.remove('hide'); setTimeout(() => peekEl.classList.add('hide'), 1800); }; setTimeout(() => peekEl.classList.add('hide'), 1800); }
+    }
     if(it.kind === 'g') $('#fred').onclick = () => {
       const gs = [...stage.querySelectorAll('.bigword .gph')];
       gs.forEach((g,k) => setTimeout(() => {
@@ -1262,7 +1306,7 @@ function playTap(id, items, done){
       }, k*520));
     };
     function tick(now){
-      if(!live(id) || over || noTimer) return;
+      if(!live(id) || over || noTimer || it.kind === 'r') return;
       const left = 1 - (now - t0)/limit;
       bar.style.transform = `scaleX(${Math.max(0,left)})`;
       timerBox.classList.toggle('low', left < .3);
@@ -1289,7 +1333,7 @@ function playTap(id, items, done){
         b.classList.add('right'); react('.prompt .critter','happy');
         if(!missed){
           run.good++;
-          const speedy = performance.now() - t0 < fast;
+          const speedy = performance.now() - t0 < (it.kind === 'r' ? fast + 1500 : fast);
           earn(speedy ? 2 : 1, b);
           flash(speedy ? 'Speedy!' : 'Yes!');
         }
@@ -1319,8 +1363,12 @@ function playBubbles(id, kind, rounds, done){
     const t = targets[r];
     $('#bprompt').innerHTML = kind === 'g'
       ? `${goCritter()}<div class="wordcard"><span class="tpic" aria-label="Pop the word for this picture: ${esc(t.w)}">${t.pic}</span><span class="need" id="need"></span></div>`
-      : `${stopCritter()}<div class="wordcard"><div class="bigword red">${esc(t.w)}</div><span class="need" id="need"></span></div>`;
+      : `${stopCritter()}<div class="wordcard listen"><button class="speak" id="speak" aria-label="Hear the word again">${SPEAKER}</button>${canSpeak() ? '' : `<div class="bigword red peek" id="peek">${esc(t.w)}</div>`}<span class="need" id="need"></span></div>`;
     renderNeed();
+    if(kind === 'r'){
+      if(canSpeak()){ say(t.w); $('#speak').onclick = () => say(t.w); }
+      else { const pk = $('#peek'); const flashWord = () => { pk.classList.remove('hide'); setTimeout(() => pk.classList.add('hide'), 1800); }; $('#speak').onclick = flashWord; setTimeout(() => pk.classList.add('hide'), 1800); }
+    }
   }
   function spawn(){
     const W = arena.clientWidth, H = arena.clientHeight;
@@ -1398,6 +1446,85 @@ function playBubbles(id, kind, rounds, done){
   }
   setRound();
   requestAnimationFrame(loop);
+}
+
+/* ======================= MECHANIC: RED WORD HUNT ======================= */
+// Short stories made from decodable words and red words. R = fine for Reception, Y = Year 1 only.
+const HUNT = [
+  ['R','I can see the cat.'],['R','The dog is in the box.'],['R','I go to the shop.'],['R','No, my hat is red.'],['R','My pig can go fast.'],
+  ['R','I said no to the hen.'],['R','He has a red bag.'],['R','She can hop to the bus.'],['R','We go to the pond.'],['R','Me and my dad sat in the sun.'],
+  ['R','Be quick, said Mum.'],['R','You can sit on my bed.'],['R','Is this your cup?'],['R','The fox was in the den.'],['R','They are at the top of the hill.'],
+  ['R','Put the pen in your bag.'],['R','All the ducks swim in the pond.'],['R','Her cat is on the mat.'],['R','Some of the eggs are big.'],['R','Come and sit with me.'],
+  ['R','Go to bed, said Dad.'],['R','I put the lid on the pot.'],['R','We are in the van.'],['R','Was it a bat or a rat?'],['R','She said we can go.'],
+  ['R','He was sad, so I hugged him.'],['R','My mum and I go to the park.'],['R','The cat sat on my lap.'],['R','No, the bus is not red.'],['R','You and I can run to the tent.'],
+  ['Y','What is in the box?'],['Y','I want a big red kite.'],['Y','Any of you can come.'],['Y','Many fish swim in the sea.'],['Y','There is a frog on the log.'],
+  ['Y','Where is my hat?'],['Y','Who said that?'],['Y','Why is the dog wet?'],['Y','Could you help me?'],['Y','Would you like a cake?'],
+  ['Y','You should go to bed.'],['Y','Some of us want to play.'],['Y','Come and see the moon.'],['Y','One cow and two sheep.'],['Y','Once there was a king.'],
+  ['Y','Does the cat like fish?'],['Y','The other duck was big.'],['Y','We were at the park.'],['Y','The fish swim in the water.'],['Y','Call me at night.'],
+  ['Y','Talk to your friend.'],['Y','We walk to school.'],['Y','A small frog sat on a tall tree.'],['Y','My friend and I watch the stars.'],['Y','Where are you, said Mum.'],
+  ['Y','They were all in the boat.'],['Y','What do you want to eat?'],['Y','Who is at the door?'],['Y','Why are you wet?'],['Y','There are two cows in the barn.'],
+  ['R','The top of the box is red.'],['R','He can run fast.'],['R','She has a pet cat.'],['R','I will be quick.'],['R','Is this your dog?'],
+  ['R','Put it in the bin.'],['R','We all sat on the rug.'],['R','Her hat is big.'],['R','You are my pal.'],['R','They ran to the shop.'],
+  ['R','Get some milk, said Dad.'],['R','Come to my den.'],['R','Can you see me?'],['R','No, it is not my bag.'],['R','Let us go to bed.'],
+  ['R','It was a big red bus.'],['R','We can go on the bus.'],['R','Me, me, me! said the hen.'],['R','Be kind to the pets.'],['R','The pups are in the shed.'],
+  ['R','Put your hat on.'],['R','All of us can hop.'],['R','They had fun in the sun.'],['R','Her pet dog is fat.'],['R','He and she can swim.'],
+  ['Y','I could see a fox.'],['Y','I would like to go.'],['Y','We should go home.'],['Y','I have one big dog.'],['Y','Once I had a red car.'],
+  ['Y','I can see two ducks.'],['Y','What does a cow say?'],['Y','Where is the other sock?'],['Y','They were in bed.'],['Y','Can I have some water?'],
+  ['Y','I will call my dad.'],['Y','The cat can not talk.'],['Y','I like to walk in the rain.'],['Y','The small bird can sing.'],['Y','The tree is so tall.'],
+  ['Y','My school has a big park.'],['Y','My friend has a cat.'],['Y','Watch the boat go!'],['Y','What a big fish!'],['Y','Do you want a chip?'],
+  ['Y','Is there any jam?'],['Y','How many stars can you see?'],['Y','There is a bee on my hat.'],['Y','Who has my pen?'],['Y','Why is it so dark?'],
+  ['Y','Could I have one?'],['Y','Would you call me?'],['Y','You should not run at school.'],['Y','Does it rain a lot?'],['Y','One, two, three, go!'],
+  ['Y','Once upon a time there was a frog.'],['Y','The other boy said hello.'],['Y','We were so wet.'],['Y','Water is good for you.'],['Y','We talk and walk to the park.'],
+  ['Y','A small cat sat on a tall wall.'],['Y','Watch me jump!'],['Y','My friend is at school.']
+];
+const huntNorm = w => w.replace(/[^A-Za-z']/g, '').toLowerCase();
+const huntHas = (s, t) => s.split(' ').some(w => huntNorm(w) === t.toLowerCase());
+function playHunt(id, rounds, done){
+  const bank = HUNT.filter(([lvl]) => year === 'year1' || lvl === 'R').map(x => x[1]);
+  const pool = redPool(), focus = new Set(redFocus());
+  const count = t => bank.filter(s => huntHas(s, t)).length;
+  const avail = pool.filter(t => count(t) >= 2).length ? pool.filter(t => count(t) >= 2) : pool.filter(t => count(t) >= 1);
+  const order = [...shuffle(avail.filter(t => focus.has(t))), ...shuffle(avail.filter(t => !focus.has(t)))];
+  const targets = Array.from({length: rounds}, (_,k) => order[k % order.length]);
+  let r = 0;
+  function round(){
+    if(!live(id)) return;
+    if(r >= rounds) return done();
+    pip(r);
+    const t = targets[r];
+    const withT = shuffle(bank.filter(s => huntHas(s, t))).slice(0, 3);
+    const extra = shuffle(bank.filter(s => !huntHas(s, t))).slice(0, Math.max(1, 3 - withT.length));
+    const story = shuffle([...withT, ...extra]).slice(0, 4);
+    const need = story.reduce((n, s) => n + s.split(' ').filter(w => huntNorm(w) === t.toLowerCase()).length, 0);
+    let found = 0, missed = false;
+    stage.innerHTML = `
+      <div class="prompt">${stopCritter()}<div class="wordcard listen">
+        <button class="speak" id="speak" aria-label="Hear the word">${SPEAKER}</button>
+        <div class="huntword"><small>Find every</small><span class="bigword red">${esc(t)}</span></div>
+        <span class="need" id="need"></span></div></div>
+      <div class="story">${story.map(s => `<p>${s.split(' ').map(w => `<button class="hw" data-w="${esc(huntNorm(w))}">${esc(w)}</button>`).join(' ')}</p>`).join('')}</div>`;
+    const renderNeed = () => { $('#need').innerHTML = Array.from({length: need}, (_,k) => `<i class="${k < found ? 'got' : ''}"></i>`).join(''); };
+    renderNeed();
+    $('#speak').onclick = () => say(t);
+    say(t);
+    stage.querySelectorAll('.hw').forEach(b => b.onclick = () => {
+      if(!live(id) || b.classList.contains('got')) return;
+      if(b.dataset.w === t.toLowerCase()){
+        b.classList.add('got'); found++; renderNeed(); react('.prompt .critter','happy');
+        if(!missed) earn(1, b);
+        if(found === need){
+          if(!missed) run.good++;
+          pip(r, missed ? 'miss' : 'done');
+          flash(missed ? 'All found!' : 'Brilliant!');
+          stage.querySelectorAll('.hw').forEach(x => x.disabled = true);
+          r++; setTimeout(round, 1500);
+        }
+      } else {
+        missed = true; b.classList.remove('nope'); void b.offsetWidth; b.classList.add('nope'); react('.prompt .critter','oops');
+      }
+    });
+  }
+  round();
 }
 
 /* ======================= MECHANIC 3: DRAG & MATCH ======================= */
@@ -1587,6 +1714,12 @@ function showSettings(back){
         `<button class="chip" data-limit="${m}" aria-pressed="${settings.limit === m}">${m ? m + ' min' : 'No limit'}</button>`).join('')}</div>
     </div>
     <div class="setcard">
+      <h3>Read red words aloud</h3>
+      <p class="hint">In the red word games the iPad says the word and your child finds it. Turn off for silent play: the word then flashes for 2 seconds before hiding.</p>
+      <div class="chips" role="group" aria-label="Read red words aloud">${[[true,'On'],[false,'Off']].map(([v,n]) =>
+        `<button class="chip" data-voice="${v}" aria-pressed="${settings.voice === v}">${n}</button>`).join('')}</div>
+    </div>
+    <div class="setcard">
       <h3>Speedy Tap countdown</h3>
       <p class="hint">The bar that runs down while a child chooses an answer.</p>
       <div class="chips" role="group" aria-label="Speedy Tap countdown">${timers.map(([k,n]) =>
@@ -1608,6 +1741,7 @@ function showSettings(back){
   save();
   stage.querySelectorAll('[data-limit]').forEach(b => b.onclick = () => { settings.limit = +b.dataset.limit; saveSettings(); showSettings(back); });
   stage.querySelectorAll('[data-timer]').forEach(b => b.onclick = () => { settings.timer = b.dataset.timer; saveSettings(); showSettings(back); });
+  stage.querySelectorAll('[data-voice]').forEach(b => b.onclick = () => { settings.voice = b.dataset.voice === 'true'; saveSettings(); if(settings.voice) say('said'); showSettings(back); });
   stage.querySelectorAll('.prow').forEach(row => {
     const p = players.find(x => x.id === row.dataset.id);
     const extra = row.querySelector('[data-act="extra"]');

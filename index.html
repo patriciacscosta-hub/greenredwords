@@ -3,6 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Word Lights">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#A9C0CE">
+<meta name="description" content="Green and red word phonics games for Reception and Year 1.">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <style>[hidden]{display:none!important}body{margin:0}img{max-width:100%}</style>
 <title>Word Lights</title>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -1308,5 +1317,9 @@ else if(player) askClass();
 else showPlayers();
 </script>
 
+<script>
+// Offline support: keeps the game working when the classroom Wi-Fi drops.
+if('serviceWorker' in navigator){ navigator.serviceWorker.register('sw.js').catch(function(){}); }
+</script>
 </body>
 </html>

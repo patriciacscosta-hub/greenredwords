@@ -53,6 +53,16 @@ A page for children and parents showing RWI Set 1, Set 2 and Set 3 sounds in tea
 
 About 6 in 10 words in each game come from that term's focus, the rest are review.
 
+## Put it on an iPad
+
+1. Open **https://patriciacscosta-hub.github.io/greenredwords/** in **Safari** on the iPad.
+2. Tap the **Share** button (the square with an arrow pointing up).
+3. Scroll down and tap **Add to Home Screen**, then **Add**.
+
+Word Lights now has its own icon on the home screen and opens full-screen like an app. After the first visit it keeps working without Wi-Fi, and it updates itself the next time the iPad is online.
+
+To lock a child into the game, use the iPad's **Guided Access** (Settings → Accessibility → Guided Access).
+
 ## Run it
 
 Open `index.html` in a browser – no build step or server needed.

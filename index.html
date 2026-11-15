@@ -110,7 +110,7 @@ h1,h2,h3{margin:0;line-height:1;text-wrap:balance;font-weight:700}
 .btn.sun{background:var(--sun);color:var(--ink)}
 
 /* ---------- Map ---------- */
-.map{min-height:100%;padding-bottom:40px}
+.map{height:100%;display:flex;flex-direction:column}
 .mapbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--scene);display:flex;gap:10px;flex-wrap:wrap;align-items:center;
   padding-block:12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--scene)}
@@ -127,14 +127,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .who{background:var(--white);border-radius:999px;padding:5px 18px 5px 5px;display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:1.1rem;min-height:50px;max-width:100%}
 .who .ava{width:40px;height:40px;border-radius:50%;background:var(--sun-soft);display:grid;place-items:center;font-size:1.6rem;flex:none}
 .who span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.maphead{display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;padding:10px 16px 0}
-.maphead h1{color:var(--white);font-size:clamp(2.2rem,7vw,3.6rem);letter-spacing:.04em;text-transform:uppercase;text-shadow:0 2px 0 rgba(38,48,77,.12)}
 .stagechip{background:var(--white);color:var(--ink);border-radius:999px;padding:7px 7px 7px 22px;display:inline-flex;align-items:center;gap:14px;
   font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:1rem;min-height:52px}
 .stagechip .chg{background:var(--ink);color:var(--white);border-radius:999px;padding:7px 16px;font-size:.8rem}
 .focusline{margin:0;font-size:.98rem;font-weight:500;background:rgba(255,255,255,.55);border-radius:18px;padding:8px 16px;max-width:44ch}
-.mapbox{position:relative;width:calc(100% - 32px);max-width:460px;margin:18px auto 0}
-.mapbox svg.road{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .node{position:absolute;width:86px;height:86px;margin:-43px 0 0 -43px;border-radius:50%;background:var(--white);border:7px solid var(--go);
   display:grid;place-items:center;font-weight:700;font-size:1.9rem;color:var(--ink);z-index:2;transition:transform .15s}
 .node:hover{transform:scale(1.06)}
@@ -152,8 +148,68 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .me{position:absolute;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;background:var(--white);display:grid;place-items:center;font-size:2.3rem;z-index:3;
   animation:bob2 1.4s ease-in-out infinite;box-shadow:0 5px 0 rgba(38,48,77,.12);pointer-events:none}
 @keyframes bob2{50%{transform:translateY(-7px)}}
-.deco{position:absolute;font-size:1.9rem;transform:translate(-50%,-50%);pointer-events:none;line-height:1}
-.maplabel{position:absolute;transform:translate(-50%,-50%);background:var(--ink);color:var(--white);border-radius:999px;padding:4px 14px;font-weight:700;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+/* Horizontal world map */
+.mapinfo{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;padding:0 16px 10px}
+.mapinfo .stagechip{min-height:46px;font-size:.9rem}
+.mapinfo .focusline{font-size:.9rem;padding:6px 14px;max-width:52ch}
+@media (max-width:560px), (max-height:640px){ .mapinfo .focusline{display:none} }
+.mapwrap{position:relative;flex:1;min-height:320px}
+.scroller{position:absolute;inset:0;overflow-x:auto;overflow-y:hidden;scrollbar-width:none;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch;cursor:grab;touch-action:pan-x}
+.scroller::-webkit-scrollbar{display:none}
+.scroller.grabbing{cursor:grabbing;user-select:none}
+.worldbox{position:relative;height:100%;overflow:hidden}
+.lyr{position:absolute;top:0;left:0;width:100%;height:100%;overflow:visible;will-change:transform;pointer-events:none}
+.lyr.fore{z-index:6}
+.worldbox .node{z-index:3} .worldbox .me{z-index:4}
+.signtext{font-family:var(--font-display);font-weight:700;font-size:22px;fill:#fff;letter-spacing:.03em}
+.navbtn{position:absolute;bottom:max(16px,env(safe-area-inset-bottom,0px));z-index:8;width:60px;height:60px;border-radius:50%;background:rgba(255,255,255,.94);color:var(--ink);display:grid;place-items:center;box-shadow:0 4px 0 rgba(38,48,77,.15)}
+.navbtn svg{width:30px;height:30px}
+.navbtn.l{left:max(10px,env(safe-area-inset-left,0px))} .navbtn.r{right:max(10px,env(safe-area-inset-right,0px))}
+.choices.worlds{grid-template-columns:repeat(3,minmax(0,1fr));max-width:760px}
+@media (max-width:520px){ .choices.worlds{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.choice.wpick .big{font-size:4.2rem}
+.choice.wpick small{font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem;color:var(--ink)}
+body[data-scene="world-jungle"]{--scene:#BFEBD0} body[data-scene="world-pond"]{--scene:#B8E3FF} body[data-scene="world-desert"]{--scene:#FFD99E}
+body[data-scene="world-savanna"]{--scene:#FFBE8A} body[data-scene="world-ocean"]{--scene:#92E2F0} body[data-scene="world-arctic"]{--scene:#B9D7F2}
+/* World life */
+.drift{animation:drift 14s ease-in-out infinite alternate}
+@keyframes drift{to{transform:translateX(46px)}}
+.sway-t{animation:sway 5s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 0}
+.sway-b{animation:sway 4s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes sway{0%,100%{transform:rotate(-4deg)}50%{transform:rotate(4deg)}}
+.flutter{animation:flutter 7s ease-in-out infinite}
+@keyframes flutter{0%,100%{transform:translate(0,0) rotate(-6deg)}25%{transform:translate(40px,-30px) rotate(6deg)}50%{transform:translate(80px,0) rotate(-4deg)}75%{transform:translate(40px,25px) rotate(8deg)}}
+.swim{animation:swim var(--dur,30s) linear infinite}
+@keyframes swim{0%{transform:translateX(0);opacity:0}6%{opacity:1}94%{opacity:1}100%{transform:translateX(var(--dx,-800px));opacity:0}}
+.walk{animation:walk var(--dur,24s) linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes walk{0%{transform:translateX(0) scaleX(1)}48%{transform:translateX(var(--dx,-140px)) scaleX(1)}50%{transform:translateX(var(--dx,-140px)) scaleX(-1)}98%{transform:translateX(0) scaleX(-1)}100%{transform:translateX(0) scaleX(1)}}
+.bobs{animation:bobs 3s ease-in-out infinite}
+@keyframes bobs{50%{transform:translateY(-6px)}}
+.waddle{animation:waddle 1.2s ease-in-out infinite;transform-box:fill-box;transform-origin:50% 100%}
+@keyframes waddle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}}
+.jump{animation:jump 7s ease-in-out infinite;opacity:0}
+@keyframes jump{0%{transform:translate(0,0);opacity:0}4%{opacity:1}12%{transform:translate(30px,-70px) rotate(-25deg)}20%{transform:translate(60px,0) rotate(25deg);opacity:1}24%,100%{transform:translate(60px,0);opacity:0}}
+.rise{animation:rise var(--dur,7s) linear infinite}
+@keyframes rise{0%{transform:translateY(0);opacity:0}10%{opacity:.9}100%{transform:translateY(-500px);opacity:0}}
+.snow{animation:snowfall var(--dur,12s) linear infinite}
+@keyframes snowfall{0%{transform:translate(0,0)}50%{transform:translate(22px,320px)}100%{transform:translate(-10px,660px)}}
+.roll{animation:roll var(--dur,16s) linear infinite;transform-box:fill-box;transform-origin:center}
+@keyframes roll{0%{transform:translateX(0) rotate(0);opacity:0}5%{opacity:1}95%{opacity:1}100%{transform:translateX(-720px) rotate(-1080deg);opacity:0}}
+.ripple{animation:ripple 3.5s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ripple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+.flow{animation:flow 1s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.glow{animation:glow 4s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes glow{50%{transform:scale(1.08);opacity:.7}}
+.ray{animation:ray 6s ease-in-out infinite}
+@keyframes ray{50%{opacity:.03}}
+.aurora{animation:aurora 9s ease-in-out infinite alternate}
+@keyframes aurora{0%{opacity:.2;transform:translateX(0)}100%{opacity:.6;transform:translateX(70px)}}
+.soar{animation:soar 40s linear infinite}
+@keyframes soar{from{transform:translateX(0)}to{transform:translateX(var(--dx,900px))}}
+.sparkle{animation:sparkle 2s ease-in-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes sparkle{0%,100%{transform:scale(.4);opacity:.3}50%{transform:scale(1.1);opacity:1}}
+@media (prefers-reduced-motion:reduce){ .lyr *{animation:none!important} .jump{opacity:0} }
 
 /* ---------- Sound buttons (dot = one sound, dash = special friends, arc = split sound) ---------- */
 .sw{display:inline-flex;gap:.06em;font-family:var(--font-read);font-weight:700;line-height:1;padding-bottom:.08em}
@@ -357,12 +413,11 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <button class="pill" id="boardBtn" aria-label="Leaderboard"><span aria-hidden="true">🏆</span><span class="lbl">Leaders</span></button>
     <button class="pill" id="setBtn" aria-label="Grown-up settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
   </div>
-  <div class="maphead">
-    <h1>Word Lights</h1>
+  <div class="mapinfo">
     <button class="stagechip" id="changeStage" aria-label="Change class and term"><span id="stageLabel"></span><span class="chg">Change</span></button>
     <p class="focusline" id="focusLine"></p>
   </div>
-  <div class="mapbox" id="mapbox"></div>
+  <div class="mapwrap" id="mapwrap"></div>
 </main>
 
 <!-- PLAY -->
@@ -437,8 +492,8 @@ const SOUND_SETS = {
           ['aw','s aw'],['are','c are'],['ur','b ur n'],['er','s i s t er'],['ow','c ow'],['ai','r ai n'],['oa','b oa t'],['ew','ch ew'],
           ['ire','f ire'],['ear','h ear'],['ure','s ure']]]]}
 };
-const AVATARS = [['🦊','Fox'],['🐼','Panda'],['🐸','Frog'],['🐯','Tiger'],['🐰','Bunny'],['🦁','Lion'],['🐨','Koala'],['🐵','Monkey'],
-                 ['🐷','Piggy'],['🐙','Octopus'],['🦄','Unicorn'],['🐢','Turtle']];
+// Six animals, each with its own map world
+const AVATARS = [['🐵','Monkey','jungle'],['🐸','Frog','pond'],['🐪','Camel','desert'],['🦁','Lion','savanna'],['🐙','Octopus','ocean'],['🐧','Penguin','arctic']];
 
 /* ======================= LEVEL MAP ======================= */
 // 12 levels per class + term. k: g = green words, r = red words, mix = both. The last one is the trophy level.
@@ -448,7 +503,6 @@ const LEVELS = [
   {m:'pairs',k:'r'},{m:'bubbles',k:'g'},{m:'drag',k:'g'},{m:'tap',k:'mix',boss:true}
 ];
 const MECH = {tap:'Speedy Tap', bubbles:'Bubble Pop', drag:'Drag & Match', pairs:'Find the Pairs'};
-const DECO = {autumn:['🍂','🍁','🌰','🦔','🍄'], spring:['🌷','🌼','🐣','🌱','🦋'], summer:['🌻','🐞','🌳','🍓','🐝']};
 function mechIcon(m){
   const a = 'viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"';
   if(m==='tap') return `<svg ${a}><circle cx="12" cy="12" r="3.5" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="8"/></svg>`;
@@ -668,7 +722,7 @@ function newPlayer(){
   setupScreen(`
     <div class="brand">Word Lights</div>
     <h1>Pick your animal</h1>
-    <div class="choices small">${AVATARS.map(([a,n],i) => `<button class="choice" data-i="${i}" aria-label="${n}"><span class="big" aria-hidden="true">${a}</span></button>`).join('')}</div>
+    <div class="choices worlds">${AVATARS.map(([a,n,w],i) => `<button class="choice wpick" data-i="${i}" style="background:linear-gradient(160deg, ${WORLDS[w].tile[0]}, ${WORLDS[w].tile[1]})" aria-label="${n}, ${WORLDS[w].name} map"><span class="big" aria-hidden="true">${a}</span><b>${n}</b><small>${WORLDS[w].name}</small></button>`).join('')}</div>
     ${players.length ? '<button class="linkback" id="setupBack">← Back</button>' : ''}`);
   $('#setupIn').querySelectorAll('[data-i]').forEach(b => b.onclick = () => nameStep(AVATARS[+b.dataset.i]));
   if(players.length) $('#setupBack').onclick = showPlayers;
@@ -721,11 +775,310 @@ function askTerm(y){
   ($('#setupIn [data-t="'+now+'"]') || $('#setupIn [data-t]')).focus();
 }
 
+/* ======================= WORLDS ======================= */
+// Each animal has its own world. Scenery is drawn in SVG from a seeded random generator, so it is the same every visit.
+const WORLDS = {
+  jungle:  {name:'Jungle',   sky:['#BFEBD0','#F0FBE6'], tile:['#C9EED6','#8FD19C'], wood:'#A9744A'},
+  pond:    {name:'Pond',     sky:['#B8E3FF','#EEF9FF'], tile:['#C6EBFF','#8FD3E6'], wood:'#A9744A'},
+  desert:  {name:'Desert',   sky:['#FFD99E','#FFF6E2'], tile:['#FFE8BE','#F2C987'], wood:'#B9834F'},
+  savanna: {name:'Savanna',  sky:['#FFBE8A','#FFF0D9'], tile:['#FFD9B0','#EBC46A'], wood:'#9C6B43'},
+  ocean:   {name:'Ocean',    sky:['#92E2F0','#2E78B0'], tile:['#A6E8F3','#5BA9D3'], wood:'#9C6B43'},
+  arctic:  {name:'Snowland', sky:['#B9D7F2','#F2F9FF'], tile:['#DCEEFC','#F7FBFF'], wood:'#8E6A4E'}
+};
+const worldOf = p => { const a = AVATARS.find(x => x[0] === p.avatar); return a ? a[2] : 'jungle'; };
+const rng = seed => () => { seed = seed + 0x6D2B79F5 | 0; let t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+const f1 = n => Math.round(n*10)/10;
+const bez = (a,b,c,d,t) => { const u = 1-t; return u*u*u*a + 3*u*u*t*b + 3*u*t*t*c + t*t*t*d; };
+function shadeHex(h, k){ const n = parseInt(h.slice(1),16); const c = [n>>16, n>>8&255, n&255].map(v => Math.max(0, Math.min(255, Math.round(v*k)))); return '#' + c.map(v => v.toString(16).padStart(2,'0')).join(''); }
+// Rolling hills from x=-80 to W+80, filled down to `bottom`
+function hills(r, W, base, amp, step, fill, bottom = 640){
+  let x = -80, y = base - r()*amp, d = `M -80 ${bottom} L -80 ${f1(y)}`;
+  while(x < W + 80){
+    const nx = x + step*(.7 + r()*.6), ny = base - r()*amp, mx = f1(x + (nx-x)/2);
+    d += ` C ${mx} ${f1(y)}, ${mx} ${f1(ny)}, ${f1(nx)} ${f1(ny)}`; x = nx; y = ny;
+  }
+  return `<path d="${d} L ${f1(x)} ${bottom} Z" fill="${fill}"/>`;
+}
+const cloud = (x, y, s, o = .9) => `<g class="drift" style="animation-duration:${f1(10 + s*8)}s"><g opacity="${o}" fill="#fff">
+  <ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(52*s)}" ry="${f1(17*s)}"/><circle cx="${f1(x-20*s)}" cy="${f1(y-9*s)}" r="${f1(20*s)}"/><circle cx="${f1(x+12*s)}" cy="${f1(y-15*s)}" r="${f1(26*s)}"/></g></g>`;
+const emo = (e, x, y, size, cls = '', style = '') =>
+  `<text x="${f1(x)}" y="${f1(y)}" font-size="${size}" text-anchor="middle" dominant-baseline="central" class="${cls}" style="${style}">${e}</text>`;
+const birds = (x, y, n, col, dx) => `<g class="soar" style="--dx:${dx}px;animation-duration:${30 + n*4}s">` +
+  Array.from({length:n}, (_,k) => `<path d="M ${x + k*26 - (k%2)*8} ${y + (k%2)*12} q 7 -7 14 0 q 7 -7 14 0" stroke="${col}" stroke-width="3" fill="none" stroke-linecap="round"/>`).join('') + '</g>';
+
+function signPost(x, y, text, wood){
+  const w = Math.max(170, text.length*13.5 + 44), dark = shadeHex(wood, .72);
+  return `<g><rect x="${x-7}" y="${y-118}" width="14" height="122" rx="5" fill="${dark}"/>
+    <rect x="${f1(x-w/2)}" y="${y-160}" width="${f1(w)}" height="58" rx="14" fill="${wood}"/>
+    <rect x="${f1(x-w/2+7)}" y="${y-153}" width="${f1(w-14)}" height="44" rx="10" fill="none" stroke="rgba(255,255,255,.35)" stroke-width="2.5"/>
+    <circle cx="${f1(x-w/2+16)}" cy="${y-131}" r="3.5" fill="${dark}"/><circle cx="${f1(x+w/2-16)}" cy="${y-131}" r="3.5" fill="${dark}"/>
+    <text x="${x}" y="${y-123}" text-anchor="middle" class="signtext">${esc(text)}</text></g>`;
+}
+function treasure(x, y, open){
+  const lid = open
+    ? `<g transform="rotate(-32 ${x-50} ${y-62})"><path d="M ${x-50} ${y-62} v -20 q 50 -38 100 0 v 20 z" fill="#C98444"/><rect x="${x-9}" y="${y-98}" width="18" height="36" fill="#FFC83A"/></g>
+       <g>${[[-26,-70],[-6,-78],[16,-72],[-14,-86],[6,-90],[30,-80]].map(([a,b]) => `<circle cx="${x+a}" cy="${y+b}" r="11" fill="#FFCF33" stroke="#E9A70E" stroke-width="3"/>`).join('')}</g>`
+    : `<path d="M ${x-50} ${y-62} v -20 q 50 -38 100 0 v 20 z" fill="#C98444"/><rect x="${x-9}" y="${y-100}" width="18" height="38" fill="#FFC83A"/>`;
+  const sparkle = (sx, sy, s, d) => `<path class="sparkle" style="animation-delay:${d}s" d="M ${sx} ${sy-s} L ${sx+s*.28} ${sy-s*.28} L ${sx+s} ${sy} L ${sx+s*.28} ${sy+s*.28} L ${sx} ${sy+s} L ${sx-s*.28} ${sy+s*.28} L ${sx-s} ${sy} L ${sx-s*.28} ${sy-s*.28} Z" fill="#FFE27A"/>`;
+  return `<g><ellipse cx="${x}" cy="${y+2}" rx="70" ry="14" fill="rgba(38,48,77,.18)"/>
+    <rect x="${x-50}" y="${y-62}" width="100" height="62" rx="9" fill="#B8743A"/>
+    <rect x="${x-50}" y="${y-62}" width="100" height="13" fill="#A0622D"/>
+    <rect x="${x-9}" y="${y-62}" width="18" height="62" fill="#FFC83A"/><rect x="${x-50}" y="${y-22}" width="100" height="9" fill="#FFC83A" opacity=".9"/>
+    ${open ? '' : `<rect x="${x-10}" y="${y-70}" width="20" height="18" rx="4" fill="#8A5A2B"/>`}
+    ${lid}
+    ${sparkle(x-70, y-90, 14, 0)}${sparkle(x+72, y-60, 11, .7)}${sparkle(x+40, y-125, 9, 1.3)}</g>`;
+}
+
+const WORLD_BUILD = {
+  jungle(c){
+    const {r, W, L, road, pts, props} = c;
+    for(let i=0;i<6;i++) L.far += cloud(r()*W, 40 + r()*60, .7 + r()*.6, .8);
+    L.far += birds(W*.2, 90, 4, '#4C8F63', 700) + hills(r, W, 205, 70, 240, '#A9DDB1') + hills(r, W, 240, 55, 190, '#8DCF9B');
+    // waterfall
+    const wx = W*.43;
+    L.mid += `<path d="M ${wx-110} 310 L ${wx-92} 120 Q ${wx-40} 70 ${wx} 92 Q ${wx+50} 66 ${wx+92} 118 L ${wx+110} 310 Z" fill="#8FA393"/>
+      <path d="M ${wx-92} 120 Q ${wx-40} 70 ${wx} 92 Q ${wx+50} 66 ${wx+92} 118 L ${wx+80} 150 Q ${wx} 120 ${wx-80} 150 Z" fill="#6DB37A"/>
+      <rect x="${wx-34}" y="104" width="68" height="200" fill="#D3F2FF"/>
+      ${[-22,-8,6,20].map((o,k) => `<line x1="${wx+o}" y1="104" x2="${wx+o}" y2="304" stroke="#fff" stroke-width="4" stroke-dasharray="16 16" class="flow" style="animation-duration:${.8+k*.15}s"/>`).join('')}
+      <ellipse cx="${wx}" cy="306" rx="120" ry="16" fill="#9FDDF2"/><ellipse cx="${wx}" cy="302" rx="62" ry="10" fill="#fff" opacity=".9" class="glow"/>`;
+    // trees and palms
+    const tops = [];
+    for(let x = -30; x < W + 80; x += 115 + r()*110){
+      if(Math.abs(x - wx) < 150) continue;
+      const top = 70 + r()*95;
+      if(r() < .32){
+        const tx = x + 14;
+        L.mid += `<path d="M ${f1(x)} 312 Q ${f1(x+34)} ${f1((312+top)/2)} ${f1(tx)} ${f1(top)}" stroke="#9C7A55" stroke-width="14" fill="none" stroke-linecap="round"/>` +
+          [-160,-125,-90,-55,-20,15].map(a => { const cx = tx + 40*Math.cos(a*Math.PI/180), cy = top + 40*Math.sin(a*Math.PI/180);
+            return `<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="46" ry="11" fill="${a%2 ? '#4FAF6B' : '#3F9C5E'}" transform="rotate(${a} ${f1(cx)} ${f1(cy)})"/>`; }).join('');
+      } else {
+        L.mid += `<rect x="${f1(x-11)}" y="${f1(top+30)}" width="22" height="${f1(300-top)}" rx="9" fill="#7A5B43"/>` +
+          [[0,0,62,'#3F9C5E'],[-52,24,46,'#55B271'],[52,20,50,'#2E8650'],[0,-40,44,'#55B271'],[-28,-20,38,'#2E8650']]
+            .map(([dx,dy,rad,col]) => `<circle cx="${f1(x+dx)}" cy="${f1(top+dy)}" r="${rad}" fill="${col}"/>`).join('');
+        tops.push([x, top]);
+      }
+    }
+    tops.filter((_,k) => k % 4 === 1).slice(0,3).forEach(([x,top]) => L.mid += emo('🦜', x + 24, top - 46, 40, 'bobs'));
+    // ground
+    L.ground += hills(r, W, 288, 18, 220, '#7DC57E') + hills(r, W, 445, 18, 300, '#6CBA70');
+    props(18, 320, 590, (x,y) => { L.ground += `<g>${[-60,-30,0,30,60].map(a => `<ellipse cx="${x}" cy="${y-22}" rx="7" ry="26" fill="#3F9C5E" transform="rotate(${a} ${x} ${y})"/>`).join('')}</g>`; });
+    props(14, 320, 590, (x,y) => { const col = ['#FF7FA8','#FFB347','#FF6B6B'][Math.floor(r()*3)];
+      L.ground += `<g>${[0,72,144,216,288].map(a => `<circle cx="${f1(x+8*Math.cos(a*Math.PI/180))}" cy="${f1(y+8*Math.sin(a*Math.PI/180))}" r="7" fill="${col}"/>`).join('')}<circle cx="${x}" cy="${y}" r="5" fill="#FFE27A"/></g>`; }, 60);
+    L.ground += `<path d="${road}" stroke="#C9A766" stroke-width="54" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${road}" stroke="#E9D19C" stroke-width="44" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="${road}" stroke="#CDAE72" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="1 22"/>`;
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+34}" rx="60" ry="18" fill="#7E5F44"/><ellipse cx="${p.x}" cy="${p.y+27}" rx="58" ry="16" fill="#B89470"/><ellipse cx="${p.x}" cy="${p.y+27}" rx="40" ry="10" fill="none" stroke="#9E7C5A" stroke-width="2.5"/>`);
+    props(6, 330, 560, (x,y) => { L.ground += emo('🦋', x, y - 60, 30, 'flutter', `animation-delay:-${f1(r()*7)}s`); }, 60);
+    props(1, 360, 520, (x,y) => { L.ground += emo('🐆', x, y, 54, 'bobs'); }, 90);
+    // foreground: hanging vines and big leaves
+    for(let x = 40; x < W*1.2; x += 170 + r()*170){
+      const len = 80 + r()*140;
+      L.fore += `<g class="sway-t" style="animation-delay:-${f1(r()*5)}s"><path d="M ${f1(x)} -10 Q ${f1(x+22)} ${f1(len/2)} ${f1(x+4)} ${f1(len)}" stroke="#3E8E4F" stroke-width="5" fill="none"/>` +
+        [.3,.55,.8,1].map(t => `<ellipse cx="${f1(x+10)}" cy="${f1(len*t)}" rx="11" ry="6" fill="#4FAF6B" transform="rotate(${t*90-30} ${f1(x+10)} ${f1(len*t)})"/>`).join('') + '</g>';
+    }
+    for(let x = 0; x < W*1.2; x += 220 + r()*220){
+      [[-40,-25,'#2E8650'],[20,10,'#3F9C5E'],[70,-40,'#2E8650']].forEach(([dx,a,col]) => {
+        const cx = x + dx, cy = 612;
+        L.fore += `<ellipse cx="${f1(cx)}" cy="${cy}" rx="84" ry="30" fill="${col}" transform="rotate(${a} ${f1(cx)} ${cy})"/><path d="M ${f1(cx-70*Math.cos(a*Math.PI/180))} ${f1(cy-70*Math.sin(a*Math.PI/180))} L ${f1(cx+70*Math.cos(a*Math.PI/180))} ${f1(cy+70*Math.sin(a*Math.PI/180))}" stroke="#6CC383" stroke-width="3"/>`;
+      });
+    }
+  },
+
+  pond(c){
+    const {r, W, L, pts, samples, props} = c;
+    for(let i=0;i<7;i++) L.far += cloud(r()*W, 45 + r()*70, .7 + r()*.7);
+    L.far += birds(W*.5, 80, 3, '#5A8FB0', 600) + hills(r, W, 210, 55, 260, '#BFE6B2') + hills(r, W, 248, 40, 210, '#A5DA9F');
+    for(let x = 0; x < W + 80; x += 170 + r()*160){
+      const top = 120 + r()*60;
+      if(r() < .55){
+        L.mid += `<path d="M ${f1(x)} 300 L ${f1(x-5)} ${f1(top+40)}" stroke="#7D6650" stroke-width="17" stroke-linecap="round"/><ellipse cx="${f1(x)}" cy="${f1(top+18)}" rx="82" ry="56" fill="#8BC883"/>` +
+          Array.from({length:12}, (_,k) => { const sx = x - 70 + k*12.5, len = 60 + r()*55; return `<path class="sway-t" style="animation-delay:-${f1(r()*5)}s" d="M ${f1(sx)} ${f1(top+40)} q 4 ${f1(len/2)} 0 ${f1(len)}" stroke="#74B86E" stroke-width="6" fill="none" stroke-linecap="round"/>`; }).join('');
+      } else {
+        L.mid += `<circle cx="${f1(x)}" cy="290" r="${f1(34 + r()*20)}" fill="#94CF8C"/><circle cx="${f1(x+36)}" cy="296" r="${f1(26 + r()*14)}" fill="#86C67E"/>`;
+      }
+    }
+    L.ground += hills(r, W, 282, 12, 200, '#A5DC9E') + hills(r, W, 326, 8, 170, '#86CFE3') + hills(r, W, 460, 10, 260, '#72C1DB');
+    for(let k=0;k<26;k++){ const x = r()*W, y = 350 + r()*240; L.ground += `<path d="M ${f1(x-22)} ${f1(y)} q 22 -6 44 0" stroke="#fff" stroke-width="3" fill="none" opacity=".45" stroke-linecap="round"/>`; }
+    props(14, 360, 590, (x,y) => { L.ground += `<ellipse cx="${f1(x)}" cy="${f1(y)}" rx="30" ry="9" fill="none" stroke="#fff" stroke-width="2.5" class="ripple" style="animation-delay:-${f1(r()*3.5)}s"/>`; }, 50);
+    // reeds along the water's edge
+    for(let x = 20; x < W; x += 60 + r()*90){
+      if(samples.some(s => Math.abs(s.x - x) < 60 && s.y < 380)) continue;
+      L.ground += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s">` + Array.from({length:4}, (_,k) => { const h = 50 + r()*45, xx = x + k*9;
+        return `<path d="M ${f1(xx)} 334 q ${f1(r()*8-4)} ${f1(-h/2)} ${f1(r()*6-3)} ${f1(-h)}" stroke="#5E9E5A" stroke-width="4" fill="none" stroke-linecap="round"/>${k%2 ? `<rect x="${f1(xx-4)}" y="${f1(334-h-4)}" width="9" height="24" rx="4.5" fill="#8B5E3C"/>` : ''}`; }).join('') + '</g>';
+    }
+    // lily pads make the path
+    const pad = (x, y, rad, a) => `<g transform="rotate(${f1(a)} ${f1(x)} ${f1(y)})"><ellipse cx="${f1(x)}" cy="${f1(y)}" rx="${f1(rad)}" ry="${f1(rad*.42)}" fill="#5DB86B"/><path d="M ${f1(x)} ${f1(y)} L ${f1(x+rad)} ${f1(y-rad*.14)} L ${f1(x+rad)} ${f1(y+rad*.14)} Z" fill="#86CFE3"/></g>`;
+    samples.forEach((s,k) => { if(k % 4 === 2) L.ground += pad(s.x, s.y + 10, 20 + r()*6, r()*40 - 20); });
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+30}" rx="70" ry="24" fill="#4AA45A"/><ellipse cx="${p.x}" cy="${p.y+26}" rx="66" ry="21" fill="#62C273"/><path d="M ${p.x} ${p.y+26} L ${p.x+66} ${p.y+18} L ${p.x+66} ${p.y+34} Z" fill="#86CFE3"/>`);
+    props(5, 380, 580, (x,y) => { L.ground += pad(x, y, 24, r()*40-20) + emo(['🌸','🐞','🌼'][Math.floor(r()*3)], x - 4, y - 10, 24); }, 70);
+    props(2, 380, 560, (x,y) => { L.ground += emo('🦆', x, y, 46, 'swim', `--dx:-${f1(400+r()*300)}px;--dur:${f1(26+r()*12)}s;animation-delay:-${f1(r()*20)}s`); }, 60);
+    props(4, 400, 580, (x,y) => { L.ground += emo('🐟', x, y, 30, 'jump', `animation-delay:-${f1(r()*7)}s`); }, 60);
+    props(1, 380, 520, (x,y) => { L.ground += `<ellipse cx="${x}" cy="${y+16}" rx="44" ry="16" fill="#9AA8A0"/>` + emo('🐢', x, y, 44, 'bobs'); }, 90);
+    props(5, 300, 520, (x,y) => { L.ground += emo('🦋', x, y - 70, 26, 'flutter', `animation-delay:-${f1(r()*7)}s`); }, 50);
+    for(let x = 0; x < W*1.2; x += 140 + r()*200){
+      L.fore += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s">` + Array.from({length:5}, (_,k) => { const h = 70 + r()*60, xx = x + k*10;
+        return `<path d="M ${f1(xx)} 620 q ${f1(r()*10-5)} ${f1(-h/2)} ${f1(r()*8-4)} ${f1(-h)}" stroke="#4E8F4B" stroke-width="5" fill="none" stroke-linecap="round"/>`; }).join('') + '</g>';
+    }
+  },
+
+  desert(c){
+    const {r, W, L, road, pts, props} = c;
+    L.far += `<circle cx="${f1(W*.1)}" cy="110" r="115" fill="#FFE7A0" opacity=".5" class="glow"/><circle cx="${f1(W*.1)}" cy="110" r="70" fill="#FFD25E"/>`;
+    for(let i=0;i<3;i++) L.far += cloud(r()*W, 60 + r()*50, .6 + r()*.4, .7);
+    L.far += birds(W*.3, 100, 2, '#9A6B3E', 800);
+    [.28, .36, .72].forEach((t,k) => { const x = W*t, s = k === 1 ? .7 : 1;
+      L.far += `<path d="M ${f1(x-120*s)} 252 L ${f1(x)} ${f1(252-140*s)} L ${f1(x+120*s)} 252 Z" fill="#E9C083"/><path d="M ${f1(x)} ${f1(252-140*s)} L ${f1(x+120*s)} 252 L ${f1(x+18*s)} 252 Z" fill="#D9A866"/>`; });
+    L.far += hills(r, W, 232, 40, 330, '#F6D9A6');
+    for(let x = 80; x < W; x += 380 + r()*360){
+      const w = 90 + r()*70, top = 150 + r()*40;
+      L.mid += `<path d="M ${f1(x-w-30)} 300 L ${f1(x-w)} ${f1(top)} L ${f1(x+w)} ${f1(top)} L ${f1(x+w+30)} 300 Z" fill="#E39C6B"/>
+        <path d="M ${f1(x-w)} ${f1(top)} L ${f1(x+w)} ${f1(top)} L ${f1(x+w+6)} ${f1(top+14)} L ${f1(x-w-6)} ${f1(top+14)} Z" fill="#F0B07D"/>
+        <path d="M ${f1(x+w*.3)} ${f1(top+14)} L ${f1(x+w+6)} ${f1(top+14)} L ${f1(x+w+30)} 300 L ${f1(x+w*.5)} 300 Z" fill="#CF8558"/>`;
+    }
+    L.mid += hills(r, W, 270, 26, 300, '#F1CB8D');
+    // oasis
+    const ox = W*.57;
+    L.mid += `<ellipse cx="${f1(ox)}" cy="292" rx="120" ry="15" fill="#7FD3DF"/>` + [-70, 60].map(dx => { const tx = ox + dx, top = 170;
+      return `<path d="M ${f1(tx)} 292 Q ${f1(tx+20)} 230 ${f1(tx+6)} ${top}" stroke="#9C7A55" stroke-width="10" fill="none" stroke-linecap="round"/>` +
+        [-160,-120,-80,-40,0,30].map(a => { const cx = tx + 6 + 34*Math.cos(a*Math.PI/180), cy = top + 34*Math.sin(a*Math.PI/180);
+          return `<ellipse cx="${f1(cx)}" cy="${f1(cy)}" rx="38" ry="9" fill="#4FAF6B" transform="rotate(${a} ${f1(cx)} ${f1(cy)})"/>`; }).join(''); }).join('');
+    L.ground += hills(r, W, 290, 12, 260, '#F8DFAE') + hills(r, W, 448, 16, 300, '#F3D49B');
+    for(let k=0;k<40;k++){ const x = r()*W, y = 320 + r()*270; L.ground += `<path d="M ${f1(x-24)} ${f1(y)} q 12 -5 24 0 q 12 5 24 0" stroke="#E8C285" stroke-width="3" fill="none" stroke-linecap="round"/>`; }
+    L.ground += `<path d="${road}" stroke="#DDB271" stroke-width="50" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#EECC93" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#C79A5B" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="4 18"/>`;
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+33}" rx="60" ry="18" fill="#D19F62"/><ellipse cx="${p.x}" cy="${p.y+27}" rx="58" ry="15" fill="#EBC387"/>`);
+    props(12, 330, 590, (x,y) => { const h = 60 + r()*55, g = '#5DA56A', a1 = .35 + r()*.25, a2 = .45 + r()*.25;
+      L.ground += `<g><rect x="${f1(x-11)}" y="${f1(y-h)}" width="22" height="${f1(h)}" rx="11" fill="${g}"/>
+        <path d="M ${f1(x-11)} ${f1(y-h*a1)} h -14 v ${f1(-h*.3)}" stroke="${g}" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M ${f1(x+11)} ${f1(y-h*a2)} h 14 v ${f1(-h*.25)}" stroke="${g}" stroke-width="13" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="${x}" y1="${f1(y-h+8)}" x2="${x}" y2="${f1(y-4)}" stroke="#4C9159" stroke-width="2.5"/></g>`; });
+    props(8, 330, 590, (x,y) => { L.ground += `<ellipse cx="${x}" cy="${y-12}" rx="16" ry="14" fill="#6BB577"/><circle cx="${x}" cy="${y-27}" r="5" fill="#FF7FA8"/>`; }, 60);
+    props(8, 330, 590, (x,y) => { L.ground += `<ellipse cx="${x}" cy="${y-8}" rx="${f1(16+r()*16)}" ry="${f1(9+r()*6)}" fill="#C9935F"/>`; }, 60);
+    props(2, 360, 560, (x,y) => { L.ground += emo('🦎', x, y, 34, 'bobs'); }, 70);
+    props(1, 360, 520, (x,y) => { L.ground += emo('🐪', x, y - 20, 64, 'walk', `--dx:-160px;--dur:28s`); }, 110);
+    for(let k=0;k<2;k++){ const x = W*(.35 + k*.4), y = 380 + k*120;
+      L.ground += `<g class="roll" style="--dur:${18+k*6}s;animation-delay:-${k*7}s"><circle cx="${x}" cy="${y}" r="22" fill="none" stroke="#B78A52" stroke-width="3"/><path d="M ${x-16} ${y-8} q 16 20 30 -2 M ${x-12} ${y+12} q 10 -24 26 -6 M ${x-20} ${y+2} q 20 -4 38 4" stroke="#B78A52" stroke-width="2.5" fill="none"/></g>`; }
+    for(let x = 0; x < W*1.2; x += 300 + r()*260) L.fore += `<ellipse cx="${f1(x)}" cy="622" rx="${f1(70+r()*40)}" ry="34" fill="#D9A86E"/><ellipse cx="${f1(x+60)}" cy="628" rx="50" ry="28" fill="#C99558"/>`;
+  },
+
+  savanna(c){
+    const {r, W, L, road, pts, props} = c;
+    L.far += `<circle cx="${f1(W*.2)}" cy="200" r="150" fill="#FFD08F" opacity=".5" class="glow"/><circle cx="${f1(W*.2)}" cy="200" r="92" fill="#FFB35E"/>`;
+    const mx = W*.55;
+    L.far += `<path d="M ${f1(mx-290)} 250 L ${f1(mx-60)} 118 Q ${f1(mx)} 98 ${f1(mx+60)} 118 L ${f1(mx+290)} 250 Z" fill="#C79B94"/>
+      <path d="M ${f1(mx-60)} 118 Q ${f1(mx)} 98 ${f1(mx+60)} 118 L ${f1(mx+44)} 140 L ${f1(mx+16)} 127 L ${f1(mx-10)} 146 L ${f1(mx-36)} 130 Z" fill="#FFF6F0"/>`;
+    L.far += birds(W*.05, 110, 5, '#8A5A43', 1100) + birds(W*.6, 70, 3, '#8A5A43', 900) + hills(r, W, 238, 36, 320, '#E8BE8C');
+    for(let x = 40; x < W + 80; x += 220 + r()*240){
+      const top = 150 + r()*55, w = 75 + r()*30;
+      L.mid += `<path d="M ${f1(x)} 300 L ${f1(x)} 238 L ${f1(x-30)} ${f1(top+12)} M ${f1(x)} 238 L ${f1(x+34)} ${f1(top+14)} M ${f1(x)} 250 L ${f1(x+10)} ${f1(top+12)}" stroke="#6E4F3A" stroke-width="9" fill="none" stroke-linecap="round"/>
+        <ellipse cx="${f1(x)}" cy="${f1(top)}" rx="${f1(w)}" ry="19" fill="#7E9C4F"/><ellipse cx="${f1(x)}" cy="${f1(top-9)}" rx="${f1(w*.8)}" ry="12" fill="#93B15C"/>`;
+    }
+    const bx = W*.38;
+    L.mid += `<path d="M ${f1(bx-36)} 300 Q ${f1(bx-30)} 200 ${f1(bx-16)} 150 L ${f1(bx+16)} 150 Q ${f1(bx+30)} 200 ${f1(bx+36)} 300 Z" fill="#9A7556"/><path d="M ${f1(bx-14)} 152 l -30 -40 M ${f1(bx)} 150 l 0 -46 M ${f1(bx+14)} 152 l 32 -38" stroke="#9A7556" stroke-width="9" stroke-linecap="round"/><ellipse cx="${f1(bx)}" cy="104" rx="60" ry="16" fill="#7E9C4F"/>`;
+    L.mid += hills(r, W, 272, 20, 300, '#E9C27A');
+    L.ground += hills(r, W, 288, 10, 260, '#EEC970') + hills(r, W, 446, 14, 300, '#E4B95C');
+    props(46, 320, 595, (x,y) => { L.ground += `<path d="M ${x} ${y} l -8 -18 M ${x} ${y} l 0 -22 M ${x} ${y} l 8 -17" stroke="#C99A3E" stroke-width="3" stroke-linecap="round"/>`; }, 50);
+    L.ground += `<path d="${road}" stroke="#C88A52" stroke-width="50" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#DDA56C" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#B97A45" stroke-width="6" fill="none" stroke-linecap="round" stroke-dasharray="2 18"/>`;
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+33}" rx="60" ry="18" fill="#A9845E"/><ellipse cx="${p.x}" cy="${p.y+27}" rx="58" ry="15" fill="#D2AE86"/>`);
+    props(2, 360, 470, (x,y) => { L.ground += emo('🦒', x, y - 40, 110, 'bobs', `animation-duration:${f1(4+r()*2)}s`); }, 120);
+    props(2, 380, 560, (x,y) => { L.ground += emo('🦓', x, y - 10, 66, 'walk', `--dx:-${f1(120+r()*80)}px;--dur:${f1(22+r()*8)}s`); }, 110);
+    props(1, 380, 520, (x,y) => { L.ground += emo('🐘', x, y - 20, 96, 'walk', `--dx:-140px;--dur:34s`); }, 130);
+    props(2, 400, 580, (x,y) => { L.ground += emo('🐦', x, y - 50, 26, 'flutter', `animation-delay:-${f1(r()*7)}s`); }, 60);
+    for(let x = 0; x < W*1.2; x += 90 + r()*130)
+      L.fore += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s">` + Array.from({length:6}, (_,k) => { const h = 50 + r()*60, xx = x + k*7;
+        return `<path d="M ${f1(xx)} 620 q ${f1(r()*14-7)} ${f1(-h/2)} ${f1(r()*12-6)} ${f1(-h)}" stroke="${k%2 ? '#D9A84A' : '#C8963A'}" stroke-width="4" fill="none" stroke-linecap="round"/>`; }).join('') + '</g>';
+  },
+
+  ocean(c){
+    const {r, W, L, pts, samples, props} = c;
+    for(let x = -100; x < W; x += 260 + r()*220)
+      L.far += `<path class="ray" style="animation-delay:-${f1(r()*6)}s" d="M ${f1(x)} -20 L ${f1(x+70)} -20 L ${f1(x+240)} 640 L ${f1(x+110)} 640 Z" fill="#fff" opacity=".13"/>`;
+    L.far += emo('🐋', W*.3, 150, 110, 'swim', `--dx:-900px;--dur:80s;opacity:.55`) + hills(r, W, 420, 110, 260, '#5AA6CF');
+    L.mid += hills(r, W, 470, 60, 220, '#4A93C2');
+    for(let x = 20; x < W; x += 80 + r()*110){
+      const h = 140 + r()*170;
+      L.mid += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s;animation-duration:${f1(4+r()*3)}s"><path d="M ${f1(x)} 520 C ${f1(x+30)} ${f1(520-h*.3)} ${f1(x-30)} ${f1(520-h*.6)} ${f1(x+6)} ${f1(520-h)}" stroke="#36A27A" stroke-width="10" fill="none" stroke-linecap="round"/>` +
+        [.3,.55,.8].map(t => `<ellipse cx="${f1(x+10)}" cy="${f1(520-h*t)}" rx="14" ry="6" fill="#47B98C" transform="rotate(-30 ${f1(x+10)} ${f1(520-h*t)})"/>`).join('') + '</g>';
+    }
+    L.ground += hills(r, W, 515, 14, 220, '#EFD7A0') + hills(r, W, 568, 12, 260, '#E6C88A');
+    const coral = (x, y) => { const col = ['#FF8FA3','#FFAE6B','#B48CE0','#FF7A6B'][Math.floor(r()*4)];
+      return r() < .5
+        ? `<path d="M ${x} ${y} L ${x} ${y-40} M ${x} ${y-18} L ${x-18} ${y-48} M ${x} ${y-28} L ${x+17} ${y-58} M ${x-10} ${y-34} L ${x-24} ${y-40} M ${x+9} ${y-45} L ${x+26} ${y-48}" stroke="${col}" stroke-width="9" stroke-linecap="round" fill="none"/>`
+        : `<path d="M ${x-26} ${y} A 26 22 0 0 1 ${x+26} ${y} Z" fill="${col}"/><path d="M ${x-16} ${y-8} q 8 -10 16 0 q 8 10 16 0" stroke="rgba(255,255,255,.5)" stroke-width="3" fill="none"/>`; };
+    props(16, 520, 598, (x,y) => { L.ground += coral(x, y); }, 50);
+    props(6, 530, 598, (x,y) => { L.ground += `<path d="M ${x} ${y-12} L ${x+4} ${y-3} L ${x+13} ${y-3} L ${x+6} ${y+3} L ${x+9} ${y+12} L ${x} ${y+6} L ${x-9} ${y+12} L ${x-6} ${y+3} L ${x-13} ${y-3} L ${x-4} ${y-3} Z" fill="#FF8A65"/>`; }, 50);
+    samples.forEach((s,k) => { if(k % 3 === 1) L.ground += `<circle cx="${f1(s.x)}" cy="${f1(s.y + 8)}" r="${f1(4 + r()*4)}" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="2"/>`; });
+    pts.forEach(p => L.ground += `<ellipse cx="${p.x}" cy="${p.y+30}" rx="62" ry="18" fill="rgba(255,255,255,.22)" stroke="rgba(255,255,255,.7)" stroke-width="3"/>`);
+    const fish = ['🐠','🐟','🐡','🐠'];
+    for(let k=0;k<9;k++){ const x = r()*W, y = 230 + r()*240;
+      L.ground += emo(fish[k % 4], x, y, 30 + r()*16, 'swim', `--dx:-${f1(500+r()*500)}px;--dur:${f1(18+r()*16)}s;animation-delay:-${f1(r()*20)}s`); }
+    props(1, 260, 420, (x,y) => { L.ground += emo('🐢', x, y, 58, 'swim', `--dx:-600px;--dur:40s`); }, 100);
+    props(2, 545, 590, (x,y) => { L.ground += emo('🦀', x, y - 10, 34, 'walk', `--dx:-60px;--dur:9s`); }, 60);
+    for(let k=0;k<22;k++){ const x = r()*W; L.ground += `<circle cx="${f1(x)}" cy="560" r="${f1(3+r()*5)}" fill="rgba(255,255,255,.35)" stroke="#fff" stroke-width="1.5" class="rise" style="--dur:${f1(6+r()*6)}s;animation-delay:-${f1(r()*10)}s"/>`; }
+    for(let x = 0; x < W*1.2; x += 160 + r()*200)
+      L.fore += `<g class="sway-b" style="animation-delay:-${f1(r()*4)}s"><path d="M ${f1(x)} 630 C ${f1(x+24)} 590 ${f1(x-20)} 560 ${f1(x+8)} ${f1(520-r()*40)}" stroke="#1F7A5C" stroke-width="13" fill="none" stroke-linecap="round"/></g><path d="M ${f1(x+40)} 630 A 46 30 0 0 1 ${f1(x+132)} 630 Z" fill="#2C6E99"/>`;
+  },
+
+  arctic(c){
+    const {r, W, L, road, pts, props} = c;
+    for(let k=0;k<3;k++){ const y = 60 + k*30;
+      L.far += `<path class="aurora" style="animation-delay:-${k*3}s" d="M -80 ${y} C ${f1(W*.15)} ${y-50} ${f1(W*.3)} ${y+50} ${f1(W*.5)} ${y} S ${f1(W*.85)} ${y-50} ${f1(W+80)} ${y}" stroke="${['#7FF0C4','#9FD8FF','#C3A6FF'][k]}" stroke-width="${34 - k*6}" fill="none" opacity=".4" stroke-linecap="round"/>`; }
+    for(let x = -60; x < W + 100; x += 230 + r()*200){
+      const top = 90 + r()*70, w = 150 + r()*60;
+      L.far += `<path d="M ${f1(x-w)} 262 L ${f1(x)} ${f1(top)} L ${f1(x+w)} 262 Z" fill="#EEF6FC"/><path d="M ${f1(x)} ${f1(top)} L ${f1(x+w)} 262 L ${f1(x+w*.15)} 262 Z" fill="#CFE2F2"/>
+        <path d="M ${f1(x-w*.3)} ${f1(top+(262-top)*.3)} L ${f1(x)} ${f1(top)} L ${f1(x+w*.3)} ${f1(top+(262-top)*.3)} L ${f1(x+w*.12)} ${f1(top+(262-top)*.24)} L ${f1(x)} ${f1(top+(262-top)*.34)} L ${f1(x-w*.14)} ${f1(top+(262-top)*.24)} Z" fill="#FFFFFF"/>`; }
+    L.far += hills(r, W, 254, 26, 300, '#E1EEF8');
+    for(let x = 10; x < W + 60; x += 70 + r()*120){
+      if(r() < .22){ L.mid += `<path d="M ${f1(x-60)} 300 L ${f1(x-40)} 230 L ${f1(x+10)} 205 L ${f1(x+50)} 240 L ${f1(x+66)} 300 Z" fill="#DCEFFB"/><path d="M ${f1(x+10)} 205 L ${f1(x+50)} 240 L ${f1(x+66)} 300 L ${f1(x+16)} 300 Z" fill="#BCDDF2"/>`; continue; }
+      const h = 80 + r()*70, base = 300;
+      L.mid += `<rect x="${f1(x-5)}" y="${f1(base-18)}" width="10" height="20" fill="#6B5446"/>` + [0,1,2].map(k => { const w = 40 - k*10, y0 = base - 14 - k*h*.28, y1 = y0 - h*.42;
+        return `<path d="M ${f1(x-w)} ${f1(y0)} L ${f1(x)} ${f1(y1)} L ${f1(x+w)} ${f1(y0)} Z" fill="#3D7A6B"/><path d="M ${f1(x-w*.45)} ${f1(y1+(y0-y1)*.45)} L ${f1(x)} ${f1(y1)} L ${f1(x+w*.45)} ${f1(y1+(y0-y1)*.45)} Q ${f1(x)} ${f1(y1+(y0-y1)*.55)} ${f1(x-w*.45)} ${f1(y1+(y0-y1)*.45)} Z" fill="#fff"/>`; }).join('');
+    }
+    L.mid += hills(r, W, 276, 12, 280, '#EAF4FB');
+    L.ground += hills(r, W, 290, 10, 240, '#F8FBFF') + hills(r, W, 448, 14, 300, '#E6F0F9');
+    props(6, 340, 590, (x,y) => { L.ground += `<ellipse cx="${x}" cy="${y}" rx="${f1(40+r()*30)}" ry="${f1(10+r()*5)}" fill="#D2EAF8"/>`; }, 80);
+    L.ground += `<path d="${road}" stroke="#C9DDEE" stroke-width="50" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#E4F0F9" stroke-width="40" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="${road}" stroke="#AFC8DE" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="3 16"/>`;
+    pts.forEach(p => L.ground += `<path d="M ${p.x-66} ${p.y+28} L ${p.x-50} ${p.y+14} L ${p.x+30} ${p.y+12} L ${p.x+64} ${p.y+24} L ${p.x+52} ${p.y+42} L ${p.x-40} ${p.y+44} Z" fill="#BFDDF2"/><path d="M ${p.x-62} ${p.y+24} L ${p.x-48} ${p.y+12} L ${p.x+30} ${p.y+10} L ${p.x+60} ${p.y+20} L ${p.x+48} ${p.y+34} L ${p.x-38} ${p.y+36} Z" fill="#EAF6FE"/>`);
+    props(3, 360, 560, (x,y) => { L.ground += emo('🐧', x, y - 16, 44, 'waddle', `animation-delay:-${f1(r())}s`); }, 70);
+    props(1, 380, 560, (x,y) => { L.ground += `<ellipse cx="${x}" cy="${y+10}" rx="56" ry="16" fill="#D2EAF8"/>` + emo('🦭', x, y - 10, 56, 'bobs'); }, 90);
+    for(let k=0;k<70;k++){ const x = r()*W; L.ground += `<circle cx="${f1(x)}" cy="-20" r="${f1(2.5+r()*3.5)}" fill="#fff" class="snow" style="--dur:${f1(9+r()*9)}s;animation-delay:-${f1(r()*18)}s"/>`; }
+    for(let x = 0; x < W*1.2; x += 240 + r()*240) L.fore += `<ellipse cx="${f1(x)}" cy="624" rx="${f1(90+r()*40)}" ry="36" fill="#FFFFFF"/><ellipse cx="${f1(x+70)}" cy="630" rx="60" ry="26" fill="#EAF3FA"/>`;
+  }
+};
+
+function worldScene(key, pts, W, H, chestOpen, title){
+  const r = rng(key.split('').reduce((a,ch) => a*31 + ch.charCodeAt(0), 7));
+  const gap = pts[1].x - pts[0].x, last = pts[pts.length-1];
+  const start = {x: pts[0].x - 170, y: pts[0].y}, end = {x: last.x + 175, y: last.y};
+  const samples = [];
+  for(let k=0;k<8;k++) samples.push({x: start.x + (pts[0].x - start.x)*k/8, y: start.y});
+  for(let i=0;i<pts.length-1;i++){ const a = pts[i], b = pts[i+1];
+    for(let k=0;k<20;k++){ const t = k/20; samples.push({x: bez(a.x, a.x+gap/2, b.x-gap/2, b.x, t), y: bez(a.y, a.y, b.y, b.y, t)}); } }
+  for(let k=1;k<=8;k++) samples.push({x: last.x + (end.x - last.x)*k/8, y: last.y});
+  const signAt = {x: pts[0].x - 120, y: pts[0].y - 40};
+  const clear = (x, y, d = 80) => !samples.some(s => Math.abs(s.x - x) < d && Math.abs(s.y - y) < d*.85)
+    && !(Math.abs(x - signAt.x) < 120 && y < signAt.y + 40 && y > signAt.y - 170)
+    && !(Math.abs(x - end.x) < 110 && Math.abs(y - end.y) < 120);
+  let road = `M ${f1(start.x)} ${f1(start.y)} L ${f1(pts[0].x)} ${f1(pts[0].y)}`;
+  for(let i=1;i<pts.length;i++){ const a = pts[i-1], b = pts[i]; road += ` C ${f1(a.x+gap/2)} ${f1(a.y)}, ${f1(b.x-gap/2)} ${f1(b.y)}, ${f1(b.x)} ${f1(b.y)}`; }
+  road += ` L ${f1(end.x)} ${f1(end.y)}`;
+  const L = {far:'', mid:'', ground:'', fore:''};
+  const props = (n, ymin, ymax, fn, d = 80) => { let placed = 0, tries = 0;
+    while(placed < n && tries < n*40){ tries++; const x = 40 + r()*(W - 80), y = ymin + r()*(ymax - ymin); if(clear(x, y, d)){ fn(x, y); placed++; } } };
+  WORLD_BUILD[key]({r, W, H, L, road, samples, pts, props, clear, start, end});
+  L.ground += signPost(signAt.x, signAt.y + 40, title, WORLDS[key].wood) + treasure(end.x, end.y + 26, chestOpen);
+  return L;
+}
+
 /* ======================= MAP ======================= */
 function currentLevel(){ const pr = progress(); const i = LEVELS.findIndex((_,k) => !pr[k]); return i < 0 ? LEVELS.length : i; }
+const CHEV = d => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${d < 0 ? 'M15 5 L8 12 L15 19' : 'M9 5 L16 12 L9 19'}"/></svg>`;
+let mapResize = null, mapDrag = null;
+window.addEventListener('pointermove', e => { if(mapDrag) mapDrag.sc.scrollLeft = mapDrag.s - (e.clientX - mapDrag.x); });
+window.addEventListener('pointerup', () => { if(mapDrag){ mapDrag.sc.classList.remove('grabbing'); mapDrag = null; } });
 function showMap(){
   if(timeLeft() <= 0) return showTimesUp();
-  show('map', 'map-' + term);
+  const wk = worldOf(player), WD = WORLDS[wk];
+  show('map', 'world-' + wk);
   clockOn = true; renderClock();
   $('#mapAva').textContent = player.avatar; $('#mapName').textContent = player.name;
   $('#mapStars').textContent = starTotal(player);
@@ -734,41 +1087,61 @@ function showMap(){
   $('#focusLine').textContent = 'This term: ' + STAGES[stageKey()].about;
 
   const pr = progress(), cur = currentLevel(), n = LEVELS.length;
-  const W = 360, gap = 132, top = 70;
-  const pts = LEVELS.map((_,i) => ({x: 180 + 105*Math.sin(i*1.05 + .3), y: top + i*gap}));
-  const H = top + (n-1)*gap + 120;
-  let d = `M ${pts[0].x} ${pts[0].y - 60} L ${pts[0].x} ${pts[0].y}`;
-  for(let i=1;i<n;i++){ const a = pts[i-1], b = pts[i]; d += ` C ${a.x} ${a.y + gap/2}, ${b.x} ${b.y - gap/2}, ${b.x} ${b.y}`; }
-  const deco = DECO[term];
-  const pct = (x,y) => `left:${x/W*100}%;top:${y/H*100}%`;
-  let html = `<svg class="road" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
-      <path d="${d}" stroke="#FFFFFF" stroke-opacity=".75" stroke-width="26" fill="none" stroke-linecap="round"/>
-      <path d="${d}" stroke="#26304D" stroke-opacity=".18" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="2 14"/>
-    </svg>`;
+  const H = 600, gap = 235;
+  const pts = LEVELS.map((_,i) => ({x: 360 + i*gap, y: Math.round(410 + Math.sin(i*1.25 + .6)*88)}));
+  const W = pts[n-1].x + 360;
+  const S = worldScene(wk, pts, W, H, !!pr[n-1], `${player.name}'s ${WD.name}`);
+  const pct = (x,y) => `left:${f1(x/W*100)}%;top:${f1(y/H*100)}%`;
+  let nodes = '';
   pts.forEach((p,i) => {
-    if(i < n-1){ const mx = 360 - (p.x + pts[i+1].x)/2; html += `<span class="deco" style="${pct(Math.min(330,Math.max(30,mx)), p.y + gap/2)}" aria-hidden="true">${deco[i % deco.length]}</span>`; }
     const L = LEVELS[i], stars = pr[i] || 0, locked = i > cur;
     const cls = ['node', 'k-' + L.k, locked ? 'locked' : '', i === cur ? 'current' : ''].join(' ');
     const label = `Level ${i+1}, ${MECH[L.m]}, ${L.k==='g'?'green words':L.k==='r'?'red words':'green and red words'}${locked ? ', locked' : stars ? `, ${stars} stars` : ''}`;
-    html += `<button class="${cls}" style="${pct(p.x,p.y)}" data-i="${i}" aria-label="${label}">
+    nodes += `<button class="${cls}" style="${pct(p.x,p.y)}" data-i="${i}" aria-label="${label}">
         ${locked ? `<span class="lock">${LOCK}</span>` : L.boss ? '🏆' : i+1}
         <span class="mech">${mechIcon(L.m)}</span>
         ${stars ? `<span class="nstars">${'★'.repeat(stars)}<span class="off">${'★'.repeat(3-stars)}</span></span>` : ''}
       </button>`;
   });
-  html += `<span class="maplabel" style="${pct(pts[0].x, pts[0].y - 66)}">Start</span>`;
-  const meAt = Math.min(cur, n-1), mp = pts[meAt];
-  html += `<span class="me" style="${pct(mp.x + (mp.x > 180 ? -78 : 78), mp.y - 18)}" aria-hidden="true">${player.avatar}</span>`;
-  const box = $('#mapbox');
-  box.style.aspectRatio = `${W} / ${H}`;
-  box.innerHTML = html;
+  const mp = pts[Math.min(cur, n-1)];
+  nodes += `<span class="me" style="${pct(mp.x, mp.y - 92)}" aria-hidden="true">${player.avatar}</span>`;
+  const svg = (cls, body) => `<svg class="lyr ${cls}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${body}</svg>`;
+  $('#mapwrap').innerHTML = `
+    <div class="scroller" id="scroller" style="background:linear-gradient(${WD.sky[0]}, ${WD.sky[1]})">
+      <div class="worldbox" id="worldbox">
+        ${svg('far', S.far)}${svg('mid', S.mid)}${svg('ground', S.ground)}
+        ${nodes}
+        ${svg('fore', S.fore)}
+      </div>
+    </div>
+    <button class="navbtn l" id="navL" aria-label="Scroll the map left">${CHEV(-1)}</button>
+    <button class="navbtn r" id="navR" aria-label="Scroll the map right">${CHEV(1)}</button>`;
+  const sc = $('#scroller'), box = $('#worldbox');
+  const far = box.querySelector('.far'), mid = box.querySelector('.mid'), fore = box.querySelector('.fore');
+  const navL = $('#navL'), navR = $('#navR');
+  let raf = 0;
+  const update = () => { raf = 0; const s = sc.scrollLeft;
+    far.style.transform = `translateX(${f1(s*.45)}px)`; mid.style.transform = `translateX(${f1(s*.2)}px)`; fore.style.transform = `translateX(${f1(-s*.14)}px)`;
+    navL.hidden = s < 30; navR.hidden = s > sc.scrollWidth - sc.clientWidth - 30; };
+  const size = () => { const h = sc.clientHeight; box.style.height = h + 'px'; box.style.width = f1(h*W/H) + 'px'; update(); };
+  if(mapResize) window.removeEventListener('resize', mapResize);
+  mapResize = () => { if(view === 'map') size(); };
+  window.addEventListener('resize', mapResize);
+  size();
+  sc.addEventListener('scroll', () => { if(!raf) raf = requestAnimationFrame(update); }, {passive:true});
+  sc.addEventListener('wheel', e => { if(Math.abs(e.deltaY) > Math.abs(e.deltaX)){ sc.scrollLeft += e.deltaY; e.preventDefault(); } }, {passive:false});
+  // drag to scroll with a mouse or whiteboard pen
+  sc.addEventListener('pointerdown', e => { if(e.pointerType === 'touch' || e.target.closest('.node')) return; mapDrag = {sc, x: e.clientX, s: sc.scrollLeft}; sc.classList.add('grabbing'); });
+  navL.onclick = () => sc.scrollBy({left: -sc.clientWidth*.7, behavior: 'smooth'});
+  navR.onclick = () => sc.scrollBy({left: sc.clientWidth*.7, behavior: 'smooth'});
   box.querySelectorAll('.node').forEach(b => b.onclick = () => {
     const i = +b.dataset.i;
     if(i > cur){ shake(b); return; }
     startLevel(i);
   });
-  const node = box.querySelector('.node.current') || box.querySelector(`.node[data-i="${n-1}"]`);
-  if(node && cur > 1) requestAnimationFrame(() => node.scrollIntoView({block:'center'}));
+  const target = box.querySelector('.node.current') || box.querySelector(`.node[data-i="${n-1}"]`);
+  sc.scrollLeft = cur === 0 ? 0 : Math.max(0, target.offsetLeft - sc.clientWidth/2);
+  update();
 }
 
 /* ======================= LEVEL RUNNER ======================= */

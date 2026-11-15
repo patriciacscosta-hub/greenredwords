@@ -9,8 +9,19 @@ Play it: https://patriciacscosta-hub.github.io/greenredwords/
 
 ## How it works
 
-1. **Who's playing?** Each child picks an animal (a grown-up can type their name), then their class and term.
-2. **The map.** A winding path of 12 levels for that class and term. Finishing a level unlocks the next one. Each level earns 1–3 stars and can be replayed. Level 12 is the trophy level, with a treasure chest of 10 bonus coins.
+1. **Who's playing?** Each child picks one of six animals (a grown-up can type their name), then their class and term.
+2. **The map.** A sideways-scrolling world with 12 levels for that class and term. Each animal has its own world:
+
+   | Animal | World |
+   |---|---|
+   | 🐵 Monkey | Jungle – trees, palms, a waterfall, hanging vines, parrots and butterflies |
+   | 🐸 Frog | Pond – lily-pad stepping stones, willows, reeds, ripples, ducks and jumping fish |
+   | 🐪 Camel | Desert – pyramids, mesas, cacti, an oasis and rolling tumbleweed |
+   | 🦁 Lion | Savanna – sunset, a snowy mountain, acacia trees, giraffes, zebras and an elephant |
+   | 🐙 Octopus | Ocean – light rays, swaying kelp, coral, fish, a turtle and rising bubbles |
+   | 🐧 Penguin | Snowland – northern lights, snowy peaks, pine trees, icebergs and falling snow |
+
+   Swipe, drag, use the mouse wheel or the arrow buttons to move along. Finishing a level unlocks the next one. Each level earns 1–3 stars and can be replayed. Level 12 is the trophy level, and the treasure chest at the end opens when it is beaten.
 3. **Coins.** Every right answer earns a coin (2 for a speedy answer), each star earns a bonus coin, and Bubble Pop has gold coin bubbles to catch.
 4. **Leaderboard.** Ranks everyone who plays on that device by coins.
 

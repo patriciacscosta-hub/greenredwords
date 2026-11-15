@@ -598,6 +598,66 @@ body{font-family:var(--font-display);font-weight:500}
 .burst i.star{font-size:24px;margin:-14px 0 0 -10px;font-style:normal;text-shadow:0 2px 0 rgba(0,0,0,.15)}
 @keyframes burst{0%{transform:translate(0,0) scale(1);opacity:1}100%{transform:translate(var(--tx),var(--ty)) scale(.3) rotate(var(--rot));opacity:0}}
 @media (prefers-reduced-motion:reduce){ .iris{animation:none} .node.current::after{display:none} }
+/* ================= STAGES / DIAMOND / WARDROBE ================= */
+.choices.stages{grid-template-columns:repeat(3,minmax(0,1fr));max-width:900px}
+@media (max-width:640px){ .choices.stages{grid-template-columns:repeat(2,minmax(0,1fr))} }
+.stagecard{background:linear-gradient(170deg,#fff 40%, var(--cl, #F3F0FF));gap:6px;min-height:200px}
+.stagecard .snum{width:58px;height:58px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:1.9rem;color:#fff;
+  background:var(--c);box-shadow:0 5px 0 rgba(42,37,80,.25),inset 0 -5px 0 rgba(0,0,0,.12),inset 0 4px 0 rgba(255,255,255,.4);text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.stagecard .snum svg{width:28px;height:28px}
+.stagecard .ssample{font-family:var(--font-read);font-weight:700;font-size:1.3rem;color:var(--ink-soft)}
+.stagecard.now{outline:5px solid var(--gold2);outline-offset:3px}
+.stagecard.locked{filter:grayscale(.85);opacity:.7}
+.stagecard.locked .snum{background:#B5B1CF}
+.sgems{display:flex;gap:8px}
+.sgems i,.diaslot{width:18px;height:18px;transform:rotate(45deg);border-radius:4px;border:3px dashed #CFCBE3;display:block}
+.sgems i.got{border:0;background:linear-gradient(135deg,#fff,var(--c));box-shadow:0 0 10px var(--c)}
+.gempill #gemIcon{display:grid;place-items:center}
+.diapage{display:flex;gap:28px;align-items:center;justify-content:center;flex-wrap:wrap;width:100%}
+.diahero{flex:0 1 420px;min-width:240px}
+.diamond{width:100%;height:auto;display:block;overflow:visible;filter:drop-shadow(0 10px 0 rgba(42,37,80,.15))}
+.diamond.complete{animation:diaglow 2.4s ease-in-out infinite}
+@keyframes diaglow{50%{filter:drop-shadow(0 0 26px #FFE27A) drop-shadow(0 10px 0 rgba(42,37,80,.15))}}
+.diamond .gemnew{animation:gemin 1.2s cubic-bezier(.3,1.6,.5,1) .3s backwards;transform-box:fill-box;transform-origin:center}
+@keyframes gemin{0%{transform:scale(0) rotate(-30deg);opacity:0}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+.diainfo{flex:1 1 320px;max-width:440px;background:rgba(255,255,255,.92);border-radius:30px;padding:22px;box-shadow:0 8px 0 rgba(42,37,80,.12)}
+.diainfo h2{font-size:clamp(1.8rem,4vw,2.4rem);margin-bottom:8px}
+.dianote{margin:0 0 14px;font-weight:500}
+.dialist{display:flex;flex-direction:column;gap:8px}
+.diarow{display:flex;align-items:center;gap:12px;font-weight:600}
+.diarow.locked{opacity:.45}
+.dianum{width:32px;height:32px;border-radius:50%;color:#fff;display:grid;place-items:center;font-weight:700;box-shadow:0 3px 0 rgba(0,0,0,.15)}
+.dianame{flex:1}
+.diaslot.got{border:0;background:linear-gradient(135deg,#fff,var(--c));box-shadow:0 0 10px var(--c)}
+.gemwin{display:flex;align-items:center;gap:14px;background:linear-gradient(#F0F6FF,#E2EEFF);border-radius:22px;padding:10px 18px;box-shadow:0 5px 0 #C9DBF5;text-align:left}
+.gemwin-art{width:86px;flex:none}
+.gemwin b{display:block;font-size:1.2rem}
+.gemwin span{color:var(--ink-soft);font-weight:500}
+.unlock{font-weight:700!important;color:var(--leaf3)}
+.wardrobe{display:flex;gap:24px;align-items:flex-start;justify-content:center;flex-wrap:wrap;width:100%}
+.wpreview{flex:0 0 260px;background:rgba(255,255,255,.92);border-radius:30px;padding:20px;display:flex;flex-direction:column;align-items:center;gap:8px;box-shadow:0 8px 0 rgba(42,37,80,.12)}
+.wava{width:190px;height:190px;filter:drop-shadow(0 8px 0 rgba(42,37,80,.15));animation:bobs 3s ease-in-out infinite}
+.wname{font-weight:700;font-size:1.4rem}
+.coinbig{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:1.6rem;background:linear-gradient(#FFF6D2,#FFE59A);padding:6px 18px;border-radius:999px;box-shadow:0 4px 0 #E8B93A;color:#6B4500}
+.whint{margin:0;color:var(--ink-soft);font-weight:500;font-size:.95rem;text-align:center}
+.wshop{flex:1 1 420px;max-width:680px}
+.wshop .tabs{justify-content:flex-start}
+.witems{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:14px}
+.witem{background:linear-gradient(#fff,#F5F3FC);border-radius:24px;padding:12px 10px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;box-shadow:0 7px 0 var(--edge-d),0 14px 24px rgba(42,37,80,.12);border:3px solid #fff;transition:transform .1s}
+.witem:active{transform:translateY(4px);box-shadow:0 3px 0 var(--edge-d)}
+.wthumb{width:96px;height:96px;display:block}
+.witem b{font-size:1rem}
+.wstate{display:inline-flex;align-items:center;gap:6px;font-weight:700;background:linear-gradient(#FFF6D2,#FFE59A);padding:3px 12px;border-radius:999px;color:#6B4500}
+.witem.owned .wstate{background:#EEF1F6;color:var(--ink)}
+.witem.wearing{border-color:var(--leaf2);background:linear-gradient(#F0FFF4,#DFF8E8)}
+.witem.wearing .wstate{background:var(--leaf2);color:#fff}
+.witem.poor{opacity:.6}
+.toast{position:fixed;left:50%;bottom:max(28px,env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;font-weight:600;padding:12px 24px;border-radius:999px;z-index:99;box-shadow:0 6px 0 #17132F;animation:popin .3s}
+.stagepick{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}
+.stagepick small{color:var(--ink-soft);font-weight:600;margin-right:4px}
+.stagepick .mini{min-height:34px;padding:4px 11px}
+.stagepick .mini.on{background:var(--leaf2);color:#fff}
+@media (max-width:560px){ .wpreview{flex-basis:100%} .wava{width:140px;height:140px} }
 </style>
 </head>
 <body>
@@ -615,11 +675,13 @@ body{font-family:var(--font-display);font-weight:500}
     <span class="pillstat clock" id="mapClockBox" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><span id="mapClock"></span></span>
     <span class="grow"></span>
     <button class="pill" id="soundsBtn" aria-label="Sounds and red words"><span class="aa" aria-hidden="true">Aa</span><span class="lbl">Sounds</span></button>
+    <button class="pill gempill" id="gemBtn" aria-label="Word Diamond"><span id="gemIcon"></span><span id="gemCount">0/12</span></button>
+    <button class="pill" id="wardBtn" aria-label="Wardrobe"><span aria-hidden="true">👕</span><span class="lbl">Wardrobe</span></button>
     <button class="pill" id="boardBtn" aria-label="Leaderboard"><span aria-hidden="true">🏆</span><span class="lbl">Leaders</span></button>
     <button class="pill" id="setBtn" aria-label="Grown-up settings"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></button>
   </div>
   <div class="mapinfo">
-    <button class="stagechip" id="changeStage" aria-label="Change class and term"><span id="stageLabel"></span><span class="chg">Change</span></button>
+    <button class="stagechip" id="changeStage" aria-label="Choose a stage"><span id="stageLabel"></span><span class="chg">Change</span></button>
     <p class="focusline" id="focusLine"></p>
   </div>
   <div class="mapwrap" id="mapwrap"></div>
@@ -662,24 +724,21 @@ const WORDS = [
   ['fire','f ire','🔥','s3'],['ear','ear','👂','s3'],['cake','c a-e k','🎂','s3'],['kite','k i-e t','🪁','s3'],['bone','b o-e n','🦴','s3'],
   ['snake','s n a-e k','🐍','s3']
 ];
-// Red words introduced each term (each term keeps the earlier ones of that class)
-const RED_NEW = {
-  'reception-autumn': ['I','the','to','no','go','my'],
-  'reception-spring': ['of','he','she','we','me','be','you','said','your'],
-  'reception-summer': ['was','are','put','all','they','her','some','come'],
-  'year1-autumn':     ['said','was','what','want','any','many','there','where','who','why'],
-  'year1-spring':     ['could','would','should','some','come','one','once','two','does','other','were'],
-  'year1-summer':     ['water','call','talk','walk','small','tall','school','friend','watch']
-};
-const TERMS = ['autumn','spring','summer'];
-const STAGES = {
-  'reception-autumn': {green:['s1'],                focus:['s1'],      set:1, about:'Set 1 sounds and short words like cat, dog and sun.'},
-  'reception-spring': {green:['s1','sf'],           focus:['sf'],      set:1, about:'Set 1 special friends: sh, th, ch, ng, nk, ck.'},
-  'reception-summer': {green:['s1','sf','cc','s2'], focus:['cc','s2'], set:2, about:'Longer words like frog, and first Set 2 sounds: ee, igh, oo, ar.'},
-  'year1-autumn':     {green:['sf','cc','s2'],      focus:['s2'],      set:2, about:'Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy.'},
-  'year1-spring':     {green:['cc','s2','s3'],      focus:['s3'],      set:3, about:'Set 3 sounds: ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear.'},
-  'year1-summer':     {green:['cc','s2','s3'],      focus:['s2','s3'], set:3, about:'All Set 2 and Set 3 sounds, and every Year 1 red word.'}
-};
+// Sound stages, in Read Write Inc. order. Each has 10 levels; red words build up stage by stage.
+const STAGE_LIST = [
+  {n:1, name:'Set 1 sounds',    green:['s1'],           focus:['s1'],      set:1, sample:'m a s d t', red:['I','the','to','no','go','my'],
+   about:'Single sounds and short words like cat, dog and sun.'},
+  {n:2, name:'Special friends', green:['s1','sf'],      focus:['sf'],      set:1, sample:'sh ch ng ck', red:['of','he','she','we','me','be','you','said','your'],
+   about:'Special friends: sh, th, ch, qu, ng, nk, ck.'},
+  {n:3, name:'Blends',          green:['s1','sf','cc'], focus:['cc'],      set:1, sample:'fr dr cl', red:['was','are','put','all','they','her','some','come'],
+   about:'Longer words with sounds side by side, like frog, drum and clock.'},
+  {n:4, name:'Set 2 sounds',    green:['sf','cc','s2'], focus:['s2'],      set:2, sample:'ee igh ar', red:['what','want','any','many','there','where','who','why'],
+   about:'Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy.'},
+  {n:5, name:'Set 3 sounds',    green:['cc','s2','s3'], focus:['s3'],      set:3, sample:'ai oa a-e', red:['could','would','should','one','once','two','does','other','were'],
+   about:'Set 3 sounds: ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear.'},
+  {n:6, name:'Super reader',    green:['cc','s2','s3'], focus:['s2','s3'], set:3, sample:'★ all ★', red:['water','call','talk','walk','small','tall','school','friend','watch'],
+   about:'All Set 2 and Set 3 sounds, and the trickiest red words.'}
+];
 // Speed sounds in Read Write Inc. teaching order: [sound, example word with its sounds]
 const SOUND_SETS = {
   1: { name:'Set 1', note:'Single sounds first, then special friends: two letters that make one sound.',
@@ -702,11 +761,10 @@ const SOUND_SETS = {
 const AVATARS = [['🐵','Monkey','jungle'],['🐼','Panda','bamboo'],['🐸','Frog','pond'],['🐪','Camel','desert'],['🦁','Lion','savanna'],['🐙','Octopus','ocean'],['🐧','Penguin','arctic']];
 
 /* ======================= LEVEL MAP ======================= */
-// 12 levels per class + term. k: g = green words, r = red words, mix = both. The last one is the trophy level.
+// 10 levels per stage. k: g = green words, r = red words, mix = both. gem: wins a Word Diamond piece.
 const LEVELS = [
-  {m:'tap',k:'g'},{m:'hear',k:'r'},{m:'drag',k:'g'},{m:'bubbles',k:'g'},
-  {m:'pairs',k:'g'},{m:'hunt',k:'r'},{m:'bubbles',k:'r'},{m:'tap',k:'g'},
-  {m:'hunt',k:'r'},{m:'bubbles',k:'g'},{m:'drag',k:'g'},{m:'tap',k:'mix',boss:true}
+  {m:'tap',k:'g'},{m:'hear',k:'r'},{m:'drag',k:'g'},{m:'bubbles',k:'g'},{m:'hunt',k:'r',gem:0},
+  {m:'pairs',k:'g'},{m:'bubbles',k:'r'},{m:'tap',k:'g'},{m:'hunt',k:'r'},{m:'tap',k:'mix',boss:true,gem:1}
 ]
 const MECH = {tap:'Speedy Tap', hear:'Hear & Find', hunt:'Red Word Hunt', bubbles:'Bubble Pop', drag:'Drag & Match', pairs:'Find the Pairs'};
 function mechIcon(m){
@@ -794,12 +852,22 @@ function confetti(){
 let players = store.get('players', []);
 if(!Array.isArray(players)) players = [];
 let player = players.find(p => p.id === store.get('current', null)) || null;
-let year = player && player.year, term = player && player.term;
+// Older players (class + term) start at the matching sound stage
+const OLD_STAGE = {'reception-autumn':1,'reception-spring':2,'reception-summer':3,'year1-autumn':4,'year1-spring':5,'year1-summer':6};
+players.forEach(p => {
+  if(!p.stage){ p.stage = OLD_STAGE[`${p.year}-${p.term}`] || 1; }
+  p.unlocked = Math.max(p.unlocked || 1, p.stage);
+  p.gems = p.gems || [];
+  p.wardrobe = p.wardrobe || {owned: [], hat: null, eyes: null, neck: null};
+});
+let year = null;   // 'reception' for stages 1-3 (easier games), 'year1' for 4-6
+const curStage = () => STAGE_LIST[((player && player.stage) || 1) - 1];
+function syncStage(){ year = curStage().n <= 3 ? 'reception' : 'year1'; }
 function save(){ store.set('players', players); store.set('current', player ? player.id : null); }
-function usePlayer(p){ player = p; year = p.year; term = p.term; save(); }
-const stageKey = () => `${year}-${term}`;
-const stageName = () => `${year==='reception' ? 'Reception' : 'Year 1'} · ${term[0].toUpperCase()+term.slice(1)}`;
-function termNow(){ const m = new Date().getMonth(); return m >= 8 ? 'autumn' : m <= 2 ? 'spring' : 'summer'; }
+function usePlayer(p){ player = p; syncStage(); save(); }
+if(player) syncStage();
+const stageKey = () => 'stage' + curStage().n;
+const stageName = () => `Stage ${curStage().n} · ${curStage().name}`;
 function progress(){ player.progress = player.progress || {}; return (player.progress[stageKey()] = player.progress[stageKey()] || []); }
 const starTotal = p => Object.values(p.progress || {}).reduce((a,arr) => a + arr.reduce((x,y) => x + (y||0), 0), 0);
 
@@ -847,14 +915,12 @@ function say(text){
 }
 
 /* ======================= WORD PICKING ======================= */
-function greenPool(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.green.includes(w[3])); }
-function greenFocus(){ const st = STAGES[stageKey()]; return WORDS.filter(w => st.focus.includes(w[3])); }
+function greenPool(){ const st = curStage(); return WORDS.filter(w => st.green.includes(w[3])); }
+function greenFocus(){ const st = curStage(); return WORDS.filter(w => st.focus.includes(w[3])); }
 function redPool(){
-  const out = [];
-  for(const t of TERMS){ out.push(...RED_NEW[`${year}-${t}`]); if(t === term) break; }
-  return [...new Set(out)];
+  return [...new Set(STAGE_LIST.slice(0, curStage().n).flatMap(s => s.red))];
 }
-const redFocus = () => RED_NEW[stageKey()];
+const redFocus = () => curStage().red;
 // About 60% from this term's focus, the rest as review
 function mix(focus, pool, n){
   const f = shuffle(focus.slice()), keys = new Set(f);
@@ -1020,14 +1086,14 @@ function showPlayers(){
     <div class="duo">${goCritter()}${stopCritter()}</div>
     <h1>Who's playing?</h1>
     <div class="choices small">
-      ${players.map(p => `<button class="choice" data-id="${esc(p.id)}"><span class="avabig">${avatarArt(p.avatar)}</span><b class="pname">${esc(p.name)}</b><small class="pcoins"><span class="coin"></span>${p.coins}</small></button>`).join('')}
+      ${players.map(p => `<button class="choice" data-id="${esc(p.id)}"><span class="avabig">${avatarOf(p)}</span><b class="pname">${esc(p.name)}</b><small class="pcoins"><span class="coin"></span>${p.coins}</small></button>`).join('')}
       <button class="choice add" id="addP" aria-label="New player"><span class="big">+</span><b style="font-size:1.1rem">New</b></button>
     </div>
     <div class="setup-actions"><button class="pill" id="pBoard"><span aria-hidden="true">🏆</span> Leaders</button><button class="pill" id="pSounds">Sounds</button><button class="pill" id="pSet"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg> Grown-ups</button></div>`);
   $('#pSet').onclick = () => parentGate(() => showSettings(showPlayers), showPlayers);
   $('#setupIn').querySelectorAll('[data-id]').forEach(b => b.onclick = () => {
     usePlayer(players.find(p => p.id === b.dataset.id));
-    if(timeLeft() <= 0) showTimesUp(); else if(year && term) showMap(); else askClass();
+    if(timeLeft() <= 0) showTimesUp(); else showMap();
   });
   $('#addP').onclick = newPlayer;
   $('#pBoard').onclick = () => showBoard(showPlayers);
@@ -1056,40 +1122,10 @@ function nameStep([avatar, animal]){
   $('#nameForm').onsubmit = e => {
     e.preventDefault();
     const p = {id: 'p' + Date.now().toString(36) + Math.random().toString(36).slice(2,6), name: $('#pname').value.trim() || animal,
-               avatar, coins: 0, year: null, term: null, progress: {}};
-    players.push(p); usePlayer(p); askClass();
+               avatar, coins: 0, stage: 1, unlocked: 1, gems: [], progress: {}, wardrobe: {owned: [], hat: null, eyes: null, neck: null}};
+    players.push(p); usePlayer(p); showMap();
   };
 }
-function askClass(){
-  setupScreen(`
-    <div class="brand"><span class="miniava">${avatarArt(player.avatar)}</span>${esc(player.name)}</div>
-    <h1>Which class are you in?</h1>
-    <div class="choices">
-      <button class="choice c-mint" data-y="reception">${goCritter()}<b>Reception</b><small>I am 4 or 5</small></button>
-      <button class="choice c-pink" data-y="year1">${stopCritter()}<b>Year 1</b><small>I am 5 or 6</small></button>
-    </div>
-    <button class="linkback" id="setupBack">← Back</button>`);
-  $('#setupBack').onclick = () => (year && term) ? showMap() : showPlayers();
-  $('#setupIn').querySelectorAll('[data-y]').forEach(b => b.onclick = () => askTerm(b.dataset.y));
-}
-function askTerm(y){
-  const now = termNow();
-  const T = [['autumn','🍂','Autumn','September to December','c-peach'],
-             ['spring','🌷','Spring','January to March','c-mint'],
-             ['summer','☀️','Summer','April to July','c-sun']];
-  setupScreen(`
-    <div class="brand"><span class="miniava">${avatarArt(player.avatar)}</span>${esc(player.name)}</div>
-    <h1>Which term is it?</h1>
-    <div class="choices">${T.map(([k,icon,name,months,cls]) =>
-      `<button class="choice ${cls}" data-t="${k}">${k===now ? '<span class="now">Now</span>' : ''}<span class="big" aria-hidden="true">${icon}</span><b>${name}</b><small>${months}</small></button>`).join('')}</div>
-    <button class="linkback" id="setupBack">← Back</button>`);
-  $('#setupBack').onclick = askClass;
-  $('#setupIn').querySelectorAll('[data-t]').forEach(b => b.onclick = () => {
-    player.year = y; player.term = b.dataset.t; usePlayer(player); showMap();
-  });
-  ($('#setupIn [data-t="'+now+'"]') || $('#setupIn [data-t]')).focus();
-}
-
 /* ======================= WORLDS ======================= */
 // Each animal has its own world. Scenery is drawn in SVG from a seeded random generator, so it is the same every visit.
 const WORLDS = {
@@ -1419,7 +1455,7 @@ const WORLD_BUILD = {
   }
 };
 
-function worldScene(key, pts, W, H, chestOpen, title){
+function worldScene(key, pts, W, H, gemInfo, title){
   const r = rng(key.split('').reduce((a,ch) => a*31 + ch.charCodeAt(0), 7));
   if(!pts.length){   // backdrop for the game screens: scenery only
     const L = {far:'', mid:'', ground:'', fore:''};
@@ -1435,9 +1471,11 @@ function worldScene(key, pts, W, H, chestOpen, title){
     for(let k=0;k<20;k++){ const t = k/20; samples.push({x: bez(a.x, a.x+gap/2, b.x-gap/2, b.x, t), y: bez(a.y, a.y, b.y, b.y, t)}); } }
   for(let k=1;k<=8;k++) samples.push({x: last.x + (end.x - last.x)*k/8, y: last.y});
   const signAt = {x: pts[0].x - 120, y: pts[0].y - 40};
+  const midGem = pts.length > 5 ? {x: (pts[4].x + pts[5].x)/2, y: Math.min(pts[4].y, pts[5].y) - 40} : null;
   const clear = (x, y, d = 80) => !samples.some(s => Math.abs(s.x - x) < d && Math.abs(s.y - y) < d*.85)
     && !(Math.abs(x - signAt.x) < 120 && y < signAt.y + 40 && y > signAt.y - 170)
-    && !(Math.abs(x - end.x) < 110 && Math.abs(y - end.y) < 120);
+    && !(Math.abs(x - end.x) < 110 && Math.abs(y - end.y) < 120)
+    && !(midGem && Math.abs(x - midGem.x) < 80 && y < midGem.y + 30 && y > midGem.y - 130);
   let road = `M ${f1(start.x)} ${f1(start.y)} L ${f1(pts[0].x)} ${f1(pts[0].y)}`;
   for(let i=1;i<pts.length;i++){ const a = pts[i-1], b = pts[i]; road += ` C ${f1(a.x+gap/2)} ${f1(a.y)}, ${f1(b.x-gap/2)} ${f1(b.y)}, ${f1(b.x)} ${f1(b.y)}`; }
   road += ` L ${f1(end.x)} ${f1(end.y)}`;
@@ -1445,8 +1483,188 @@ function worldScene(key, pts, W, H, chestOpen, title){
   const props = (n, ymin, ymax, fn, d = 80) => { let placed = 0, tries = 0;
     while(placed < n && tries < n*40){ tries++; const x = 40 + r()*(W - 80), y = ymin + r()*(ymax - ymin); if(clear(x, y, d)){ fn(x, y); placed++; } } };
   WORLD_BUILD[key]({r, W, H, L, road, samples, pts, props, clear, start, end});
-  L.ground += signPost(signAt.x, signAt.y + 40, title, WORLDS[key].wood) + treasure(end.x, end.y + 26, chestOpen);
+  L.ground += signPost(signAt.x, signAt.y + 40, title, WORLDS[key].wood) + gemShard(end.x, end.y + 20, gemInfo.end, gemInfo.col) + (midGem ? gemShard(midGem.x, midGem.y, gemInfo.mid, gemInfo.col) : '');
   return L;
+}
+
+/* ======================= WORD DIAMOND ======================= */
+// 12 pieces: each stage gives a crown piece (after level 5) and a base piece (after level 10).
+const GEM_COLORS = ['#4FC8F5','#6C8CFF','#A77BFF','#FF6FC8','#FFA94D','#43D18A'];
+const lighten = (h, k) => { const n = parseInt(h.slice(1),16), c = [n>>16, n>>8&255, n&255].map(v => Math.round(v + (255-v)*k)); return '#' + c.map(v => v.toString(16).padStart(2,'0')).join(''); };
+const DIAMOND = (() => {
+  const t = [], g = [];
+  for(let i=0;i<=6;i++){ t.push([80 + i*140/6, 30]); g.push([10 + i*280/6, 100]); }
+  const B = [150, 268];
+  return {
+    crown: Array.from({length:6}, (_,i) => [t[i], t[i+1], g[i+1], g[i]]),
+    base:  Array.from({length:6}, (_,i) => [g[i], g[i+1], B])
+  };
+})();
+const gemKey = (stageN, part) => `${stageN}-${part}`;
+const hasGem = (p, stageN, part) => (p.gems || []).includes(gemKey(stageN, part));
+let gemSvgN = 0;
+function diamondSVG(p, highlight, cls = ''){
+  const pts = a => a.map(([x,y]) => `${f1(x)},${f1(y)}`).join(' ');
+  let defs = '', body = '';
+  [0,1].forEach(part => (part ? DIAMOND.base : DIAMOND.crown).forEach((poly, i) => {
+    const s = i + 1, have = hasGem(p, s, part), col = GEM_COLORS[i], id = `gf${++gemSvgN}`;
+    const hl = highlight === gemKey(s, part);
+    if(have){
+      defs += `<linearGradient id="${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${lighten(col, part ? .25 : .55)}"/><stop offset="1" stop-color="${part ? col : lighten(col, .2)}"/></linearGradient>`;
+      body += `<polygon points="${pts(poly)}" fill="url(#${id})" stroke="#fff" stroke-width="3" stroke-linejoin="round" class="${hl ? 'gemnew' : ''}"/>`;
+    } else {
+      body += `<polygon points="${pts(poly)}" fill="rgba(255,255,255,.35)" stroke="rgba(255,255,255,.9)" stroke-width="3" stroke-dasharray="6 5" stroke-linejoin="round"/>`;
+    }
+  }));
+  const done = (p.gems || []).length >= 12;
+  return `<svg class="diamond ${cls}${done ? ' complete' : ''}" viewBox="-10 0 320 290" aria-hidden="true"><defs>${defs}</defs>
+    <ellipse cx="150" cy="282" rx="90" ry="8" fill="rgba(42,37,80,.15)"/>${body}
+    <path d="M95 44 L120 44 L108 70 Z" fill="#fff" opacity=".55"/><circle cx="235" cy="60" r="5" fill="#fff" opacity=".8"/></svg>`;
+}
+const miniDiamond = `<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path d="M6 3 H18 L23 9 L12 22 L1 9 Z" fill="#7FD3FF" stroke="#2A2550" stroke-width="1.6" stroke-linejoin="round"/><path d="M1 9 H23 M6 3 L9 9 L12 22 L15 9 L18 3" fill="none" stroke="#2A2550" stroke-width="1.2" stroke-linejoin="round"/><path d="M7 4 L8.5 8" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/></svg>`;
+// A diamond shard drawn on the map (at level 5 and at the end)
+function gemShard(x, y, have, col){
+  const c1 = have ? lighten(col, .5) : 'rgba(255,255,255,.55)', c2 = have ? col : 'rgba(255,255,255,.3)', st = have ? '#fff' : 'rgba(255,255,255,.95)';
+  return `<g class="${have ? '' : 'shardwait'}">
+    <ellipse cx="${x}" cy="${y+6}" rx="46" ry="10" fill="rgba(42,37,80,.15)"/>
+    <g class="bobs" style="animation-duration:2.4s">
+      ${have ? `<circle cx="${x}" cy="${y-50}" r="56" fill="${lighten(col,.6)}" opacity=".45" class="glow"/>` : ''}
+      <path d="M ${x-30} ${y-78} H ${x+30} L ${x+46} ${y-58} L ${x} ${y-8} L ${x-46} ${y-58} Z" fill="${c2}" stroke="${st}" stroke-width="4" stroke-linejoin="round" ${have ? '' : 'stroke-dasharray="7 6"'}/>
+      <path d="M ${x-30} ${y-78} H ${x+30} L ${x+46} ${y-58} H ${x-46} Z" fill="${c1}" stroke="${st}" stroke-width="3" stroke-linejoin="round"/>
+      <path d="M ${x-46} ${y-58} L ${x} ${y-8} L ${x+46} ${y-58} M ${x-12} ${y-58} L ${x} ${y-8} L ${x+12} ${y-58} M ${x-30} ${y-78} L ${x-12} ${y-58} M ${x+30} ${y-78} L ${x+12} ${y-58}" fill="none" stroke="${st}" stroke-width="2" opacity=".8"/>
+      ${have ? `<path d="M ${x-22} ${y-72} L ${x-14} ${y-62}" stroke="#fff" stroke-width="4" stroke-linecap="round"/>` : `<text x="${x}" y="${y-44}" text-anchor="middle" class="signtext" style="font-size:26px;fill:#2A2550;opacity:.55">?</text>`}
+    </g></g>`;
+}
+function showDiamond(back, highlight){
+  shell('Word Diamond', 'board', 0, back || showMap);
+  const n = (player.gems || []).length, done = n >= 12;
+  stage.innerHTML = `<div class="diapage">
+      <div class="diahero">${diamondSVG(player, highlight, 'big')}</div>
+      <div class="diainfo">
+        <h2 class="outline">${done ? 'You made the Word Diamond!' : 'Word Diamond'}</h2>
+        <p class="dianote">${done ? 'Every piece found. You are a super reader!' : `<b>${n}</b> of 12 pieces found. Finish level 5 and level 10 of each stage to win a piece.`}</p>
+        <div class="dialist">${STAGE_LIST.map(s => `<div class="diarow${s.n > (player.unlocked || 1) ? ' locked' : ''}">
+          <span class="dianum" style="background:${GEM_COLORS[s.n-1]}">${s.n}</span><span class="dianame">${esc(s.name)}</span>
+          ${[0,1].map(part => `<span class="diaslot${hasGem(player, s.n, part) ? ' got' : ''}" style="--c:${GEM_COLORS[s.n-1]}" aria-label="${hasGem(player, s.n, part) ? 'found' : 'not yet'}"></span>`).join('')}
+        </div>`).join('')}</div>
+      </div>
+    </div>`;
+  if(highlight){ setTimeout(() => { const el = stage.querySelector('.gemnew'); if(el) burst(el, ['#FFFFFF', GEM_COLORS[+highlight.split('-')[0]-1], '#FFC83A']); }, 500); }
+  if(done) confetti();
+}
+
+/* ======================= STAGES ======================= */
+function showStages(){
+  const pick = n => { player.stage = n; syncStage(); save(); showMap(); };
+  setupScreen(`
+    <div class="brand"><span class="miniava">${avatarOf(player)}</span>${esc(player.name)}</div>
+    <h1>Choose a stage</h1>
+    <div class="choices stages">${STAGE_LIST.map(s => {
+      const locked = s.n > (player.unlocked || 1), pr = (player.progress || {})['stage' + s.n] || [], doneN = pr.filter(Boolean).length;
+      return `<button class="choice stagecard${locked ? ' locked' : ''}${s.n === player.stage ? ' now' : ''}" data-s="${s.n}" style="--c:${GEM_COLORS[s.n-1]}" aria-label="Stage ${s.n}, ${s.name}${locked ? ', locked' : ''}">
+        <span class="snum">${locked ? LOCK : s.n}</span>
+        <b>${esc(s.name)}</b>
+        <span class="ssample">${esc(s.sample)}</span>
+        <small>${locked ? `Finish stage ${s.n-1} to unlock` : `${doneN} / 10 levels`}</small>
+        <span class="sgems">${[0,1].map(part => `<i class="${hasGem(player, s.n, part) ? 'got' : ''}"></i>`).join('')}</span>
+      </button>`; }).join('')}</div>
+    <button class="linkback" id="setupBack">← Back to map</button>`);
+  $('#setupBack').onclick = showMap;
+  $('#setupIn').querySelectorAll('.stagecard').forEach(b => b.onclick = () => {
+    if(b.classList.contains('locked')){ shake(b); return; }
+    pick(+b.dataset.s);
+  });
+}
+
+/* ======================= WARDROBE ======================= */
+const SHOP = [
+  {id:'party',  slot:'hat',  name:'Party hat',     price:15},
+  {id:'cap',    slot:'hat',  name:'Cap',           price:20},
+  {id:'flowers',slot:'hat',  name:'Flower crown',  price:25},
+  {id:'beanie', slot:'hat',  name:'Beanie',        price:25},
+  {id:'cowboy', slot:'hat',  name:'Cowboy hat',    price:35},
+  {id:'pirate', slot:'hat',  name:'Pirate hat',    price:45},
+  {id:'wizard', slot:'hat',  name:'Wizard hat',    price:50},
+  {id:'crown',  slot:'hat',  name:'Crown',         price:60},
+  {id:'round',  slot:'eyes', name:'Round glasses', price:15},
+  {id:'shades', slot:'eyes', name:'Sunglasses',    price:25},
+  {id:'stars',  slot:'eyes', name:'Star glasses',  price:35},
+  {id:'hearts', slot:'eyes', name:'Heart glasses', price:35},
+  {id:'bow',    slot:'neck', name:'Bow tie',       price:10},
+  {id:'scarf',  slot:'neck', name:'Scarf',         price:20},
+  {id:'pearls', slot:'neck', name:'Pearls',        price:30},
+  {id:'medal',  slot:'neck', name:'Gold medal',    price:40}
+];
+// Where hats, glasses and neckwear sit on each animal (viewBox 0 0 100 100)
+const ANCH = {'🐵':{hat:20,eye:48,dx:9,neck:86},'🐼':{hat:20,eye:50,dx:13,neck:90},'🐸':{hat:17,eye:29,dx:19,neck:89},'🐪':{hat:15,eye:46,dx:11,neck:85},
+              '🦁':{hat:13,eye:50,dx:10,neck:90},'🐙':{hat:15,eye:46,dx:11,neck:72},'🐧':{hat:15,eye:50,dx:10,neck:90}};
+function itemArt(id, a){
+  const h = a.hat, e = a.eye, dx = a.dx, n = a.neck, r = Math.max(8, Math.min(12, dx*.95)), L = 50-dx, R = 50+dx;
+  const star = (cx, cy, s) => Array.from({length:10}, (_,k) => { const ang = -Math.PI/2 + k*Math.PI/5, rr = k%2 ? s*.45 : s; return `${f1(cx+rr*Math.cos(ang))},${f1(cy+rr*Math.sin(ang))}`; }).join(' ');
+  const heart = (cx, cy, s) => `M ${cx} ${cy+s*.9} C ${cx-s*1.4} ${cy} ${cx-s*.9} ${cy-s} ${cx} ${cy-s*.35} C ${cx+s*.9} ${cy-s} ${cx+s*1.4} ${cy} ${cx} ${cy+s*.9} Z`;
+  switch(id){
+    case 'party': return `<path d="M36 ${h+5} L50 ${h-32} L64 ${h+5} Z" fill="#FF5D6C"/><path d="M41 ${h-8} L59 ${h-8} M44 ${h-18} L56 ${h-18}" stroke="#FFE27A" stroke-width="4"/><circle cx="50" cy="${h-33}" r="6" fill="#FFC83A"/><path d="M34 ${h+5} L66 ${h+5}" stroke="#D63A4C" stroke-width="4" stroke-linecap="round"/>`;
+    case 'cap': return `<path d="M28 ${h+8} A22 20 0 0 1 72 ${h+8} Z" fill="#3C8CFF"/><path d="M60 ${h+5} Q84 ${h+1} 88 ${h+9} L60 ${h+9} Z" fill="#2A6BD1"/><circle cx="50" cy="${h-12}" r="3.5" fill="#2A6BD1"/><path d="M50 ${h-11} L50 ${h+7}" stroke="#2A6BD1" stroke-width="2"/>`;
+    case 'flowers': return `<path d="M24 ${h+10} Q50 ${h-6} 76 ${h+10}" stroke="#4FAF6B" stroke-width="4" fill="none"/>` + [[28,h+6,'#FF7FA8'],[39,h+1,'#FFC83A'],[50,h-1,'#B48CE0'],[61,h+1,'#FF7FA8'],[72,h+6,'#FFC83A']].map(([x,y,c]) => [0,72,144,216,288].map(d => `<circle cx="${f1(x+4.5*Math.cos(d*Math.PI/180))}" cy="${f1(y+4.5*Math.sin(d*Math.PI/180))}" r="4" fill="${c}"/>`).join('') + `<circle cx="${x}" cy="${y}" r="3" fill="#fff"/>`).join('');
+    case 'beanie': return `<path d="M27 ${h+10} Q27 ${h-24} 50 ${h-24} Q73 ${h-24} 73 ${h+10} Z" fill="#7B6CFF"/><rect x="25" y="${h+1}" width="50" height="11" rx="5" fill="#5A4BD6"/><path d="M35 ${h+1} V${h+12} M45 ${h+1} V${h+12} M55 ${h+1} V${h+12} M65 ${h+1} V${h+12}" stroke="#7B6CFF" stroke-width="2"/><circle cx="50" cy="${h-26}" r="8" fill="#fff"/>`;
+    case 'cowboy': return `<ellipse cx="50" cy="${h+7}" rx="38" ry="8" fill="#B8743A"/><path d="M33 ${h+7} Q32 ${h-22} 43 ${h-20} Q50 ${h-12} 57 ${h-20} Q68 ${h-22} 67 ${h+7} Z" fill="#C98444"/><rect x="33" y="${h-3}" width="34" height="6" fill="#6B3E1F"/>`;
+    case 'pirate': return `<path d="M18 ${h+8} Q50 ${h-36} 82 ${h+8} Q50 ${h-2} 18 ${h+8} Z" fill="#2A2550"/><path d="M18 ${h+8} Q50 ${h-2} 82 ${h+8}" stroke="#FFC83A" stroke-width="3" fill="none"/><circle cx="50" cy="${h-12}" r="6" fill="#fff"/><circle cx="47.8" cy="${h-13}" r="1.6" fill="#2A2550"/><circle cx="52.2" cy="${h-13}" r="1.6" fill="#2A2550"/><path d="M43 ${h-4} L57 ${h+1} M57 ${h-4} L43 ${h+1}" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/>`;
+    case 'wizard': return `<path d="M30 ${h+7} Q46 ${h-18} 60 ${h-46} Q60 ${h-16} 70 ${h+7} Z" fill="#5A4BD6"/><ellipse cx="50" cy="${h+7}" rx="30" ry="7" fill="#4636B8"/><polygon points="${star(48, h-12, 6)}" fill="#FFE27A"/><polygon points="${star(58, h-28, 4)}" fill="#FFE27A"/><circle cx="40" cy="${h-2}" r="2" fill="#FFE27A"/>`;
+    case 'crown': return `<path d="M29 ${h+8} L29 ${h-14} L40 ${h-3} L50 ${h-21} L60 ${h-3} L71 ${h-14} L71 ${h+8} Z" fill="#FFC83A" stroke="#E39A00" stroke-width="2.5" stroke-linejoin="round"/><circle cx="40" cy="${h+2}" r="3.2" fill="#FF5D6C"/><circle cx="50" cy="${h+1}" r="3.6" fill="#4FC8F5"/><circle cx="60" cy="${h+2}" r="3.2" fill="#43D18A"/><circle cx="29" cy="${h-15}" r="2.6" fill="#FFE27A"/><circle cx="50" cy="${h-22}" r="2.6" fill="#FFE27A"/><circle cx="71" cy="${h-15}" r="2.6" fill="#FFE27A"/>`;
+    case 'round': return `<circle cx="${L}" cy="${e}" r="${r}" fill="rgba(255,255,255,.18)" stroke="#2A2550" stroke-width="3"/><circle cx="${R}" cy="${e}" r="${r}" fill="rgba(255,255,255,.18)" stroke="#2A2550" stroke-width="3"/><path d="M${L+r} ${e} Q50 ${e-5} ${R-r} ${e}" stroke="#2A2550" stroke-width="3" fill="none"/>`;
+    case 'shades': return `<rect x="${f1(L-r-1)}" y="${f1(e-r*.75)}" width="${f1(2*r+2)}" height="${f1(r*1.5)}" rx="${f1(r*.6)}" fill="#2A2550"/><rect x="${f1(R-r-1)}" y="${f1(e-r*.75)}" width="${f1(2*r+2)}" height="${f1(r*1.5)}" rx="${f1(r*.6)}" fill="#2A2550"/><path d="M${f1(L+r)} ${e} L${f1(R-r)} ${e}" stroke="#2A2550" stroke-width="3"/><path d="M${f1(L-r*.5)} ${f1(e-r*.3)} l${f1(r*.5)} 0 M${f1(R-r*.5)} ${f1(e-r*.3)} l${f1(r*.5)} 0" stroke="#fff" stroke-width="2" stroke-linecap="round" opacity=".7"/>`;
+    case 'stars': return `<polygon points="${star(L, e, r*1.25)}" fill="rgba(255,226,122,.55)" stroke="#FF9F1C" stroke-width="2.5" stroke-linejoin="round"/><polygon points="${star(R, e, r*1.25)}" fill="rgba(255,226,122,.55)" stroke="#FF9F1C" stroke-width="2.5" stroke-linejoin="round"/><path d="M${L+r*.8} ${e} L${R-r*.8} ${e}" stroke="#FF9F1C" stroke-width="2.5"/>`;
+    case 'hearts': return `<path d="${heart(L, e, r)}" fill="rgba(255,93,108,.45)" stroke="#FF5D6C" stroke-width="2.5"/><path d="${heart(R, e, r)}" fill="rgba(255,93,108,.45)" stroke="#FF5D6C" stroke-width="2.5"/><path d="M${L+r*.9} ${e-2} L${R-r*.9} ${e-2}" stroke="#FF5D6C" stroke-width="2.5"/>`;
+    case 'bow': return `<path d="M50 ${n} L35 ${n-8} L35 ${n+8} Z M50 ${n} L65 ${n-8} L65 ${n+8} Z" fill="#FF5D6C" stroke="#D63A4C" stroke-width="2" stroke-linejoin="round"/><circle cx="50" cy="${n}" r="4.5" fill="#D63A4C"/>`;
+    case 'scarf': return `<path d="M24 ${n-6} Q50 ${n+8} 76 ${n-6} L78 ${n+2} Q50 ${n+16} 22 ${n+2} Z" fill="#3CC46B"/><path d="M60 ${n+4} L66 ${n+22} L56 ${n+22} L54 ${n+6} Z" fill="#22994C"/><path d="M30 ${n-2} L30 ${n+5} M40 ${n+2} L40 ${n+9} M50 ${n+3} L50 ${n+10}" stroke="#FFE27A" stroke-width="2.5"/>`;
+    case 'pearls': return Array.from({length:9}, (_,k) => { const t = k/8, x = 28 + t*44, y = n - 4 + Math.sin(t*Math.PI)*9; return `<circle cx="${f1(x)}" cy="${f1(y)}" r="3.6" fill="#FFFFFF" stroke="#D9D5EC" stroke-width="1.2"/>`; }).join('');
+    case 'medal': return `<path d="M40 ${n-8} L50 ${n+6} L60 ${n-8}" stroke="#3C8CFF" stroke-width="6" fill="none" stroke-linejoin="round"/><circle cx="50" cy="${n+12}" r="9" fill="#FFC83A" stroke="#E39A00" stroke-width="2.5"/><polygon points="${star(50, n+12, 5)}" fill="#FFF3B0"/>`;
+  }
+  return '';
+}
+function avatarOf(p, cls = ''){
+  if(!p) return '';
+  const w = p.wardrobe || {}, a = ANCH[p.avatar];
+  if(!a || !ART[p.avatar] || !(w.hat || w.eyes || w.neck)) return avatarArt(p.avatar, cls);
+  const y0 = w.hat ? -24 : 0, y1 = w.neck ? 108 : 100, size = y1 - y0, x0 = 50 - size/2;
+  return `<svg class="ava-svg ${cls}" viewBox="${f1(x0)} ${y0} ${size} ${size}" aria-hidden="true">${ART[p.avatar]}${w.neck ? itemArt(w.neck, a) : ''}${w.eyes ? itemArt(w.eyes, a) : ''}${w.hat ? itemArt(w.hat, a) : ''}</svg>`;
+}
+function toast(msg){
+  const t = document.createElement('div'); t.className = 'toast'; t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2200);
+}
+function showWardrobe(back, tab){
+  tab = tab || 'hat';
+  shell('Wardrobe', 'board', 0, back || showMap);
+  const w = player.wardrobe;
+  const tabs = [['hat','Hats'],['eyes','Glasses'],['neck','Neck']];
+  stage.innerHTML = `<div class="wardrobe">
+    <div class="wpreview">
+      <div class="wava">${avatarOf(player)}</div>
+      <div class="wname">${esc(player.name)}</div>
+      <div class="coinbig"><span class="coin"></span><span id="wcoins">${player.coins}</span></div>
+      <p class="whint">Win coins by reading. Spend them here!</p>
+    </div>
+    <div class="wshop">
+      <div class="tabs" role="tablist">${tabs.map(([k,n]) => `<button class="tab" role="tab" data-tab="${k}" aria-selected="${tab === k}">${n}</button>`).join('')}</div>
+      <div class="witems">${SHOP.filter(it => it.slot === tab).map(it => {
+        const owned = w.owned.includes(it.id), wearing = w[it.slot] === it.id, afford = player.coins >= it.price;
+        const preview = avatarOf({avatar: player.avatar, wardrobe: {owned: [], [it.slot]: it.id}});
+        return `<button class="witem${wearing ? ' wearing' : ''}${owned ? ' owned' : ''}${!owned && !afford ? ' poor' : ''}" data-id="${it.id}">
+          <span class="wthumb">${preview}</span>
+          <b>${it.name}</b>
+          <span class="wstate">${wearing ? 'Wearing ✓' : owned ? 'Wear' : `<span class="coin"></span>${it.price}`}</span>
+        </button>`; }).join('')}</div>
+    </div></div>`;
+  stage.querySelectorAll('.tab').forEach(b => b.onclick = () => showWardrobe(back, b.dataset.tab));
+  stage.querySelectorAll('.witem').forEach(b => b.onclick = () => {
+    const it = SHOP.find(x => x.id === b.dataset.id);
+    if(w[it.slot] === it.id){ w[it.slot] = null; save(); return showWardrobe(back, tab); }
+    if(w.owned.includes(it.id)){ w[it.slot] = it.id; save(); showWardrobe(back, tab); burst($('.wava')); return; }
+    if(player.coins < it.price){ shake(b); toast(`You need ${it.price - player.coins} more coins`); return; }
+    player.coins -= it.price; w.owned.push(it.id); w[it.slot] = it.id; save();
+    showWardrobe(back, tab); refreshCoins(true); burst($('.wava')); confetti(); toast(`You got the ${it.name.toLowerCase()}!`);
+  });
 }
 
 /* ======================= MAP ======================= */
@@ -1460,17 +1678,18 @@ function showMap(){
   const wk = worldOf(player), WD = WORLDS[wk];
   show('map', 'world-' + wk);
   clockOn = true; renderClock();
-  $('#mapAva').innerHTML = avatarArt(player.avatar); $('#mapName').textContent = player.name;
+  $('#mapAva').innerHTML = avatarOf(player); $('#mapName').textContent = player.name;
   $('#mapStars').textContent = starTotal(player);
   refreshCoins();
   $('#stageLabel').textContent = stageName();
-  $('#focusLine').textContent = 'This term: ' + STAGES[stageKey()].about;
+  $('#focusLine').textContent = 'This stage: ' + curStage().about;
+  $('#gemIcon').innerHTML = miniDiamond; $('#gemCount').textContent = `${player.gems.length}/12`;
 
   const pr = progress(), cur = currentLevel(), n = LEVELS.length;
   const H = 600, gap = 235;
   const pts = LEVELS.map((_,i) => ({x: 360 + i*gap, y: Math.round(410 + Math.sin(i*1.25 + .6)*88)}));
   const W = pts[n-1].x + 360;
-  const S = worldScene(wk, pts, W, H, !!pr[n-1], `${player.name}'s ${WD.name}`);
+  const S = worldScene(wk, pts, W, H, {mid: hasGem(player, curStage().n, 0), end: hasGem(player, curStage().n, 1), col: GEM_COLORS[curStage().n-1]}, `${player.name}'s ${WD.name}`);
   const pct = (x,y) => `left:${f1(x/W*100)}%;top:${f1(y/H*100)}%`;
   let nodes = '';
   pts.forEach((p,i) => {
@@ -1484,7 +1703,7 @@ function showMap(){
       </button>`;
   });
   const mp = pts[Math.min(cur, n-1)];
-  nodes += `<span class="me" style="${pct(mp.x, mp.y - 100)}" aria-hidden="true">${avatarArt(player.avatar)}</span>`;
+  nodes += `<span class="me" style="${pct(mp.x, mp.y - 100)}" aria-hidden="true">${avatarOf(player)}</span>`;
   const svg = (cls, body) => `<svg class="lyr ${cls}" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${body}</svg>`;
   $('#mapwrap').innerHTML = `
     <div class="scroller" id="scroller" style="background:linear-gradient(${WD.sky[0]}, ${WD.sky[1]})">
@@ -1587,7 +1806,13 @@ function finishLevel(){
   const pr = progress(), first = !pr[r.i];
   if(!pr[r.i] || stars > pr[r.i]) pr[r.i] = stars;
   const treasure = L.boss && first ? 10 : 0;
-  player.coins += stars + treasure; r.coins += stars + treasure; save();
+  player.coins += stars + treasure; r.coins += stars + treasure;
+  // Word Diamond piece + next stage
+  const sn = curStage().n;
+  let newGem = null, newStage = 0;
+  if(L.gem !== undefined && !hasGem(player, sn, L.gem)){ player.gems.push(gemKey(sn, L.gem)); newGem = gemKey(sn, L.gem); }
+  if(L.boss && sn < STAGE_LIST.length && player.unlocked <= sn){ player.unlocked = sn + 1; newStage = sn + 1; }
+  save();
   refreshCoins(true);
   if(!player) document.body.dataset.scene = 'done';
   clockOn = false;
@@ -1595,13 +1820,18 @@ function finishLevel(){
   const next = r.i + 1 < LEVELS.length;
   stage.innerHTML = `<div class="endcard">
       <div class="rays" aria-hidden="true"></div>
-      <div class="duo">${goCritter()}${stopCritter()}</div>
+      ${newGem || newStage ? '' : `<div class="duo">${goCritter()}${stopCritter()}</div>`}
       <div class="ribbon"><h2>${treasure ? 'Treasure!' : head}</h2></div>
       <div class="bigstars" aria-label="${stars} out of 3 stars">${[0,1,2].map(k => `<span class="bs${k < stars ? ' on' : ''}" style="animation-delay:${(.25 + k*.22).toFixed(2)}s">★</span>`).join('')}</div>
       <div class="earned"><span class="coin"></span>+<span id="earnedNum">0</span> coins</div>
-      ${treasure ? `<p>You finished the ${term} map! The treasure chest gave you 10 extra coins.</p>` : ''}
+      ${treasure ? `<p>You finished Stage ${sn}! You won 10 extra coins.</p>` : ''}
+      ${newGem ? `<div class="gemwin"><div class="gemwin-art">${diamondSVG(player, newGem, 'small')}</div><div><b>You found a diamond piece!</b><span>${player.gems.length} of 12 pieces</span></div></div>` : ''}
+      ${newStage ? `<p class="unlock">🔓 Stage ${newStage} · ${STAGE_LIST[newStage-1].name} is open!</p>` : ''}
       <div class="btnrow">
-        ${next ? '<button class="btn sun" id="nextLvl">Next level →</button>' : ''}
+        ${newGem ? '<button class="btn sun" id="seeGem">See my diamond 💎</button>' : ''}
+        ${newStage ? '<button class="btn sun" id="goStage">Go to Stage ' + newStage + ' →</button>' : ''}
+        ${next && !newGem ? '<button class="btn sun" id="nextLvl">Next level →</button>' : ''}
+        ${next && newGem ? '<button class="btn alt" id="nextLvl">Next level →</button>' : ''}
         <button class="btn alt" id="again">Play again</button>
         <button class="btn" id="toMap">Map</button>
       </div>
@@ -1609,6 +1839,8 @@ function finishLevel(){
   $('#pips').hidden = true;
   countUp($('#earnedNum'), r.coins);
   if(next) $('#nextLvl').onclick = () => startLevel(r.i + 1);
+  if(newGem) $('#seeGem').onclick = () => showDiamond(showMap, newGem);
+  if(newStage) $('#goStage').onclick = () => { player.stage = newStage; syncStage(); save(); showMap(); };
   $('#again').onclick = () => startLevel(r.i);
   $('#toMap').onclick = showMap;
   if(timeLeft() <= 0){
@@ -1616,7 +1848,7 @@ function finishLevel(){
     stage.querySelector('.btnrow').innerHTML = '<button class="btn sun" id="tuBtn">Next →</button>';
     $('#tuBtn').onclick = showTimesUp;
   }
-  ($('#nextLvl') || $('#tuBtn') || $('#toMap')).focus();
+  ($('#seeGem') || $('#goStage') || $('#nextLvl') || $('#tuBtn') || $('#toMap')).focus();
   if(stars >= 2 || treasure){ confetti(); setTimeout(() => react('.endcard .critter','happy'), 100); }
 }
 
@@ -2032,7 +2264,7 @@ function showTimesUp(){
   setupScreen(`
     <div class="duo">${goCritter().replace('critter go','critter go sleepy')}${stopCritter().replace('critter stop','critter stop sleepy')}</div>
     <h1>Time's up!</h1>
-    <div class="namebox"><span class="avabig">${player ? avatarArt(player.avatar) : '🌙'}</span>
+    <div class="namebox"><span class="avabig">${player ? avatarOf(player) : '🌙'}</span>
       <p style="margin:0;font-size:1.2rem;font-weight:500">Great reading today${player ? ', ' + esc(player.name) : ''}! The critters are having a rest. Come back tomorrow.</p></div>
     <div class="setup-actions">
       <button class="btn alt" id="tuPlayers">Change player</button>
@@ -2088,13 +2320,14 @@ function showSettings(back){
     </div>
     <div class="setcard">
       <h3>Players</h3>
-      <p class="hint">Time played today${settings.limit ? `, out of ${settings.limit} min` : ''}.</p>
+      <p class="hint">Time played today${settings.limit ? `, out of ${settings.limit} min` : ''}. Tap a stage number to open stages up to that one (for children who already know those sounds).</p>
       <div id="plist">${players.length ? players.map(p => {
         const t = timeRec(p), lim = settings.limit ? settings.limit + t.extra : 0;
         return `<div class="prow" data-id="${esc(p.id)}">
-          <span class="bava">${avatarArt(p.avatar)}</span>
+          <span class="bava">${avatarOf(p)}</span>
           <span class="pinfo">${esc(p.name)}<small>${fmt(t.used)} today${t.extra ? ` · +${t.extra} min extra` : ''}${lim && t.used >= lim*60 ? ' · time is up' : ''}</small></span>
           ${settings.limit ? '<button class="mini" data-act="extra">+10 min today</button>' : ''}
+          <span class="stagepick" role="group" aria-label="Stages open for ${esc(p.name)}"><small>Stages open</small>${STAGE_LIST.map(s => `<button class="mini${s.n <= (p.unlocked||1) ? ' on' : ''}" data-act="unlock" data-n="${s.n}" aria-pressed="${s.n <= (p.unlocked||1)}">${s.n}</button>`).join('')}</span>
           <button class="mini danger" data-act="remove">Remove</button>
         </div>`;
       }).join('') : '<p class="hint">No players yet.</p>'}</div>
@@ -2107,13 +2340,16 @@ function showSettings(back){
     const p = players.find(x => x.id === row.dataset.id);
     const extra = row.querySelector('[data-act="extra"]');
     if(extra) extra.onclick = () => { timeRec(p).extra += 10; save(); showSettings(back); };
+    row.querySelectorAll('[data-act="unlock"]').forEach(b => b.onclick = () => {
+      p.unlocked = +b.dataset.n; if(p.stage > p.unlocked) p.stage = p.unlocked; if(player === p) syncStage(); save(); showSettings(back);
+    });
     row.querySelector('[data-act="remove"]').onclick = e => {
       const cell = e.currentTarget;
       cell.outerHTML = `<span class="pinfo" style="flex:0 1 auto;min-width:0">Remove ${esc(p.name)} and their coins?</span><button class="mini yes" data-act="yes">Yes, remove</button><button class="mini" data-act="no">Keep</button>`;
       row.querySelector('[data-act="no"]').onclick = () => showSettings(back);
       row.querySelector('[data-act="yes"]').onclick = () => {
         players = players.filter(x => x.id !== p.id);
-        if(player && player.id === p.id){ player = null; year = term = null; back = showPlayers; }
+        if(player && player.id === p.id){ player = null; year = null; back = showPlayers; }
         save(); showSettings(back);
       };
     };
@@ -2131,9 +2367,9 @@ function showBoard(back){
     <div class="board">${list.length ? list.map((p,k) => `
       <div class="brow${player && p.id === player.id ? ' mine' : ''}">
         <span class="rank${k < 3 ? ' r' + (k+1) : ''}">${k+1}</span>
-        <span class="bava">${avatarArt(p.avatar)}</span>
+        <span class="bava">${avatarOf(p)}</span>
         <span class="bname">${esc(p.name)}</span>
-        <span class="bstat bst"><span class="st">★</span>${starTotal(p)}</span>
+        <span class="bstat bst">${miniDiamond}${(p.gems || []).length}</span>
         <span class="bstat"><span class="coin"></span>${p.coins}</span>
       </div>`).join('') : '<p class="boardnote">No players yet.</p>'}</div>`;
 }
@@ -2141,17 +2377,16 @@ function showBoard(back){
 /* ======================= SOUNDS & RED WORDS ======================= */
 function showSounds(back, tab){
   shell('Sounds & Red Words', 'sounds', 0, back);
-  const nowSet = player && year && term ? STAGES[stageKey()].set : 0;
+  const nowSet = player ? curStage().set : 0;
   tab = tab || (nowSet || 1);
   const tabs = [1,2,3].map(s => `<button class="tab" role="tab" aria-selected="${tab === s}" data-tab="${s}">Set ${s}${s === nowSet ? '<span class="nowtag">Now</span>' : ''}</button>`).join('')
     + `<button class="tab" role="tab" aria-selected="${tab === 'red'}" data-tab="red">Red words</button>`;
   let body;
   if(tab === 'red'){
-    const groups = [['reception','Reception'],['year1','Year 1']].flatMap(([y,yn]) => TERMS.map(t => [y,t,yn]));
-    body = `<p class="setnote">Red words can't be sounded out. Learn to spot them straight away.</p>` + groups.map(([y,t,yn]) => {
-      const isNow = player && y === year && t === term;
-      return `<div class="redgroup"><h3>${yn} · ${t[0].toUpperCase()+t.slice(1)}${isNow ? '<span class="nowtag">Now</span>' : ''}</h3>
-        <div class="redwrap">${RED_NEW[`${y}-${t}`].map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div></div>`;
+    body = `<p class="setnote">Red words can't be sounded out. Learn to spot them straight away.</p>` + STAGE_LIST.map(st => {
+      const isNow = player && st.n === curStage().n;
+      return `<div class="redgroup"><h3>Stage ${st.n} · ${esc(st.name)}${isNow ? '<span class="nowtag">Now</span>' : ''}</h3>
+        <div class="redwrap">${st.red.map(w => `<span class="redchip">${esc(w)}</span>`).join('')}</div></div>`;
     }).join('');
   } else {
     const S = SOUND_SETS[tab];
@@ -2176,7 +2411,9 @@ function showSounds(back, tab){
 /* ======================= INIT ======================= */
 $('#backBtn').onclick = () => backTo();
 $('#whoBtn').onclick = showPlayers;
-$('#changeStage').onclick = askClass;
+$('#changeStage').onclick = showStages;
+$('#gemBtn').onclick = () => showDiamond(showMap);
+$('#wardBtn').onclick = () => showWardrobe(showMap);
 $('#boardBtn').onclick = () => showBoard(showMap);
 $('#soundsBtn').onclick = () => showSounds(showMap);
 $('#setBtn').onclick = () => parentGate(() => showSettings(showMap), showMap);

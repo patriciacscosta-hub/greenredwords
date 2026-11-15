@@ -9,22 +9,34 @@ Play it: https://patriciacscosta-hub.github.io/greenredwords/
 
 ## How it works
 
-1. **Who's playing?** Each child picks one of seven animals (a grown-up can type their name), then their class and term.
-2. **The map.** A sideways-scrolling world with 12 levels for that class and term. Each animal has its own world:
+1. **Who's playing?** Each child picks one of seven animal characters (a grown-up can type their name) and goes straight to their map.
+2. **Sound stages.** Six stages in Read Write Inc. order, each with 10 levels. Finishing level 10 opens the next stage.
+
+   | Stage | Green words | New red words |
+   |---|---|---|
+   | 1 · Set 1 sounds | single sounds, CVC words (cat, dog) | I, the, to, no, go, my |
+   | 2 · Special friends | sh, th, ch, qu, ng, nk, ck | of, he, she, we, me, be, you, said, your |
+   | 3 · Blends | frog, drum, clock | was, are, put, all, they, her, some, come |
+   | 4 · Set 2 sounds | ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy | what, want, any, many, there, where, who, why |
+   | 5 · Set 3 sounds | ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear | could, would, should, one, once, two, does, other, were |
+   | 6 · Super reader | all Set 2 and Set 3 sounds | water, call, talk, walk, small, tall, school, friend, watch |
+
+   About 6 in 10 words come from the stage's new sounds and red words; the rest are review.
+3. **The map.** A sideways-scrolling world for the child's animal:
 
    | Animal | World |
    |---|---|
-   | 🐵 Monkey | Jungle – trees, palms, a waterfall, hanging vines, parrots and butterflies |
-   | 🐼 Panda | Bamboo Forest – tall segmented bamboo, a stone path, bamboo shoots, mushrooms and pandas |
-   | 🐸 Frog | Pond – lily-pad stepping stones, willows, reeds, ripples, ducks and jumping fish |
-   | 🐪 Camel | Desert – pyramids, mesas, cacti, an oasis and rolling tumbleweed |
-   | 🦁 Lion | Savanna – sunset, a snowy mountain, acacia trees, giraffes, zebras and an elephant |
-   | 🐙 Octopus | Ocean – light rays, swaying kelp, coral, fish, a turtle and rising bubbles |
-   | 🐧 Penguin | Snowland – northern lights, snowy peaks, pine trees, icebergs and falling snow |
+   | 🐵 Monkey | Jungle |
+   | 🐼 Panda | Bamboo Forest |
+   | 🐸 Frog | Pond |
+   | 🐪 Camel | Desert |
+   | 🦁 Lion | Savanna |
+   | 🐙 Octopus | Ocean |
+   | 🐧 Penguin | Snowland |
 
-   Swipe, drag, use the mouse wheel or the arrow buttons to move along. Finishing a level unlocks the next one. Each level earns 1–3 stars and can be replayed. Level 12 is the trophy level, and the treasure chest at the end opens when it is beaten. Every game is played in front of the child's own world.
-3. **Coins.** Every right answer earns a coin (2 for a speedy answer), each star earns a bonus coin, and Bubble Pop has gold coin bubbles to catch.
-4. **Leaderboard.** Ranks everyone who plays on that device by coins.
+4. **The Word Diamond.** A big gem made of 12 pieces. Every stage gives two: one for finishing level 5 and one for level 10. Collect all 12 to complete the diamond.
+5. **Coins and the Wardrobe.** Right answers, speed and stars earn coins. Spend them in the Wardrobe on hats, glasses and neckwear for your character – they show on the map, the player list and the leaderboard.
+6. **Leaderboard.** Everyone who plays on that device, by coins, with their diamond pieces.
 
 All progress is saved in the browser on that device. Nothing is sent anywhere.
 
@@ -55,24 +67,11 @@ Tap the gear on the map (or **Grown-ups** on the "Who's playing?" screen) and an
 - **+10 min today** – give one child extra time for today.
 - **Read red words aloud** – On, or Off for silent play (the word then flashes for 2 seconds before hiding).
 - **Speedy Tap countdown** – Normal, Relaxed (twice as long) or Off.
-- **Players** – see how long each child played today, or remove a player.
+- **Players** – see how long each child played today, open later stages for a child who already knows those sounds, or remove a player.
 
 ## Sounds & Red Words
 
 A page for children and parents showing RWI Set 1, Set 2 and Set 3 sounds in teaching order, and the red words for each class and term. Sounds are marked the RWI way: a dot under a single sound, a dash under special friends, and an arc joining split sounds such as a-e.
-
-## Class and term
-
-| | Green words (focus) | New red words |
-|---|---|---|
-| Reception, Autumn | Set 1 sounds, CVC words (cat, dog) | I, the, to, no, go, my |
-| Reception, Spring | Special friends: sh, th, ch, ng, nk, ck | of, he, she, we, me, be, you, said, your |
-| Reception, Summer | Blends (frog) and first Set 2 sounds | was, are, put, all, they, her, some, come |
-| Year 1, Autumn | Set 2 sounds: ay, ee, igh, ow, oo, ar, or, air, ir, ou, oy | said, was, what, want, any, many, there, where, who, why |
-| Year 1, Spring | Set 3 sounds: ea, oi, a-e, i-e, o-e, aw, ai, oa, ow, ire, ear | could, would, should, some, come, one, once, two, does, other, were |
-| Year 1, Summer | All Set 2 and Set 3 sounds | water, call, talk, walk, small, tall, school, friend, watch |
-
-About 6 in 10 words in each game come from that term's focus, the rest are review.
 
 ## Put it on an iPad
 

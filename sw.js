@@ -1,7 +1,7 @@
 // Word Lights offline cache.
 // The game page: fetched fresh when online (so updates arrive), cached copy used when offline.
 // Fonts: cached after the first visit.
-const CACHE = 'wordlights-v2';
+const CACHE = 'wordlights-v3';
 const CORE = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
 self.addEventListener('install', e => {
